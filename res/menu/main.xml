@@ -1,0 +1,32 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.parivartree.MainActivity" >
+
+    <item
+        android:id="@+id/action_notification"
+        android:icon="@drawable/parivar_mobile_toptabs_notification_mo"
+        android:title="@string/action_notification"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_message"
+        android:icon="@drawable/parivar_mobile_toptabs_message_mo"
+        android:title="@string/action_message"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_invite"
+        android:icon="@drawable/parivar_mobile_toptabs_invite_mo"
+        android:title="@string/action_invite"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_discussion"
+        android:icon="@drawable/parivar_mobile_toptabs_discussion_mo"
+        android:title="@string/action_discussion"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
+
+</menu>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/parivar_mobile_bg_3_0" >
+
+    <TextView
+        android:id="@+id/textView25"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/heading_blue_gradient"
+        android:paddingEnd="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingStart="20dp"
+        android:text="SEARCH"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/pt_white"
+        android:textStyle="bold" />
+    <LinearLayout
+        android:id="@+id/linear1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+         <EditText
+            android:id="@+id/Searchname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_background"
+            android:ems="10"
+            android:hint="Search"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            android:textColorHint="@color/pt_lightblue"
+            android:textStyle="italic" />
+        <!-- <com.parivartree.customviews.CustomAutoCompleteView
+        android:id="@+id/autoCompleteUser"
+       	android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_background"
+            android:ems="10"
+            android:hint="Search Names"
+            android:padding="10dp"
+            android:textColorHint="@color/pt_lightblue"
+            android:textStyle="italic"
+        android:completionThreshold="1" /> -->
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/pt_dark_grey" />
+ <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+    <ListView
+        android:id="@+id/searchlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:dividerHeight="2dp"
+		/>
+    </LinearLayout>
+</LinearLayout>

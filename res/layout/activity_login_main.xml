@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/parivar_mobile_bg_3_0"
+    android:gravity="center"
+    tools:context="parivartree.LoginMainActivity">
+    <ImageView
+        android:src="@drawable/parivartree_logo_127"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dip"
+        android:layout_marginTop="30dip"
+        android:id="@+id/imageView1" />
+    <LinearLayout
+        android:id="@+id/button_layout_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1.0">
+        <Button
+            android:text="LOGIN"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".8"
+            android:id="@+id/login"
+            android:background="@drawable/rounded_corners_orange"
+            android:padding="15dip"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/button_layout_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_layout_login"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1.0">
+        <Button
+            android:text="SIGN UP"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".8"
+            android:id="@+id/sign_up"
+            android:padding="15dip"
+            android:layout_marginTop="5dip"
+            android:background="@drawable/rounded_corners_blue"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+</LinearLayout>

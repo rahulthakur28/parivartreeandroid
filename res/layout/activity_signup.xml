@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1.0"
+    android:background="#FFFFFF">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight=".1"
+        android:gravity="center"
+        android:weightSum="1.0">
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:textStyle="italic"
+            android:textColorHint="@color/pt_grey"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="First Name"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight=".1"
+        android:gravity="center"
+        android:weightSum="1.0">
+        
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:textStyle="italic"
+            android:textColorHint="@color/pt_grey"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Last Name"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+        
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight=".1"
+        android:gravity="center"
+        android:weightSum="1.0">
+        <EditText
+            android:id="@+id/editText3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:textStyle="italic"
+            android:textColorHint="@color/pt_grey"
+            android:ems="10"
+            android:inputType="phone"
+            android:hint="Phone"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="1.0">
+        <EditText
+            android:id="@+id/editText4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:textStyle="italic"
+            android:textColorHint="@color/pt_grey"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="New Password"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="1.0">
+        <EditText
+            android:id="@+id/editText5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:textStyle="italic"
+            android:textColorHint="@color/pt_grey"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="Re-type Password"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="1.0">
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pt_grey"
+            android:layout_margin="1dp"
+            android:background="@drawable/edit_text_background"
+            android:layout_weight=".15" />
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pt_grey"
+            android:layout_margin="1dp"
+            android:background="@drawable/edit_text_background"
+            android:layout_weight=".15" />
+        <Spinner
+            android:id="@+id/spinner3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pt_grey"
+            android:layout_margin="1dp"
+            android:background="@drawable/edit_text_background"
+            android:layout_weight=".3" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="1.0">
+        <RadioButton
+            android:id="@+id/radioButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:button="@drawable/radio_button_drawable"
+            android:textColor="@color/pt_dark_grey"
+            android:text="Male" />
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:button="@drawable/radio_button_drawable"
+            android:textColor="@color/pt_dark_grey"
+            android:text="Female" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="10sp"
+        android:layout_gravity="center"
+        android:layout_weight=".06"
+        android:textColor="@color/pt_blue"
+        android:text="Privacy Policy / Terms" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".14"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1.0">
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".6"
+            android:background="@drawable/rounded_corners_blue"
+            android:minHeight="35dip"
+            android:padding="0dp"
+            android:textSize="12sp"
+            android:textColor="@color/pt_grey"
+            android:textStyle="bold"
+            android:text="Next" />
+    </LinearLayout>
+</LinearLayout>

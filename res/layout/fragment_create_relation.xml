@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/parivar_mobile_bg_3_0"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:weightSum="1.0" >
+    
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".8"
+        android:background="@drawable/select_menu_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:weightSum="1.0" >
+
+         <TextView
+            android:id="@+id/relationtitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Adding"
+             android:padding="10dp"
+            android:background="@color/pt_blue"
+            android:textColor="@color/pt_white"
+            android:textSize="17sp" />
+        <!--
+        <EditText
+	        android:id="@+id/editText1"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight=".7"
+	        android:textStyle="italic"
+	        android:textColorHint="@color/pt_grey"
+	        android:ems="10"
+	        android:inputType="textPersonName"
+	        android:hint="First Name"
+	        android:background="@drawable/edit_text_background"
+	        android:padding="8dp" />
+        -->
+
+    <com.parivartree.customviews.CustomAutoCompleteTextView
+        android:id="@+id/autoCompleteUser"
+       	android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"          
+            android:inputType="textCapWords"
+            android:background="@drawable/edit_text_background"
+            android:ems="10"
+            android:hint="Search Names"
+            android:padding="10dp"
+            android:textColorHint="@color/pt_lightblue"
+            android:textStyle="italic"
+        android:completionThreshold="1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/pt_blue" />
+
+        <EditText
+            android:id="@+id/firstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_background"
+            android:ems="10"
+            android:hint="First Name"
+            android:padding="10dp"
+            android:inputType="textCapWords"
+            android:textColorHint="@color/pt_lightblue"
+            android:textStyle="italic" />
+
+        <EditText
+            android:id="@+id/lastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_background"
+            android:ems="10"
+            android:hint="Last Name"
+            android:inputType="textCapWords"
+            android:padding="10dp"
+            android:textColorHint="@color/pt_lightblue"
+            android:textStyle="italic" />
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/edit_text_background"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            android:textColorHint="@color/pt_lightblue"
+            android:textStyle="italic" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/textview12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="11sp"
+                android:text="No Email ? "
+                android:textStyle="bold" />
+
+            <CheckBox
+                android:id="@+id/checkboxemail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false" />
+        </LinearLayout>
+        <!--
+        <TextView
+	        android:id="@+id/mother"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:textStyle="italic"
+	        android:background="@drawable/edit_text_background"
+	        android:text="Mother"
+	        android:padding="10dp" />
+         
+        <TextView
+	        android:id="@+id/brother"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:textStyle="italic"
+	        android:background="@drawable/edit_text_background"
+	        android:text="Brother"
+	        android:padding="10dp" />
+        
+        <TextView
+	        android:id="@+id/sister"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:textStyle="italic"
+	        android:background="@drawable/edit_text_background"
+	        android:text="Sister"
+	        android:padding="10dp" />
+        
+        <TextView
+	        android:id="@+id/spouse"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:textStyle="italic"
+	        android:background="@drawable/edit_text_background"
+	        android:text="Spouse"
+	        android:padding="10dp" />
+        
+        <TextView
+	        android:id="@+id/son"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:textStyle="italic"
+	        android:background="@drawable/edit_text_background"
+	        android:text="Son"
+	        android:padding="10dp" />
+        
+        <TextView
+	        android:id="@+id/daughter"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:textStyle="italic"
+	        android:background="@drawable/edit_text_background"
+	        android:text="Daughter"
+	        android:padding="10dp" />
+        -->
+
+        <Button
+            android:id="@+id/create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:background="@drawable/rounded_corners_blue"
+            android:text="Create" 
+            android:textColor="@color/pt_white"/>
+    </LinearLayout>
+
+</LinearLayout>

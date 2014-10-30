@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pt_white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pt_bright_blue" >
+
+        <TextView
+            android:id="@+id/relationtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text=""
+            android:textColor="@color/pt_white"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/father"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:weightSum="1.0" >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/father" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="Father" 
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/add" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pt_lavender" />
+
+    <LinearLayout
+            android:id="@+id/mother"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+          android:padding="5dp"
+        android:weightSum="1.0" >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/mother" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="Mother" 
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/add" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pt_lavender" />
+
+    <LinearLayout
+            android:id="@+id/brother"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+          android:padding="5dp"
+        android:weightSum="1.0" >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/son" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="Brother" 
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/add" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pt_lavender" />
+
+    <LinearLayout
+            android:id="@+id/sister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+          android:padding="5dp"
+        android:weightSum="1.0" >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/daughter" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="Sister" 
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/add" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pt_lavender" />
+
+    <LinearLayout
+            android:id="@+id/spouse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+          android:padding="5dp"
+        android:weightSum="1.0" >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/spouse" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="Spouse" 
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/add" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pt_lavender" />
+
+    <LinearLayout
+            android:id="@+id/son"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+          android:padding="5dp"
+        android:weightSum="1.0" >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/son" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="Son"
+            android:layout_gravity="center_vertical" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/add" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pt_lavender" />
+
+    <LinearLayout
+         android:id="@+id/daughter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+          android:padding="5dp"
+        android:weightSum="1.0" >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/daughter" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="Daughter" 
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:src="@drawable/add" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pt_lavender" />
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <declare-styleable name="CustomNode">
+       <attr name="username" format="string" />
+       <attr name="userid" format="integer" />
+       <attr name="userimage" format="reference|color" />
+       <attr name="relationcount" format="integer" />
+   </declare-styleable>
+   
+   <declare-styleable name="CircularImageView">
+        <attr name="border" format="boolean"></attr>
+        <attr name="border_width" format="dimension"></attr>
+        <attr name="border_color" format="color"></attr>
+        <attr name="shadow" format="boolean"></attr>
+    </declare-styleable>
+   
+    <declare-styleable name="CircularImage">
+        <attr name="circularImageViewStyle" format="reference"></attr>
+    </declare-styleable>
+      
+    <!-- Defines the custom XML attributes supported for a HorizontalListView -->
+    <declare-styleable name="HorizontalListView">
+        <attr name="dividerWidth" format="dimension" />
+        <attr name="android:divider" />
+        <attr name="android:requiresFadingEdge" />
+        <attr name="android:fadingEdgeLength" />
+    </declare-styleable>
+    
+    
+     <attr name="cropImageStyle" format="reference" />
+    
+    <declare-styleable name="CropImageView">
+        <attr name="highlightColor" format="reference|color" />
+        <attr name="showThirds" format="boolean" />
+        <attr name="showHandles">
+          <enum name="changing" value="0" />
+          <enum name="always" value="1" />
+          <enum name="never" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

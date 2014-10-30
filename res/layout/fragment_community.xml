@@ -1,0 +1,114 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/parivar_mobile_bg_3_0"
+    android:orientation="vertical" >
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/pt_white"
+        android:paddingBottom="4dp"
+        android:gravity="center"
+        android:weightSum="1.0"
+        android:orientation="horizontal" >
+
+       	<RelativeLayout
+       	    android:id="@+id/txtmyevntLayout"
+       	    android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/pt_blue"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight=".25">
+            
+       	    <TextView
+	            android:id="@+id/txtmyevnt"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:text=" My Events "
+	            android:textColor="@color/pt_white"
+	            android:textSize="12sp"
+	            android:textStyle="bold" />
+       	    
+       	</RelativeLayout>
+        
+
+       	<RelativeLayout
+       	    android:id="@+id/txtupcmgevntLayout"
+       	    android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/pt_blue"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight=".40">
+       	    
+       	    <TextView
+	            android:id="@+id/txtupcmgevnt"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:text=" Up Comming Events"
+	            android:textColor="@color/pt_white"
+	            android:textSize="12sp"
+	            
+	            android:textStyle="bold" />
+       	</RelativeLayout>
+        
+
+       	<RelativeLayout
+       	    android:id="@+id/txtrecentevntLayout"
+       	    android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/pt_blue"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="2dp"
+           	android:layout_weight=".35">
+       	    
+       	    <TextView
+	            android:id="@+id/txtrecentevnt"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:text=" Recent Events "
+	            android:textColor="@color/pt_white"
+	            android:textSize="12sp"
+	            android:textStyle="bold" />
+       	    
+       	</RelativeLayout>
+        
+    </LinearLayout>
+    
+    
+ <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+    <ListView
+        android:id="@+id/eventlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+		/>
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
+        <Button
+            android:id="@+id/btncreateevtlst1"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corners_blue"
+            android:minHeight="30dip"
+            android:text="Create Event"
+            android:textColor="@color/pt_grey"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+     
+</LinearLayout>

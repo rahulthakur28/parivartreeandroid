@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"  
+    android:background="@drawable/parivar_mobile_bg_3_0">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/pt_bright_blue" >
+     <TextView
+                android:id="@+id/textheader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="17sp"
+                android:textColor="@color/pt_white"
+                android:text="Notifications"/>
+      <!-- <TextView
+                android:id="@+id/textviewall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="view all "
+                android:textSize="17dp"
+                android:textColor="#FFFFFF"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:textStyle="bold" />  -->
+    </LinearLayout>
+  <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+    <ListView
+        android:id="@+id/notifiationlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:dividerHeight="2dp"
+		/>
+    </LinearLayout>
+</LinearLayout>

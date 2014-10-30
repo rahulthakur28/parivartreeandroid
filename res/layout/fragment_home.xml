@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res/com.gizmeon.treeview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/parivar_mobile_bg_3_0" >
+
+    <com.parivartree.customviews.CustomScrollView
+        android:id="@+id/topScrollView"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        tools:context="com.gizmeon.treeview.MainActivity" >
+        
+ <!-- 
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+ -->
+ 
+            <com.parivartree.zoom.LayoutZoomView
+                android:id="@+id/contentHolder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+       
+    <!--
+        </HorizontalScrollView>
+    -->
+    </com.parivartree.customviews.CustomScrollView>
+<LinearLayout
+        android:id="@+id/userTreeMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textViewUserMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/pt_blue"
+            android:textSize="20sp"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+    <!--  <RelativeLayout
+        android:id="@+id/selectOptions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/pt_overlay"
+        android:gravity="center"
+        android:visibility="invisible" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/select_menu_background"
+            android:orientation="vertical"
+            android:weightSum="1" >
+
+            <TextView
+                android:id="@+id/addRelation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight=".2"
+                android:clickable="true"
+                android:padding="10dp"
+                android:text="Add Relation"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/viewProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight=".2"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Profile"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/viewTree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight=".2"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="View Tree"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/viewImageGallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight=".2"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Image Gallery"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/viewVideoGallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight=".2"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Video Gallery"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/viewWall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight=".2"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Wall"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/viewhide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight=".2"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Hide"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+    </RelativeLayout> -->
+ <RelativeLayout
+        android:id="@+id/selectOptions"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@color/pt_overlay"
+  android:visibility="invisible" >
+  
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:background="@drawable/rounded_corners_grey"
+      android:orientation="vertical" >
+   
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:weightSum="1.0" >
+    
+    <RelativeLayout
+        android:id="@+id/addRelation"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:background="@drawable/top_left_rounded_blue"
+       android:layout_marginBottom="1dp"
+        android:layout_weight=".33"
+        android:padding="8dp" >
+     
+     <ImageView
+         android:id="@+id/imageView1"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:src="@drawable/add_relation" />
+     
+     <TextView
+         android:id="@+id/textView1"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/imageView1"
+         android:layout_centerHorizontal="true"
+         android:textColor="@color/pt_white"
+         android:textSize="12sp"
+         android:textStyle="bold"
+         android:text="\t   ADD\nRELATION" />
+      
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/viewProfile"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:background="@color/pt_bright_blue"
+       android:layout_weight=".33"
+       android:layout_marginLeft="1dp"
+       android:layout_marginRight="1dp"
+       android:layout_marginBottom="1dp"
+        android:padding="8dp" >
+     
+     <ImageView
+         android:id="@+id/imageView2"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:src="@drawable/user" />
+     
+     <TextView
+         android:id="@+id/textView2"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/imageView2"
+         android:layout_centerHorizontal="true"
+         android:textColor="@color/pt_white"
+         android:textSize="12sp"
+         android:textStyle="bold"
+         android:text="PROFILE" />
+      
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/viewTree"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:background="@drawable/top_right_rounded_blue"
+       android:layout_marginBottom="1dp"
+        android:layout_weight=".33"
+        android:padding="8dp" >
+ 
+     <ImageView
+         android:id="@+id/imageView3"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:src="@drawable/tree" />
+ 
+     <TextView
+         android:id="@+id/textView3"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/imageView3"
+         android:layout_centerHorizontal="true"
+         android:textColor="@color/pt_white"
+         android:textSize="12sp"
+         android:textStyle="bold"
+         android:text="VIEW TREE" />
+ 
+    </RelativeLayout>
+    
+   </LinearLayout>
+   
+   
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:weightSum="1.0" >
+    
+    <RelativeLayout
+        android:id="@+id/viewImageGallery"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:background="@drawable/bottom_left_rounded_blue"
+        android:layout_weight=".33"
+        android:padding="8dp" >
+     
+     <ImageView
+         android:id="@+id/imageView4"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:src="@drawable/studio" />
+     
+     <TextView
+         android:id="@+id/textView4"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/imageView4"
+         android:layout_centerHorizontal="true"
+         android:textColor="@color/pt_white"
+         android:textSize="12sp"
+         android:textStyle="bold"
+         android:text="VIEW IMAGES" />
+     
+    </RelativeLayout>
+    
+    
+    <RelativeLayout
+        android:id="@+id/viewVideoGallery"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:background="@color/pt_bright_blue"
+        android:layout_marginLeft="1dp"
+       android:layout_marginRight="1dp"
+        android:layout_weight=".33"
+        android:padding="8dp" >
+     
+        <ImageView
+         android:id="@+id/imageView5"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:src="@drawable/video" />
+ 
+     <TextView
+         android:id="@+id/textView5"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/imageView5"
+         android:layout_centerHorizontal="true"
+         android:textColor="@color/pt_white"
+         android:textSize="12sp"
+         android:textStyle="bold"
+         android:text="VIEW VIDEOS" />
+        
+    </RelativeLayout>
+    
+    
+    <RelativeLayout
+        android:id="@+id/viewHide"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:background="@drawable/bottom_right_rounded_blue"
+        android:layout_weight=".33"
+        android:padding="8dp" >
+     
+        <ImageView
+         android:id="@+id/imageView6"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:src="@drawable/wall" />
+  
+     <TextView
+         android:id="@+id/textView6"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/imageView6"
+         android:layout_centerHorizontal="true"
+         android:textColor="@color/pt_white"
+         android:textSize="12sp"
+         android:textStyle="bold"
+         android:text="HIDE USER" />
+        
+    </RelativeLayout>
+    
+   </LinearLayout>
+   
+  </LinearLayout>
+  
+ </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/helplayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pt_overlay"
+        android:gravity="top|center"
+        android:visibility="invisible" >
+        
+        <ImageView 
+        android:id="@+id/helpimage"
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:background="@drawable/helpimage"
+            />
+        
+        </RelativeLayout>
+
+</FrameLayout>
