@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="50dp"
+    android:paddingBottom="50dp"
+    android:gravity="center"
+    android:orientation="vertical" >
+	
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_background"
+    	android:weightSum="1"
+        android:orientation="vertical" >
+        
+        <TextView
+            android:id="@+id/addRelation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:layout_weight=".2"
+            android:clickable="true"
+            android:text="Add Relation"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+			
+	    <TextView
+	        android:id="@+id/viewProfile"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:padding="10dp"
+	        android:layout_weight=".2"
+	        android:clickable="true"
+	        android:gravity="center"
+	        android:text="Profile"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+			
+	    <TextView
+	        android:id="@+id/viewImageGallery"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:padding="10dp"
+	        android:layout_weight=".2"
+	        android:gravity="center"
+	        android:clickable="true"
+	        android:text="Image Gallery"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+			
+	    <TextView
+	        android:id="@+id/viewVideoGallery"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:padding="10dp"
+	        android:layout_weight=".2"
+	        android:gravity="center"
+	        android:clickable="true"
+	        android:text="Video Gallery"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+			
+	    <TextView
+	        android:id="@+id/viewWall"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center" 
+	        android:padding="10dp"
+	        android:layout_weight=".2"
+	        android:gravity="center"
+	        android:clickable="true"
+	        android:text="Wall"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+    </LinearLayout>
+		
+</RelativeLayout>

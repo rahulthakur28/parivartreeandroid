@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="pt_orange">#EE7202</color>
+    <color name="pt_blue">#046EA0</color>
+    <color name="pt_grey">#F0F2F5</color>
+    <color name="pt_dark_grey">#B3B8BC</color>
+    <color name="pt_white">#FFFFFF</color>
+    <color name="pt_crimson">#FD3331</color>
+    <color name="pt_red">#D9534F</color>
+    <color name="pt_overlay">#44B3B8BC</color>
+    <color name="pt_grey_transparent">#44B9B9B9</color>
+    <color name="pt_user">#ffdbc9</color>
+    <color name="ll_black">#000000</color>
+    <color name="pt_gold">#ffc200</color>
+     <color name="pt_lightblue">#CC66FF</color>
+     <color name="pt_ashgrey">#726b68</color>
+     <color name="pt_ligthorange">#ed7202</color>
+     <color name="pt_lavender">#E6E6FA</color>
+     <color name="pt_maroon">#800000</color>
+    <color name="pt_header">#162932</color>
+        <color name="pt_bright_blue">#036fa0</color>
+    <color name="pt_menu_background">#152831</color>
+    
+
+    <!-- Navigation Slider menu -->
+    <color name="bright_orange">#f75f2b</color>
+    <color name="list_item_title">#B3B8BC</color> <!-- <color name="list_item_title">#fff</color> -->
+    <color name="list_background">#FFF</color> <!-- <color name="list_background">#303030</color> -->
+    <color name="list_background_pressed">#046EA0</color> <!-- <color name="list_background_pressed">#992416</color> -->
+    <color name="list_divider">#272727</color>
+    <color name="counter_text_bg">#626262</color>
+    <color name="counter_text_color">#c5c4c4</color>
+    
+     <!-- Crop -->
+    <color name="crop__button_bar">#f3f3f3</color>
+    <color name="crop__button_text">#666666</color>
+    <color name="crop__selector_pressed">#1a000000</color>
+    <color name="crop__selector_focused">#77000000</color>
+
+</resources>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="actionbar_name">parivartree</string>
+    <string name="app_name">parivartree</string>
+    <string name="title_activity_login_main">parivartree</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="USER_PREFERENCES">userr_preferences</string>
+    <string name="USER_PREFERENCE">userrr_preferences</string>
+    <string name="title_activity_main">parivartree</string>
+    <string name="title_activity_login_details">parivartree</string>
+    <string name="title_activity_sign_up">parivartree</string>
+    <string name="facebook_app_id">344736635684076</string>
+    <string name="title_activity_sign_up_details">SignUpDetailsActivity</string>
+    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
+    <string name="title_activity_terms">TermsActivity</string>
+    <!-- actionbar menu items -->
+
+    <string name="action_notification">Notification</string>
+    <string name="action_message">Message</string>
+    <string name="action_invite">Invite</string>
+    <string name="action_discussion">Discussion</string>
+
+    <!-- slider menu items -->
+
+    <string name="item_one">My Tree</string>
+    <string name="item_two">My Profile</string>
+    <string name="item_three">My Wall</string>
+    <string name="item_four">My Studio</string>
+    <string name="item_five">Events</string>
+    <string name="item_six">Messages</string>
+    <string name="item_seven">Settings</string>
+    <string name="item_nine">Signout</string>
+
+    <!-- Nav Drawer Menu Items -->
+    <string-array name="nav_drawer_items">
+        <item>My Tree</item>
+        <item>My Profile</item>
+        <item>My Wall</item>
+        <item>My Studio</item>
+        <item>Events</item>
+        <item>Messages</item>
+        <item>Setting</item>
+        <item>Signout</item>
+    </string-array>
+
+    <!-- Image Crop -->
+    <string name="crop__saving">Saving picture…</string>
+    <string name="crop__wait">Please wait…</string>
+    <string name="crop__pick_error">No image sources available</string>
+    <string name="crop__done">Done</string>
+    <string name="crop__cancel">Cancel</string>
+    
+    <!-- Google Places API Browser Key -->
+    <string name="places_key">AIzaSyB0s0JzVM5Rva51-Bj0ph0LxGE6rUXegmw</string>
+    
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_tree</item>
+        <item>@drawable/ic_user</item>
+        <item>@drawable/ic_wall</item>
+        <item>@drawable/ic_studio</item>
+        <item>@drawable/ic_calender</item>
+        <item>@drawable/ic_message</item>
+        <item>@drawable/ic_setting</item>
+        <item>@drawable/ic_signout</item>
+    </array>
+    <!-- events min -->
+    <array name="event_min">
+        <item>00</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+    </array>
+    <!-- events hour -->
+    <array name="event_hour">
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+    </array>
+
+    <!-- Content Description -->
+    <string name="desc_list_item_icon">Item Icon</string>
+    <string name="sample">Sample</string>
+
+    <!-- Parivar Tree API -->
+    <string name="host">http://115.124.125.53/app_dev.php/</string>
+    <string name="hostname">https://www.parivartree.com/app.php/</string>
+    <string name="url_login">mobilelogin</string>
+    <string name="url_signup">addnewuser</string>
+    <string name="url_view_profile">mobileprofile</string>
+    <string name="url_forgot_password">mobileforgotpassword</string>
+    <string name="url_create_event">mobilecreateevent</string>
+    <string name="url_delete_event">mobiledeleteevent</string>
+    <string name="url_edit_event">mobileeditevent</string>
+    <string name="url_my_event">mobilegetmyevents</string>
+    <string name="url_others_event">mobilegetevents</string>
+    <string name="url_join_event">mobilejoinevent</string>
+    <string name="url_maybe_event">mobilemaybeevent</string>
+    <string name="url_decline_event">mobiledeclineevent</string>
+    <string name="url_edit_profile_url">mobileprofileupdate</string>
+    <string name="url_religion">religion</string>
+    <string name="url_community">mobilecommunity</string>
+    <string name="url_gothra">mobilegothra</string>
+    <string name="url_mytree">mobilemytree</string>
+    <string name="url_set_password">mobilesetpassword</string>
+    <string name="url_notification">mobilenotification</string>
+    <string name="url_search_users">mobilesearchusers</string>
+    <string name="url_add_relation">mobileaddrelation</string>
+    <string name="url_invite_user">mobileinvite</string>
+    <string name="url_autogenerate_email">mobileautogenerateemail</string>
+    <string name="url_invitation_accept">mobileinvitationaccept</string>
+    <string name="url_invitation_decline">mobileinvitationdecline</string>
+    <string name="url_find_joinees">mobileeventjoinees</string>
+    <string name="url_facebook_login">mobilefacebooklogin</string>
+    <string name="url_recomondation_accept">mobileacceptrecomondation</string>
+    <string name="url_recomondation_decline">mobiledeclinerecomondation</string>
+    <string name="url_profile_imageupload">mobileprofileimgupload</string>
+    <string name="url_deceased_user">mobiledeceased</string>
+    <string name="url_delete_user">mobiledeleteuser</string>
+    <string name="url_hide_user">mobilehideuser</string>
+    <string name="url_unhide_user">mobileunhideuser</string>
+    <string name="url_make_alive">mobilemakemealive</string>
+    <string name="url_immediate_family">mobileimediaterelations</string>
+    <string name="url_field_privacy">mobilesetfieldprivacy</string>
+    <string name="url_view_profile2">mobileprofileview</string>
+    
+    
+    <string name="login_url">http://115.124.125.53/app_dev.php/mobilelogin</string>
+    <string name="signup_url">http://115.124.125.53/app_dev.php/addnewuser</string>
+    <string name="view_profile_url">http://115.124.125.53/app_dev.php/mobileprofile</string>
+    <string name="forgot_password_url">http://115.124.125.53/app_dev.php/mobileforgotpassword</string>
+    <string name="create_event_url">http://115.124.125.53/app_dev.php/mobilecreateevent</string>
+    <string name="delete_event_url">http://115.124.125.53/app_dev.php/mobiledeleteevent</string>
+    <string name="getmy_events_url">http://115.124.125.53/app_dev.php/mobilegetmyevents</string>
+    <string name="getAll_events_url">http://115.124.125.53/app_dev.php/mobilegetevents</string>
+    <string name="join_events_url">http://115.124.125.53/app_dev.php/mobilejoinevent</string>
+    <string name="maybe_events_url">http://115.124.125.53/app_dev.php/mobilemaybeevent</string>
+    <string name="decline_events_url">http://115.124.125.53/app_dev.php/mobiledeclineevent</string>
+    <string name="edit_profile_url">http://115.124.125.53/app_dev.php/mobileprofileupdate</string>
+    <string name="religion_url">http://115.124.125.53/app_dev.php/religion</string>
+    <string name="community_url">http://115.124.125.53/app_dev.php/mobilecommunity</string>
+    <string name="gothra_url">http://115.124.125.53/app_dev.php/mobilegothra</string>
+    <string name="tree_view_url">http://115.124.125.53/app_dev.php/mobilemytree</string>
+    <string name="set_password_url">http://115.124.125.53/app_dev.php/mobilesetpassword</string>
+    <string name="edit_event_url">http://115.124.125.53/app_dev.php/mobileeditevent</string>
+    <string name="get_notification_url">http://115.124.125.53/app_dev.php/mobilenotification</string>
+    <string name="create_new_relation_url">http://115.124.125.53/app_dev.php/mobileaddrelation</string>
+    <string name="search_user_url">http://115.124.125.53/app_dev.php/mobilesearchusers</string>
+    <string name="invite_user_url">http://115.124.125.53/app_dev.php/mobileinvite</string>
+    <string name="autogenerate_email_url">http://115.124.125.53/app_dev.php/mobileautogenerateemail</string>
+    <string name="invitation_accept_url">http://115.124.125.53/app_dev.php/mobileinvitationaccept</string>
+    <string name="invitation_decline_url"> http://115.124.125.53/app_dev.php/mobileinvitationdecline</string>
+    <string name="find_joinees_url"> http://115.124.125.53/app_dev.php/mobileeventjoinees</string>
+    <string name="facebook_login_url">http://115.124.125.53/app_dev.php/mobilefacebooklogin</string>
+    <string name="recomondation_accept_url">http://115.124.125.53/app_dev.php/mobileacceptrecomondation</string>
+    <string name="recomondation_decline_url">http://115.124.125.53/app_dev.php/mobiledeclinerecomondation</string>
+    <string name="profile_imageupload_url">http://115.124.125.53/app_dev.php/mobileprofileimgupload</string>
+    <string name="delete_user_url">http://115.124.125.53/app_dev.php/mobiledeleteuser</string>
+    <string name="deceased_user_url">http://115.124.125.53/app_dev.php/mobiledeceased</string>
+    <string name="hide_user_url">http://115.124.125.53/app_dev.php/mobilehideuser</string>
+    <string name="unhide_user_url">http://115.124.125.53/app_dev.php/mobileunhideuser</string>
+    <string name="make_alive_url">http://115.124.125.53/app_dev.php/mobilemakemealive</string>
+    <string name="immediate_family_url">http://115.124.125.53/app_dev.php/mobileimediaterelations</string>
+    <string name="field_privacy_url">http://115.124.125.53/app_dev.php/mobilesetfieldprivacy</string>
+
+</resources>

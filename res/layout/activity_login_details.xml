@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:weightSum="1.0"
+    android:background="#FFFFFF">
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="0dip"
+        android:layout_weight=".3"
+        android:src="@drawable/parivartree_logo_127" />
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight=".1"
+        android:layout_margin="10dp"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:text="LOGIN TO YOUR ACCOUNT"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/pt_grey" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="1.0">
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:textStyle="italic"
+            android:textColorHint="@color/pt_grey"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:hint="Email/Phone Number"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="1.0">
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:textStyle="italic"
+            android:textColorHint="@color/pt_grey"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="Password"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@color/pt_grey"
+        android:weightSum="1.0">
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:layout_weight=".6"
+            android:background="@drawable/rounded_corners_orange"
+            android:minHeight="35dip"
+            android:padding="0dp"
+            android:textSize="12sp"
+            android:textColor="@color/pt_grey"
+            android:text="LOGIN" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@color/pt_grey"
+        android:weightSum="1.0">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textColor="@color/pt_dark_grey"
+            android:text="Forgot username or password?" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@color/pt_grey"
+        android:weightSum="1.0">
+        <!--  
+        <Button
+            android:id="@+id/facebookLogin"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight=".85"
+            android:background="@drawable/rounded_corners_blue"
+            android:minHeight="35dip"
+            android:padding="0dp"
+            android:textSize="12sp"
+            android:textColor="@color/pt_grey"
+            android:text="Login with Facebook" />
+        -->
+        
+        <com.facebook.widget.LoginButton
+                android:id="@+id/facebookLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                facebook:confirm_logout="false"
+                facebook:fetch_user_info="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@color/pt_grey"
+        android:weightSum="1.0">
+        <!--  
+        <Button
+            android:id="@+id/googleLogin"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight=".85"
+            android:background="@drawable/rounded_corners_red"
+            android:minHeight="35dip"
+            android:padding="0dp"
+            android:textSize="12sp"
+            android:textColor="@color/pt_grey"
+            android:text="Login with Google+" />
+        -->
+        <com.google.android.gms.common.SignInButton
+    		android:id="@+id/googleLogin"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>
