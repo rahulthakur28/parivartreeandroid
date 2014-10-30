@@ -41,6 +41,9 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.parivartree.adapters.NavDrawerListAdapter;
@@ -74,6 +77,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
+	/*
+	private Switch switcher;
+	private RadioGroup radioGroup;
+	private RadioButton radioButton;
+	*/
 
 	// Action Bar items
 	ImageView imageView1, imageView2, imageView3, imageView4;
