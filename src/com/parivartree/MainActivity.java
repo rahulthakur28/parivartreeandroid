@@ -77,16 +77,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
-	/*
-	private Switch switcher;
-	private RadioGroup radioGroup;
-	private RadioButton radioButton;
-	*/
 
 	// Action Bar items
 	ImageView imageView1, imageView2, imageView3, imageView4;
 
-	private Fragment fragment, currentFragment;
+	private Fragment fragment,currentFragment;
 
 	// nav drawer title
 	private CharSequence mDrawerTitle;

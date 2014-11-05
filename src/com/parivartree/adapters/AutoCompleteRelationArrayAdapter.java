@@ -103,6 +103,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					userName=objectItem.objectName;
 					if (objectItem.nodeid.equals(userId)) {
 						Log.d(TAG, "You  invited :" + objectItem.objectName);
 						CreateRelationTask cRT1 = new CreateRelationTask();
@@ -110,7 +111,8 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 						Log.d("CreateRelation1", "Values : " + objectItem.objectId + ", " + userId + ", "
 								+ objectItem.relationid + ", " + objectItem.objectName);
 						TextView userName = (TextView) v.findViewById(R.id.textViewItem);
-						AutoCompleteRelationArrayAdapter.this.userName = userName.getText().toString() ;
+						//AutoCompleteRelationArrayAdapter.this.userName = userName.getText().toString() ;
+						
 						cRT1.execute("exist", objectItem.objectId, userId, objectItem.relationid, sessionname, userId);
 						
 					} else {
@@ -120,7 +122,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 								+ objectItem.relationid + ", " + objectItem.objectName + "," + userId + ","
 								+ sessionname);
 						TextView userName = (TextView) v.findViewById(R.id.textViewItem);
-						AutoCompleteRelationArrayAdapter.this.userName = userName.getText().toString() ;
+						//AutoCompleteRelationArrayAdapter.this.userName = userName.getText().toString() ;
 						cRT3.execute("others", objectItem.objectId, objectItem.nodeid, objectItem.relationid,
 								sessionname, objectItem.objectName, userId);
 					}
@@ -192,7 +194,8 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 					sharedPreferencesEditor.commit();
 					
 					if(request_type == 1) {
-						String nodeName = AutoCompleteRelationArrayAdapter.this.userName;
+						String nodeName = userName;
+								//AutoCompleteRelationArrayAdapter.this.userName;
 						Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
 					} else if (request_type == 2) {
 						
