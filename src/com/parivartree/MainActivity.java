@@ -31,6 +31,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -40,6 +41,9 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.parivartree.adapters.NavDrawerListAdapter;
@@ -69,6 +73,7 @@ import com.parivartree.fragments.ViewStudioFragment;
 import com.parivartree.fragments.ViewVideosFragment;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NavDrawerItem;
+import com.splunk.mint.Mint;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
@@ -100,10 +105,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	final int IMAGE_PICKER_SELECT = 100;
 	public File cameraImagePath = null;
 	FragmentManager fragmentManager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		Mint.initAndStartSession(this, "2a8a05f6");
 
 		ActionBar actionBar = this.getActionBar();
 
@@ -313,9 +321,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// fragment = new SettingsFragment();
 			// break;
 		case 8:
-
 			// TODO Auto-generated method stub
-
 			Log.d("MainActivity", "signout tgos!!");
 			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 			// Setting Dialog Title
@@ -336,7 +342,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					startActivity(signout);
 				}
 			});
-
+			
 			// Setting Negative "NO" Button
 			alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
@@ -344,30 +350,32 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					dialog.cancel();
 				}
 			});
-
+			
 			// Showing Alert Message
 			alertDialog.show();
 			break;
-
+			
 		default:
 			break;
 
 		}
-
+		
 		// any section accessed through the sliding bar will show main user's
 		// data
 		sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
 		sharedPreferencesEditor.commit();
-
+		
 		if (fragment != null) {
 			fragmentManager = getSupportFragmentManager();
+			//fragmentManager.beginTransaction().addToBackStack(null).commit();
+			   
 			   fragmentManager
 			   .beginTransaction()
-			   // Add this transaction to the back stack
-			            .addToBackStack(null)
 			   .replace(R.id.frame_container, fragment)
+			   // Add this transaction to the back stack
+			   .addToBackStack(null)
 			   .commit();
-
+			   currentFragment = fragment;
 			// update selected item and title, then close the drawer
 			mDrawerList.setItemChecked(position, true);
 			mDrawerList.setSelection(position);
@@ -378,7 +386,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			Log.e("MainActivity", "Error in creating fragment");
 		}
 	}
-
+	
 	@Override
 	public void setTitle(CharSequence title) {
 		mTitle = title;
@@ -405,87 +413,87 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 
 	public void changeFragment(String fragmentName) {
-		  // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-		  // select fragment
-		  if (fragmentName.equals("EditProfileFragment")) {
-		   fragment = new EditProfileFragment();
-		  } else if (fragmentName.equals("ProfileFragment")) {
-		   fragment = new ProfileFragment();
-		  } else if (fragmentName.equals("NotificationsFragment")) {
-		   fragment = new NotificationFragment();
-		  } else if (fragmentName.equals("MessagesFragment")) {
-		   fragment = new MessageFragment();
-		  } else if (fragmentName.equals("InvitesFragment")) {
-		   fragment = new InviteFragment();
-		  } else if (fragmentName.equals("DiscussionFragment")) {
-		   fragment = new DiscussionFragment();
-		  } else if (fragmentName.equals("CreateEventFragment")) {
-		   fragment = new CreateEventFragment();
-		  } else if (fragmentName.equals("DeleteEventFragment")) {
-		   fragment = new DeleteEventFragment();
-		  } else if (fragmentName.equals("AllEventsFragment")) {
-		   fragment = new AllEventsFragment();
-		  } else if (fragmentName.equals("SelectRelationFragment")) {
-		   fragment = new SelectRelationFragment();
-		  } else if (fragmentName.equals("RelationFragment")) {
-		   fragment = new RelationFragment();
-		  } else if (fragmentName.equals("HomeFragment")) {
-		   fragment = new HomeFragment();
+		// select fragment
+		if (fragmentName.equals("EditProfileFragment")) {
+			fragment = new EditProfileFragment();
+		} else if (fragmentName.equals("ProfileFragment")) {
+			fragment = new ProfileFragment();
+		} else if (fragmentName.equals("NotificationsFragment")) {
+			fragment = new NotificationFragment();
+		} else if (fragmentName.equals("MessagesFragment")) {
+			fragment = new MessageFragment();
+		} else if (fragmentName.equals("InvitesFragment")) {
+			fragment = new InviteFragment();
+		} else if (fragmentName.equals("DiscussionFragment")) {
+			fragment = new DiscussionFragment();
+		} else if (fragmentName.equals("CreateEventFragment")) {
+			fragment = new CreateEventFragment();
+		} else if (fragmentName.equals("DeleteEventFragment")) {
+			fragment = new DeleteEventFragment();
+		} else if (fragmentName.equals("AllEventsFragment")) {
+			fragment = new AllEventsFragment();
+		} else if (fragmentName.equals("SelectRelationFragment")) {
+			fragment = new SelectRelationFragment();
+		} else if (fragmentName.equals("RelationFragment")) {
+			fragment = new RelationFragment();
+		} else if (fragmentName.equals("HomeFragment")) {
+			fragment = new HomeFragment();
 		  } else if (fragmentName.equals("ViewPhotosFragment")) {
 			   fragment = new ViewPhotosFragment();
 			  }
 
-		  // change to the new fragment
-		  if (fragment != null) {
-		   fragmentManager = getSupportFragmentManager();
-		   
-		   //fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.frame_container, fragment).commit();
-		    if((fragment instanceof NotificationFragment) || (fragment instanceof DiscussionFragment) || (fragment instanceof InviteFragment) || (fragment instanceof MessageFragment)) {
-		     fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null).commit();
-		    }
-		    else {
-		     fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-		    }
-		    currentFragment = fragment;
-		   mDrawerLayout.closeDrawer(mDrawerList);
-		  } else {
-		   // error in creating fragment
-		   Log.e("MainContainerActivity", "Error in creating fragment");
-		  }
-		 }
+		// change to the new fragment
+		if (fragment != null) {
+			fragmentManager = getSupportFragmentManager();
+			
+			//fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.frame_container, fragment).commit();
+				if((fragment instanceof NotificationFragment) || (fragment instanceof DiscussionFragment) || (fragment instanceof InviteFragment) || (fragment instanceof MessageFragment)) {
+					fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null).commit();
+				}
+				else {
+					fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+				}
+				currentFragment = fragment;
+			mDrawerLayout.closeDrawer(mDrawerList);
+		} else {
+			// error in creating fragment
+			Log.e("MainContainerActivity", "Error in creating fragment");
+		}
+	}
 
-		 public void changeFragment(String fragmentName, Bundle bundle) {
-		  // select fragment
-		  if (fragmentName.equals("DeleteEventFragment")) {
-		   fragment = new DeleteEventFragment();
-		   fragment.setArguments(bundle);
-		  } else if (fragmentName.equals("EditEventFragment")) {
-		   fragment = new EditEventFragment();
-		   fragment.setArguments(bundle);
-		  } else if (fragmentName.equals("AllEventsFragment")) {
-		   fragment = new AllEventsFragment();
-		   fragment.setArguments(bundle);
-		  } else if (fragmentName.equals("ProfileFragment")) {
-		   fragment = new ProfileFragment();
-		   fragment.setArguments(bundle);
+	public void changeFragment(String fragmentName, Bundle bundle) {
+		// select fragment
+		if (fragmentName.equals("DeleteEventFragment")) {
+			fragment = new DeleteEventFragment();
+			fragment.setArguments(bundle);
+		} else if (fragmentName.equals("EditEventFragment")) {
+			fragment = new EditEventFragment();
+			fragment.setArguments(bundle);
+		} else if (fragmentName.equals("AllEventsFragment")) {
+			fragment = new AllEventsFragment();
+			fragment.setArguments(bundle);
+		} else if (fragmentName.equals("ProfileFragment")) {
+			fragment = new ProfileFragment();
+			fragment.setArguments(bundle);
 		  }else if (fragmentName.equals("FullScreenFragment")) {
 			   fragment = new FullScreenFragment();
 			   fragment.setArguments(bundle);
 			  }
-		  
-		  // change to the new fragment
-		  if (fragment != null) {
-		   fragmentManager = getSupportFragmentManager();
-		   fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-		   //fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.frame_container, fragment).commit();
-		   currentFragment = fragment;
-		   mDrawerLayout.closeDrawer(mDrawerList);
-		  } else {
-		   // error in creating fragment
-		   Log.e("MainContainerActivity", "Error in creating fragment");
-		  }
-		 }
+		
+		// change to the new fragment
+		if (fragment != null) {
+			fragmentManager = getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+			//fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.frame_container, fragment).commit();
+			currentFragment = fragment;
+			mDrawerLayout.closeDrawer(mDrawerList);
+		} else {
+			// error in creating fragment
+			Log.e("MainContainerActivity", "Error in creating fragment");
+		}
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -621,20 +629,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			}
 		}
 	}
-
+	
 	private String encodeFileToBase64Binary(String fileName) throws IOException {
 
 		File file = new File(fileName);
 		byte[] bytes = loadFile(file);
 		byte[] encoded = Base64.encodeBase64(bytes);
 		String encodedString = new String(encoded);
-
+		
 		return encodedString;
 	}
-
+	
 	private static byte[] loadFile(File file) throws IOException {
 		InputStream is = new FileInputStream(file);
-
+		
 		long length = file.length();
 		if (length > Integer.MAX_VALUE) {
 			// File is too large
@@ -650,13 +658,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (offset < bytes.length) {
 			is.close();
 			throw new IOException("Could not completely read file " + file.getName());
-
 		}
 
 		is.close();
 		return bytes;
 	}
-
+	
 	public void createRelation(String realtionId, String nodeId) {
 		fragment = new CreateRelationFragment(realtionId, nodeId);
 		// change to the new fragment
@@ -669,41 +676,41 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			Log.e("MainContainerActivity", "Error in creating fragment");
 		}
 	}
-
+	
 	@Override
-	 public void onBackPressed() {
-	  
-	    boolean change = false;
-	    int exitApplication = 1;
-	    //Log.e(TAG, "Fragment class - " + fragment.getClass().getPackage().getName());
-	    if (currentFragment instanceof HomeFragment) {
-	     Log.d(TAG, "instance of Home Fragment");
-	     if (((HomeFragment) currentFragment).optionsLayout.getVisibility() == View.VISIBLE) {
-	      ((HomeFragment) currentFragment).optionsLayout.setVisibility(View.INVISIBLE);
-	      exitApplication = 0;
-	     }
-	    } else if (currentFragment instanceof SelectRelationFragment) {
-	     fragment = new HomeFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof CreateEventFragment) {
-	     fragment = new CommunityFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof DeleteEventFragment) {
-	     fragment = new CommunityFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof EditEventFragment) {
-	     fragment = new CommunityFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof AllEventsFragment) {
-	     fragment = new CommunityFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof CreateRelationFragment) {
-	     Log.d(TAG, "instance of CreateRelation Fragment");
-	     fragment = new RelationFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof EditProfileFragment) {
-	     fragment = new ProfileFragment();
-	     exitApplication = 0;
+	public void onBackPressed() {
+		
+		  boolean change = false;
+		  int exitApplication = 1;
+		  //Log.e(TAG, "Fragment class - " + fragment.getClass().getPackage().getName());
+		  if (currentFragment instanceof HomeFragment) {
+		   Log.d(TAG, "instance of Home Fragment");
+		   if (((HomeFragment) currentFragment).optionsLayout.getVisibility() == View.VISIBLE) {
+		    ((HomeFragment) currentFragment).optionsLayout.setVisibility(View.INVISIBLE);
+		    exitApplication = 0;
+		   }
+		  } else if (currentFragment instanceof SelectRelationFragment) {
+		   fragment = new HomeFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof CreateEventFragment) {
+		   fragment = new CommunityFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof DeleteEventFragment) {
+		   fragment = new CommunityFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof EditEventFragment) {
+		   fragment = new CommunityFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof AllEventsFragment) {
+		   fragment = new CommunityFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof CreateRelationFragment) {
+		   Log.d(TAG, "instance of CreateRelation Fragment");
+		   fragment = new RelationFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof EditProfileFragment) {
+		   fragment = new ProfileFragment();
+		   exitApplication = 0;
 	    }
 	    else if (currentFragment instanceof FullScreenFragment) {
 		     fragment = new ViewPhotosFragment();
@@ -718,51 +725,51 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		     exitApplication = 0;
 	    }
 	    /*else if (currentFragment instanceof DiscussionFragment) {
-	     fragment = new HomeFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof InviteFragment) {
-	     fragment = new HomeFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof MessageFragment) {
-	     fragment = new HomeFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof NotificationFragment) {
-	     fragment = new HomeFragment();
-	     exitApplication = 0;
-	    } */else if (currentFragment instanceof RelationFragment) {
-	     Log.d(TAG, "instance of Relation Fragment");
-	     sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
-	     sharedPreferencesEditor.commit();
-	     fragment = new HomeFragment();
-	     exitApplication = 0;
-	    } else if (currentFragment instanceof ProfileFragment
-	      && !sharedPreferences.getString("node_id", "0").equals(sharedPreferences.getString("user_id", "0"))) {
-	     sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
-	     sharedPreferencesEditor.commit();
-	     fragment = new HomeFragment();
-	     exitApplication = 0;
-	    }
-	    if(exitApplication == 1 && this.fragmentManager.getBackStackEntryCount() > 0) {
-	     fragmentManager.popBackStack();
-	     //BackStackEntry tempBackStack = (BackStackEntry) fragmentManager.getBackStackEntryAt((fragmentManager.getBackStackEntryCount()-1));
-	     // currentFragment
-	     //tempBackStack.getName() + ((currentFragment instanceof HomeFragment)? true:false)
-	     Log.d(TAG, "backstack popped");
-	     //Log.d(TAG, "instance of HomeFragment - ");
-	    } else if (exitApplication == 1) {
-	     Log.e(TAG, "Application exited");
-	     LoginMainActivity.activity.finish();
-	     finish();
-	    } else if (exitApplication == 0 && fragment != null) {
-	     Log.e(TAG, "Transaction by replacing in the same view");
-	     //FragmentManager fragmentManager = getSupportFragmentManager();
-	     fragmentManager.beginTransaction() .addToBackStack(null).replace(R.id.frame_container, fragment).commit();
-	     currentFragment = fragment;
-	    } else {
-	     // error in creating fragment
-	     Log.e("MainActivity", "Error in creating fragment");
-	    }
-	 }
+		   fragment = new HomeFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof InviteFragment) {
+		   fragment = new HomeFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof MessageFragment) {
+		   fragment = new HomeFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof NotificationFragment) {
+		   fragment = new HomeFragment();
+		   exitApplication = 0;
+		  } */else if (currentFragment instanceof RelationFragment) {
+		   Log.d(TAG, "instance of Relation Fragment");
+		   sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
+		   sharedPreferencesEditor.commit();
+		   fragment = new HomeFragment();
+		   exitApplication = 0;
+		  } else if (currentFragment instanceof ProfileFragment
+		    && !sharedPreferences.getString("node_id", "0").equals(sharedPreferences.getString("user_id", "0"))) {
+		   sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
+		   sharedPreferencesEditor.commit();
+		   fragment = new HomeFragment();
+		   exitApplication = 0;
+		  }
+		  if(exitApplication == 1 && this.fragmentManager.getBackStackEntryCount() > 0) {
+		   fragmentManager.popBackStack();
+		   //BackStackEntry tempBackStack = (BackStackEntry) fragmentManager.getBackStackEntryAt((fragmentManager.getBackStackEntryCount()-1));
+		   // currentFragment
+		   //tempBackStack.getName() + ((currentFragment instanceof HomeFragment)? true:false)
+		   Log.d(TAG, "backstack popped");
+		   //Log.d(TAG, "instance of HomeFragment - ");
+		  } else if (exitApplication == 1) {
+		   Log.e(TAG, "Application exited");
+		   LoginMainActivity.activity.finish();
+		   finish();
+		  } else if (exitApplication == 0 && fragment != null) {
+		   Log.e(TAG, "Transaction by replacing in the same view");
+		   //FragmentManager fragmentManager = getSupportFragmentManager();
+		   fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+		   currentFragment = fragment;
+		  } else {
+		   // error in creating fragment
+		   Log.e("MainActivity", "Error in creating fragment");
+		  }
+	}
 
 	@Override
 	protected void onDestroy() {
