@@ -84,12 +84,12 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 	View viewEditProfile, viewEditfamily, viewEditAlbum;
 	LinearLayout linearLayoutOverlay, linearDeceased, linearDeleteUser,linearMobile1, linearDob1, linearGender1,
 			linearRelation1, linearWedDate1, linearLocation1, linearHomeTown1, linearProfession1, linearReligion1,
-			linearPincode1, linearCommunity1, linearGothra1;
+			linearPincode1, linearCommunity1, linearGothra1,immediateFamilyMembers;
 	ArrayList<String> listFamilyId;
 	static final int IMAGE_PICKER_SELECT = 100;
 	HorizontalListView horizontialListView;
 	ImmediateFamilyAdapter ifa;
-
+	
 	ArrayList<HashMap<String, String>> immediateFamily;
 	Bitmap userImage = null;
 	private String[] PRIVACY = { "Private", "Family", "Public" };
@@ -128,6 +128,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		linearPincode1 = (LinearLayout) rootView.findViewById(R.id.linearpincode1);
 		linearCommunity1 = (LinearLayout) rootView.findViewById(R.id.linearcommunity1);
 		linearGothra1 = (LinearLayout) rootView.findViewById(R.id.lineargothra1);
+		immediateFamilyMembers = (LinearLayout) rootView.findViewById(R.id.immediatefamilymembers);
 
 		imageViewProfilePic = (RectangularImageView) rootView.findViewById(R.id.imageView1);
 		imageViewCamera = (ImageView) rootView.findViewById(R.id.camera);
@@ -361,18 +362,61 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 
 					// String genderprivacy =
 					// userProfilePrivacy.getString("Gender");
-					dobprivacy = userProfilePrivacy.getString("dob");
-					localityprivacy = userProfilePrivacy.getString("locality");
-					pincodeprivacy = userProfilePrivacy.getString("pin");
-					hometownprivacy = userProfilePrivacy.getString("hometown");
-					mobileprivacy = userProfilePrivacy.getString("mobile");
-					maritalStatusprivacy = userProfilePrivacy.getString("marital_status");
-					weddingDateprivacy = userProfilePrivacy.getString("wedding_date");
-					religionprivacy = userProfilePrivacy.getString("religion");
-					communityprivacy = userProfilePrivacy.getString("community");
-					gothraprivacy = userProfilePrivacy.getString("gothra");
-					professionprivacy = userProfilePrivacy.getString("profession");
-
+					if(userProfilePrivacy.has("dob")){
+						dobprivacy = userProfilePrivacy.getString("dob");
+					}else{
+						dobprivacy = "1";
+					}
+					if(userProfilePrivacy.has("locality")){
+						localityprivacy = userProfilePrivacy.getString("locality");
+					}else{
+						localityprivacy = "1";
+					}
+					if(userProfilePrivacy.has("pin")){
+						pincodeprivacy = userProfilePrivacy.getString("pin");
+					}else{
+						pincodeprivacy = "1";
+					}
+					if(userProfilePrivacy.has("hometown")){
+						hometownprivacy = userProfilePrivacy.getString("hometown");
+					}else{
+						hometownprivacy = "1";
+					}
+					if(userProfilePrivacy.has("mobile")){
+						mobileprivacy = userProfilePrivacy.getString("mobile");
+					}else{
+						mobileprivacy = "1";
+					}
+					if(userProfilePrivacy.has("marital_status")){
+						maritalStatusprivacy = userProfilePrivacy.getString("marital_status");
+					}else{
+						maritalStatusprivacy = "1";
+					}
+					if(userProfilePrivacy.has("wedding_date")){
+						weddingDateprivacy = userProfilePrivacy.getString("wedding_date");
+					}else{
+						weddingDateprivacy = "1";
+					}
+					if(userProfilePrivacy.has("religion")){
+						religionprivacy = userProfilePrivacy.getString("religion");
+					}else{
+						religionprivacy = "1";
+					}
+					if(userProfilePrivacy.has("community")){
+						communityprivacy = userProfilePrivacy.getString("community");
+					}else{
+						communityprivacy = "1";
+					}
+					if(userProfilePrivacy.has("gothra")){
+						gothraprivacy = userProfilePrivacy.getString("gothra");
+					}else{
+						gothraprivacy = "1";
+					}
+					if(userProfilePrivacy.has("profession")){
+						professionprivacy = userProfilePrivacy.getString("profession");
+					}else{
+						professionprivacy = "1";
+					}				
 					String dob = userProfileData.getString("Dob");
 					String email = userProfileData.getString("Email");
 					String firstName = userProfileData.getString("Firstname");
@@ -762,7 +806,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					Log.d("profile", "delete nodeid " + sharedPreferences.getString("node_id", "0") + " userid "
 							+ userId);
 					String nodeName = textViewName1.getText().toString();
-				     Crouton.makeText(activity, "You have successfully hidden " + nodeName + " from your family tree", Style.INFO).show();
+				     Crouton.makeText(activity, "You have successfully delete " + nodeName + " from your family tree", Style.INFO).show();
 					((MainActivity) activity).changeFragment("HomeFragment");
 
 				}

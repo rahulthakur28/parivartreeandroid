@@ -85,12 +85,23 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:textStyle="italic"
-	            android:hint="Email ID"
+	            android:hint="Email ID/Mobile Number"
 	            android:padding="8dp"
 	            android:textColorHint="@color/pt_ashgrey"
 	            android:background="@drawable/parivar_mobile_field_1_2"
 	            android:ems="10"
 	            android:inputType="textEmailAddress" />
+	          <AutoCompleteTextView
+	            android:id="@+id/autocompleteregisterLocation"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textStyle="italic"
+	            android:textColorHint="@color/pt_ashgrey"
+	            android:ems="10"
+	            android:background="@drawable/parivar_mobile_field_1_2"
+	            android:inputType="textPersonName"
+	            android:hint="Location"
+	            android:padding="8dp" />
 	        <!--  
 	        <EditText
 	            android:id="@+id/editText3"

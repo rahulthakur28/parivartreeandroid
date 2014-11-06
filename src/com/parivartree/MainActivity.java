@@ -53,6 +53,7 @@ import com.parivartree.fragments.DiscussionFragment;
 import com.parivartree.fragments.EditEventFragment;
 import com.parivartree.fragments.EditProfileFragment;
 import com.parivartree.fragments.FindPeopleFragment;
+import com.parivartree.fragments.FullScreenFragment;
 import com.parivartree.fragments.HomeFragment;
 import com.parivartree.fragments.InviteFragment;
 import com.parivartree.fragments.MessageFragment;
@@ -63,6 +64,9 @@ import com.parivartree.fragments.ProfileFragment;
 import com.parivartree.fragments.RelationFragment;
 import com.parivartree.fragments.SelectRelationFragment;
 import com.parivartree.fragments.SettingsFragment;
+import com.parivartree.fragments.ViewPhotosFragment;
+import com.parivartree.fragments.ViewStudioFragment;
+import com.parivartree.fragments.ViewVideosFragment;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NavDrawerItem;
 
@@ -285,7 +289,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			sharedPreferencesEditor = sharedPreferences.edit();
 			sharedPreferencesEditor.putString("node_id",sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
-			fragment = new PhotosFragment();
+			fragment = new ViewPhotosFragment();
 			break;
 		case 4:
 			sharedPreferencesEditor = sharedPreferences.edit();
@@ -428,7 +432,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		   fragment = new RelationFragment();
 		  } else if (fragmentName.equals("HomeFragment")) {
 		   fragment = new HomeFragment();
-		  }
+		  } else if (fragmentName.equals("ViewPhotosFragment")) {
+			   fragment = new ViewPhotosFragment();
+			  }
 
 		  // change to the new fragment
 		  if (fragment != null) {
@@ -463,7 +469,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		  } else if (fragmentName.equals("ProfileFragment")) {
 		   fragment = new ProfileFragment();
 		   fragment.setArguments(bundle);
-		  }
+		  }else if (fragmentName.equals("FullScreenFragment")) {
+			   fragment = new FullScreenFragment();
+			   fragment.setArguments(bundle);
+			  }
 		  
 		  // change to the new fragment
 		  if (fragment != null) {
@@ -695,7 +704,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	    } else if (currentFragment instanceof EditProfileFragment) {
 	     fragment = new ProfileFragment();
 	     exitApplication = 0;
-	    } /*else if (currentFragment instanceof DiscussionFragment) {
+	    }
+	    else if (currentFragment instanceof FullScreenFragment) {
+		     fragment = new ViewPhotosFragment();
+		     exitApplication = 0;
+		    }
+	    else if (currentFragment instanceof ViewPhotosFragment) {
+		     fragment = new HomeFragment();
+		     exitApplication = 0;
+		    }
+	    else if (currentFragment instanceof ViewVideosFragment) {
+		     fragment = new ViewPhotosFragment();
+		     exitApplication = 0;
+	    }
+	    /*else if (currentFragment instanceof DiscussionFragment) {
 	     fragment = new HomeFragment();
 	     exitApplication = 0;
 	    } else if (currentFragment instanceof InviteFragment) {

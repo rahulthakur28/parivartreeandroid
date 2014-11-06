@@ -107,8 +107,10 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 		Holder holder;
 
 		try {
-
-			if (convertView == null) {
+if(familyMembers.size() == 0){
+	
+}else {
+	if (convertView == null) {
 				// Inflate the view since it does not exist
 				convertView = inflater.inflate(R.layout.item_immediate_family, parent, false);
 
@@ -178,6 +180,7 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 			holder.lastName.setText("(" + relationName + ")");
 
 			Log.d("ImmediateFamilyAdapter", "name added");
+		}
 		} catch (Exception e) {
 			Log.d("ImmediateFamilyAdapter", e.getMessage());
 		}

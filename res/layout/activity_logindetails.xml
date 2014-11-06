@@ -65,7 +65,7 @@
                 android:textColorHint="@color/pt_ashgrey"
                 android:ems="10"
                 android:inputType="textEmailAddress"
-                android:hint="Email Address"
+                android:hint="Email ID/Mobile Number"
                 android:background="@drawable/parivar_mobile_field_1_2"
                 android:paddingRight="2dp"
                 android:paddingEnd="2dp"

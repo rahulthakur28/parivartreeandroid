@@ -245,6 +245,5 @@ public class SettingsFragment extends Fragment implements OnClickListener, Valid
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		Crouton.cancelAllCroutons();
 	}
 }

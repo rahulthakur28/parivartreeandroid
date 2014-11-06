@@ -1,5 +1,8 @@
 package com.parivartree;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ActionBar;
@@ -11,6 +14,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,6 +34,8 @@ import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.Required;
+import com.parivartree.adapters.LocationHintAdapter;
+import com.parivartree.fragments.CreateRelationFragment.SearchPlacesTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 
@@ -43,8 +51,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	EditText editTextLastName;
 	@Required(order = 3)
 	EditText editTextEmail;
-
-	EditText editTextPhone;
+	 @Required(order = 4)
+	 AutoCompleteTextView editLocation;
+	 EditText editTextPhone;
 
 	// @Required(order = 4)
 	EditText editTextPassword;
@@ -56,7 +65,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
-
+	private LocationHintAdapter locationHintAdpter;
+	private ArrayList<String> locationHints;
+	SearchPlacesTask searchPlacesTask;
 	// Saripaar validator
 	Validator validator;
 	Activity activity;
@@ -74,9 +85,10 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		editTextFirstName = (EditText) findViewById(R.id.editText1);
 		editTextLastName = (EditText) findViewById(R.id.editText2);
 		editTextEmail = (EditText) findViewById(R.id.editText6);
-		editTextPhone = (EditText) findViewById(R.id.editText3);
-		editTextPassword = (EditText) findViewById(R.id.editText4);
-		editTextRePassword = (EditText) findViewById(R.id.editText5);
+		editLocation = (AutoCompleteTextView)findViewById(R.id.autocompleteregisterLocation);
+//		editTextPhone = (EditText) findViewById(R.id.editText3);
+//		editTextPassword = (EditText) findViewById(R.id.editText4);
+//		editTextRePassword = (EditText) findViewById(R.id.editText5);
 
 		switchGender = (Switch) findViewById(R.id.switch1);
 
@@ -97,6 +109,42 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 					Gender = "1";
 				}
 
+			}
+		});
+		// provide hinting for the location fields from Google Places API
+		locationHints = new ArrayList<String>();
+		locationHintAdpter = new LocationHintAdapter(activity, R.layout.item_location, locationHints);
+		editLocation.setAdapter(locationHintAdpter);
+		editLocation.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int count, int after) {
+				// TODO Auto-generated method stub
+				Log.d("Search User ", "s=" + s + " ,start=" + start + " ,count=" + count + " ,after=" + after);
+				boolean bool = new ConDetect(activity).isOnline();
+				if (bool) {
+					if (searchPlacesTask != null) {
+						searchPlacesTask.cancel(true);
+					}
+					Log.d("Search user", "AsyncTask calling");
+					searchPlacesTask = new SearchPlacesTask();
+					searchPlacesTask.execute(s.toString().trim(),
+							getResources().getString(R.string.places_key));
+				} else {
+					Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+				}
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}
@@ -265,8 +313,57 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		if (failedView instanceof EditText) {
 			failedView.requestFocus();
 			((EditText) failedView).setError(message);
-		} else {
+		} else if(failedView instanceof AutoCompleteTextView){
+			failedView.requestFocus();
+			((AutoCompleteTextView) failedView).setError(message);
+		}else {
 			Log.d("Signup Response ", message);
 		}
 	}
+	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
+		//private ProgressDialog pDialog;
+
+		@Override
+		protected void onPreExecute() {
+
+			// TODO Auto-generated method stub
+		}
+		@Override
+		protected String doInBackground(String... params) {
+		Log.d(TAG, "doInBackground uid  " + params[0]);
+		return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
+		}
+		protected void onPostExecute(String response) {
+
+		super.onPostExecute(response);
+		//pDialog.dismiss();
+		Log.i("Ceate Event Response ", response);
+		try {
+		JSONObject createEventObject = new JSONObject(response);
+		JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
+		/*
+		String responseResult = createEventObject.getString("Status");
+		Log.d(TAG, "onpostexecute" + responseResult);
+		if (responseResult.equals("Success")) {
+		}
+		*/
+		locationHints.clear();
+		for(int i=0; i<predictionsArray.length() && i<20; i++) {
+		JSONObject tempItem = predictionsArray.getJSONObject(i);
+		locationHints.add(tempItem.getString("description"));
+		}
+		locationHintAdpter = new LocationHintAdapter(activity, R.layout.item_location, locationHints);
+		editLocation.setAdapter(locationHintAdpter);
+		locationHintAdpter.notifyDataSetChanged();
+		} catch (Exception e) {
+		for (StackTraceElement tempStack : e.getStackTrace()) {
+		Log.d("Exception thrown: ",
+		"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+		+ tempStack.getMethodName());
+		}
+		Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+		Log.d(TAG, "Invalid Server content!!");
+		}
+		}
+		}
 }
