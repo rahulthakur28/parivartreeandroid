@@ -30,6 +30,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -47,8 +48,10 @@ import com.parivartree.LoginMainActivity;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
 import com.parivartree.adapters.AutoCompleteRelationArrayAdapter;
+import com.parivartree.adapters.LocationHintAdapter;
 import com.parivartree.adapters.AutocompleteCustomArrayAdapter.UnhideUserTask;
 import com.parivartree.customviews.CustomAutoCompleteTextView;
+import com.parivartree.fragments.CreateEventFragment.SearchPlacesTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.MyObject;
@@ -62,7 +65,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	ArrayAdapter<MyObject> myAdapter;
 	ArrayList<MyObject> ObjectItemData = new ArrayList<MyObject>();
 	// MyObject[] ObjectItemData;
-	String relationId, nodeId, userId, othersUserId,sessionname,relationName;
+	String relationId, nodeId, userId, othersUserId,sessionname,relationName,toWhomName,userName;
 	Activity activity;
 	Context context;
 	Button create;
@@ -76,13 +79,17 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	EditText lastNameEditText;
 	 @Required(order = 3)
 	EditText emailEditText;
+	 @Required(order = 4)
+	 AutoCompleteTextView editLocation;
 	CheckBox checkEmail;
 	SearchUserTask searchUserTask = null;
 	List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
-
+	private LocationHintAdapter locationHintAdpter;
+	private ArrayList<String> locationHints;
+	SearchPlacesTask searchPlacesTask;
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
-
+	int request_type = 1;
 	// Keys used in Hashmap
 	String[] from = { "txtname" };
 
@@ -113,7 +120,8 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		sharedPreferencesEditor = sharedPreferences.edit();
 		userId = sharedPreferences.getString("user_id", "0");
 		gender = sharedPreferences.getString("selectgender", "1");
-		sessionname = (sharedPreferences.getString("node_first_name", "NA")+" "+sharedPreferences.getString("node_last_name", "NA"));
+		toWhomName = (sharedPreferences.getString("node_first_name", "NA")+" "+sharedPreferences.getString("node_last_name", "NA"));			
+		sessionname = sharedPreferences.getString("sessionname", "Not Available");
 		validator = new Validator(this);
 		validator.setValidationListener(this);
 
@@ -162,9 +170,10 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		emailEditText = (EditText) rootView.findViewById(R.id.email);
 		emailEditText.clearFocus();
 		checkEmail = (CheckBox) rootView.findViewById(R.id.checkboxemail);
+		editLocation = (AutoCompleteTextView) rootView.findViewById(R.id.autocompleterelationlocation);
 		create = (Button) rootView.findViewById(R.id.create);
 		
-		textViewTitle.setText("Adding "+relationName+" of "+sessionname);   
+		textViewTitle.setText("Adding "+relationName+" of "+toWhomName);   
 		//firstNameEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 		lastNameEditText.setText(sharedPreferences.getString("node_last_name", "NA"));
 		//myAdapter = new AutoCompleteRelationArrayAdapter(getActivity(), R.layout.list_view_row, ObjectItemData);
@@ -218,7 +227,42 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 
 			}
 		});
-
+		// provide hinting for the location fields from Google Places API
+				locationHints = new ArrayList<String>();
+				locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
+				editLocation.setAdapter(locationHintAdpter);
+				editLocation.addTextChangedListener(new TextWatcher() {
+					
+					@Override
+					public void onTextChanged(CharSequence s, int start, int count, int after) {
+						// TODO Auto-generated method stub
+						Log.d("Search User ", "s=" + s + " ,start=" + start + " ,count=" + count + " ,after=" + after);
+						boolean bool = new ConDetect(getActivity()).isOnline();
+						if (bool) {
+							if (searchPlacesTask != null) {
+								searchPlacesTask.cancel(true);
+							}
+							Log.d("Search user", "AsyncTask calling");
+							searchPlacesTask = new SearchPlacesTask();
+							searchPlacesTask.execute(s.toString().trim(),
+									getResources().getString(R.string.places_key));
+						} else {
+							Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+						}
+					}
+					
+					@Override
+					public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void afterTextChanged(Editable arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 		create.setOnClickListener(this);
 		checkEmail.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -365,9 +409,12 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					String fullname= fname+" "+lname;
 					String otheruserid = details.getString("userid");
 					if(invite.equals("1") && negate.equals("0")){
-			
+						if (nodeId.equals(userId)) {
 					userDialog(fullname,otheruserid,"invite");
-					
+						}else{
+							userDialog(fullname,otheruserid,"recommend");
+						}
+						
 					}else if(invite.equals("0") && negate.equals("1")){
 						
 						userDialog(fullname,otheruserid,"unhide");
@@ -409,13 +456,23 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 
 		@Override
 		protected String doInBackground(String... params) {
-			// TODO Auto-generated method stub	
-				return HttpConnectionUtils.createExistRelationResponse(params[0], params[1], params[2],
-						params[3], params[4],getResources().getString(R.string.hostname)
-								+getResources().getString(R.string.url_invite_user));
-	
-		}
+			// TODO Auto-generated method stub				
+			String httpResponse = null;
+			if (params[0].equals("invite")) {
+				request_type = 1;
+				httpResponse = HttpConnectionUtils.createExistRelationResponse(params[1], params[2], params[3],
+						params[4], params[5], activity.getResources().getString(R.string.hostname)
+								+ activity.getResources().getString(R.string.url_invite_user));
+			}
+			if (params[0].equals("recommend")) {
+				request_type = 2;
+				httpResponse = HttpConnectionUtils.createOthersRelationResponse(params[1], params[2], params[3],
+						params[4], params[5], params[6], activity.getResources().getString(R.string.hostname)
+								+ activity.getResources().getString(R.string.url_invite_user));
+			}
 
+			return httpResponse;				
+		}
 		@Override
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
@@ -433,9 +490,16 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					Log.d(TAG, " success...........!!");
 					sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
 					sharedPreferencesEditor.commit();
-					String nodeName = firstNameEditText.getText().toString() + " " + lastNameEditText.getText().toString();
-				     Crouton.makeText(activity, "You have successfully invited " + nodeName , Style.INFO).show();
+					//String nodeName = firstNameEditText.getText().toString() + " " + lastNameEditText.getText().toString();
+				    // Crouton.makeText(activity, "You have successfully invited " + nodeName , Style.INFO).show();
 					//Toast.makeText(getActivity(), "Invite Successful",Toast.LENGTH_LONG).show();
+					String nodeName = userName;
+				     if(request_type == 1) {		
+									//AutoCompleteRelationArrayAdapter.this.userName;
+							Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
+						} else if (request_type == 2) {
+							Crouton.makeText(activity, "You have successfully recommended " + nodeName + " to "+toWhomName+"'s family tree.", Style.INFO).show();
+						}
 					((MainActivity) activity).changeFragment("HomeFragment");
 				} else if (responseResult == 2) {
 					Crouton.makeText(activity, "email id is invalid. Please try again... ", Style.INFO).show();
@@ -491,7 +555,10 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		if (failedView instanceof EditText) {
 			failedView.requestFocus();
 			((EditText) failedView).setError(message);
-		} else {
+		} else if(failedView instanceof AutoCompleteTextView){
+			failedView.requestFocus();
+			((AutoCompleteTextView) failedView).setError(message);
+		}else {
 			Log.d("Signup settings ", message);
 		}
 	}
@@ -588,14 +655,64 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 
 		}
 	}
+	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
+		//private ProgressDialog pDialog;
+
+		@Override
+		protected void onPreExecute() {
+
+			// TODO Auto-generated method stub
+		}
+		@Override
+		protected String doInBackground(String... params) {
+		Log.d(TAG, "doInBackground uid  " + params[0]);
+		return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
+		}
+		protected void onPostExecute(String response) {
+
+		super.onPostExecute(response);
+		//pDialog.dismiss();
+		Log.i("Ceate Event Response ", response);
+		try {
+		JSONObject createEventObject = new JSONObject(response);
+		JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
+		/*
+		String responseResult = createEventObject.getString("Status");
+		Log.d(TAG, "onpostexecute" + responseResult);
+		if (responseResult.equals("Success")) {
+		}
+		*/
+		locationHints.clear();
+		for(int i=0; i<predictionsArray.length() && i<20; i++) {
+		JSONObject tempItem = predictionsArray.getJSONObject(i);
+		locationHints.add(tempItem.getString("description"));
+		}
+		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
+		editLocation.setAdapter(locationHintAdpter);
+		locationHintAdpter.notifyDataSetChanged();
+		} catch (Exception e) {
+		for (StackTraceElement tempStack : e.getStackTrace()) {
+		Log.d("Exception thrown: ",
+		"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+		+ tempStack.getMethodName());
+		}
+		Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+		Log.d(TAG, "Invalid Server content!!");
+		}
+		}
+		}
 	
 	private void userDialog(final String name,final String otherid, final String type){
 		String msg;
 		String btnmsg;
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+		userName = name;
 		if(type.equals("invite")){
 			msg="The User "+name+" is already available in another Family Tree would you like to invite.";
 			btnmsg="Invite";
+		}else if(type.equals("recommend")){
+			msg="The User "+name+" is already available in another Family Tree would you like to recommend.";
+			btnmsg="recommend";
 		} else {
 			 msg="The User "+name+" is hidden by you";
 			 btnmsg="Unhide";
@@ -611,8 +728,11 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			public void onClick(DialogInterface dialog, int which) {
 				if(type.equals("invite")){
 					InviteRelationTask inviteRelationTask = new InviteRelationTask();
-					inviteRelationTask.execute(otherid,userId, relationId,sessionname,userId);
-			}else{
+					inviteRelationTask.execute("invite",otherid,userId, relationId,sessionname,userId);
+			}if(type.equals("recommend")){
+				InviteRelationTask inviteRelationTask = new InviteRelationTask();
+				inviteRelationTask.execute("recommend",otherid,nodeId, relationId,sessionname,name,userId);
+		}else{
 				UnhideUserTask unhideTask = new UnhideUserTask();
 				unhideTask.execute(otherid, userId);
 			}

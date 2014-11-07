@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 
 public class EditEventFragment extends Fragment implements OnClickListener, ValidationListener {
+
+	boolean set = false;
 	private String TAG = "EditEventFragment";
 	@Required(order = 1)
 	private EditText editEventName;
@@ -54,7 +57,7 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 	private ArrayList<String> locationHints;
 	SearchPlacesTask searchPlacesTask;
 	private Button btnEditEvent;
-	//private DatePicker datePicker;
+	// private DatePicker datePicker;
 	private Spinner spinnerEvntName, spinnerReach, spinnerEventEditHour, spinnerEventEditMin;
 	private ArrayList<String> spinnerevntNameList, spinnerReachList, spinnerevntHourList, spinnerEventMinList;
 	// Shared preferences
@@ -64,7 +67,8 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 	int eventNamePos, eventReachPos;
 	private String userId = null, sessionname;
 	// Saripaar validator
-		Validator validator;
+	Validator validator;
+
 	public EditEventFragment() {
 
 	}
@@ -87,7 +91,7 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 
 		spinnerEvntName = (Spinner) rootView.findViewById(R.id.spinneredit1);
 		editEventDate = (EditText) rootView.findViewById(R.id.editeventdateedit);
-		//datePicker = (DatePicker) rootView.findViewById(R.id.datePickeredit);
+		// datePicker = (DatePicker) rootView.findViewById(R.id.datePickeredit);
 		editEventName = (EditText) rootView.findViewById(R.id.editTextedit3);
 		editEventDescrition = (EditText) rootView.findViewById(R.id.editTextedit4);
 		editLocation = (AutoCompleteTextView) rootView.findViewById(R.id.editTextedit5);
@@ -137,55 +141,55 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 		spinnerevntHourList.add("22");
 		spinnerevntHourList.add("23");
 		spinnerevntHourList.add("24");
-		spinnerEventEditHour.setAdapter(new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, spinnerevntHourList));
+		spinnerEventEditHour.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
+				spinnerevntHourList));
 		spinnerEventMinList = new ArrayList<String>();
 		spinnerEventMinList.add("00");
 		spinnerEventMinList.add("15");
 		spinnerEventMinList.add("30");
 		spinnerEventMinList.add("45");
-		spinnerEventEditMin.setAdapter(new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, spinnerEventMinList));
+		spinnerEventEditMin.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
+				spinnerEventMinList));
 
 		btnEditEvent.setOnClickListener(this);
 		editEventDate.setOnClickListener(this);
 		// provide hinting for the location fields from Google Places API
-				locationHints = new ArrayList<String>();
-				locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
-				editLocation.setAdapter(locationHintAdpter);
-				editLocation.addTextChangedListener(new TextWatcher() {
-					
-					@Override
-					public void onTextChanged(CharSequence s, int start, int count, int after) {
-						// TODO Auto-generated method stub
-						Log.d("Search User ", "s=" + s + " ,start=" + start + " ,count=" + count + " ,after=" + after);
-						boolean bool = new ConDetect(getActivity()).isOnline();
-						if (bool) {
-							if (searchPlacesTask != null) {
-								searchPlacesTask.cancel(true);
-							}
-							Log.d("Search user", "AsyncTask calling");
-							searchPlacesTask = new SearchPlacesTask();
-							searchPlacesTask.execute(editLocation.getText().toString().trim(),
-									getResources().getString(R.string.places_key));
-						} else {
-							Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-						}
+		locationHints = new ArrayList<String>();
+		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
+		editLocation.setAdapter(locationHintAdpter);
+		editLocation.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int count, int after) {
+				// TODO Auto-generated method stub
+				Log.d("Search User ", "s=" + s + " ,start=" + start + " ,count=" + count + " ,after=" + after);
+				boolean bool = new ConDetect(getActivity()).isOnline();
+				if (bool) {
+					if (searchPlacesTask != null) {
+						searchPlacesTask.cancel(true);
 					}
-					
-					@Override
-					public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void afterTextChanged(Editable arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
-		populateViews();	
+					Log.d("Search user", "AsyncTask calling");
+					searchPlacesTask = new SearchPlacesTask();
+					searchPlacesTask.execute(editLocation.getText().toString().trim(),
+							getResources().getString(R.string.places_key));
+				} else {
+					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		populateViews();
 		return rootView;
 	}
 
@@ -203,10 +207,10 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 		time = bndle.getString("time");
 		timeHourbd = time.substring(0, 2);
 		timeMinbd = time.substring(3);
-		//year = Integer.parseInt(eventDatebd.trim().substring(6));
-		//month = Integer.parseInt(eventDatebd.substring(3, 5));
-		//day = Integer.parseInt(eventDatebd.trim().substring(0, 2));
-		//datePicker.init(year, (month - 1), day, null);
+		// year = Integer.parseInt(eventDatebd.trim().substring(6));
+		// month = Integer.parseInt(eventDatebd.substring(3, 5));
+		// day = Integer.parseInt(eventDatebd.trim().substring(0, 2));
+		// datePicker.init(year, (month - 1), day, null);
 
 		editEventDate.setText(eventDatebd);
 		spinnerEvntName.setSelection((eventNamePos - 1));
@@ -222,16 +226,16 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		
+
 		if (v.getId() == R.id.editeventdateedit) {
 			dateDialog(editEventDate);
 		}
 		if (v.getId() == R.id.btneditok) {
 			Log.d(TAG, "button clicked");
-//			int day = datePicker.getDayOfMonth();
-//			int month = datePicker.getMonth() + 1;
-//			int year = datePicker.getYear();
-//			String date = day + "-" + month + "-" + year;
+			// int day = datePicker.getDayOfMonth();
+			// int month = datePicker.getMonth() + 1;
+			// int year = datePicker.getYear();
+			// String date = day + "-" + month + "-" + year;
 
 			validator.validate();
 		}
@@ -325,54 +329,58 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 
 		}
 	}
+
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
-		//private ProgressDialog pDialog;
+		// private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
 
 			// TODO Auto-generated method stub
 		}
+
 		@Override
 		protected String doInBackground(String... params) {
-		Log.d(TAG, "doInBackground uid" + params[0]);
-		return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
+			Log.d(TAG, "doInBackground uid" + params[0]);
+			return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
 		}
+
 		protected void onPostExecute(String response) {
 
-		super.onPostExecute(response);
-		//pDialog.dismiss();
-		Log.i("Ceate Event Response ", response);
-		try {
-		JSONObject createEventObject = new JSONObject(response);
-		JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
-		/*
-		String responseResult = createEventObject.getString("Status");
-		Log.d(TAG, "onpostexecute" + responseResult);
-		if (responseResult.equals("Success")) {
+			super.onPostExecute(response);
+			// pDialog.dismiss();
+			Log.i("Ceate Event Response ", response);
+			try {
+				JSONObject createEventObject = new JSONObject(response);
+				JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
+				/*
+				 * String responseResult =
+				 * createEventObject.getString("Status"); Log.d(TAG,
+				 * "onpostexecute" + responseResult); if
+				 * (responseResult.equals("Success")) { }
+				 */
+				locationHints.clear();
+				for (int i = 0; i < predictionsArray.length() && i < 20; i++) {
+					JSONObject tempItem = predictionsArray.getJSONObject(i);
+					locationHints.add(tempItem.getString("description"));
+				}
+				locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
+				editLocation.setAdapter(locationHintAdpter);
+				locationHintAdpter.notifyDataSetChanged();
+			} catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					// Log.d("Exception thrown: Treeview Fetch", "" +
+					// tempStack.getLineNumber());
+					Log.d("Exception thrown: ",
+							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+									+ tempStack.getMethodName());
+				}
+				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Log.d(TAG, "Invalid Server content!!");
+			}
 		}
-		*/
-		locationHints.clear();
-		for(int i=0; i<predictionsArray.length() && i<20; i++) {
-		JSONObject tempItem = predictionsArray.getJSONObject(i);
-		locationHints.add(tempItem.getString("description"));
-		}
-		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
-		editLocation.setAdapter(locationHintAdpter);
-		locationHintAdpter.notifyDataSetChanged();
-		} catch (Exception e) {
-		for (StackTraceElement tempStack : e.getStackTrace()) {
-		// Log.d("Exception thrown: Treeview Fetch", "" +
-		// tempStack.getLineNumber());
-		Log.d("Exception thrown: ",
-		"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
-		+ tempStack.getMethodName());
-		}
-		Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
-		Log.d(TAG, "Invalid Server content!!");
-		}
-		}
-		}
+	}
+
 	public void dateDialog(final EditText txtview) {
 		// TODO Auto-generated method stub
 		int day, month, year;
@@ -382,19 +390,35 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 		day = cal.get(Calendar.DAY_OF_MONTH);
 		month = cal.get(Calendar.MONTH);
 		year = cal.get(Calendar.YEAR);
-		DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+		final DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
 
 			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-				String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
-				txtview.setText(date);
-
+				if (set) {
+					String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
+					txtview.setText(date);
+				}
 			}
 		}, year, month, day);
+		dpd.setButton(DialogInterface.BUTTON_POSITIVE, "SET", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				if (which == DialogInterface.BUTTON_POSITIVE) {
+					set = true;
+				}
+			}
+		});
 
+		dpd.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				if (which == DialogInterface.BUTTON_NEGATIVE) {
+					set = false;
+					dpd.hide();
+				}
+			}
+		});
 		dpd.show();
 	}
+
 	@Override
 	public void onValidationSucceeded() {
 		// TODO Auto-generated method stub
@@ -432,10 +456,10 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 			if (bool) {
 				// Create object of AsycTask and execute
 				EditEventTask editEventTask = new EditEventTask();
-				editEventTask.execute(eventIdbd, eventnumber, editEventName.getText().toString(), editEventDate.getText().toString(),
-						editEventDescrition.getText().toString(), editLocation.getText().toString(), reachnumber,
-						spinnerEventEditHour.getSelectedItem().toString(), spinnerEventEditMin.getSelectedItem()
-								.toString(), sessionname, userId);
+				editEventTask.execute(eventIdbd, eventnumber, editEventName.getText().toString(), editEventDate
+						.getText().toString(), editEventDescrition.getText().toString(), editLocation.getText()
+						.toString(), reachnumber, spinnerEventEditHour.getSelectedItem().toString(),
+						spinnerEventEditMin.getSelectedItem().toString(), sessionname, userId);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
@@ -444,6 +468,7 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 			Toast.makeText(getActivity(), "Fill all fields", Toast.LENGTH_LONG).show();
 		}
 	}
+
 	@Override
 	public void onValidationFailed(View failedView, Rule<?> failedRule) {
 		// TODO Auto-generated method stub

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 //import android.widget.RelativeLayout.LayoutParams;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
@@ -23,7 +24,6 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 	private ArrayList<HashMap<String, String>> familyMembers;
 	private Context context;
 	private LayoutInflater inflater;
-
 	public ImmediateFamilyAdapter(Context context, ArrayList<HashMap<String, String>> immediateFamily) {
 		this.context = context;
 		this.familyMembers = immediateFamily;
@@ -105,10 +105,8 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 		 */
 		Log.d("ImmediateFamilyAdapter", "getView() called");
 		Holder holder;
-
-		try {
-
-			if (convertView == null) {
+	try {
+	if (convertView == null) {
 				// Inflate the view since it does not exist
 				convertView = inflater.inflate(R.layout.item_immediate_family, parent, false);
 
@@ -178,10 +176,11 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 			holder.lastName.setText("(" + relationName + ")");
 
 			Log.d("ImmediateFamilyAdapter", "name added");
+		
 		} catch (Exception e) {
 			Log.d("ImmediateFamilyAdapter", e.getMessage());
 		}
-
+		
 		// Set the color
 		// convertView.setBackgroundColor(getItem(position).getBackgroundColor());
 

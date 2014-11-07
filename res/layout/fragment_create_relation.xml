@@ -121,67 +121,20 @@
                 android:layout_height="wrap_content"
                 android:checked="false" />
         </LinearLayout>
-        <!--
-        <TextView
-	        android:id="@+id/mother"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:textStyle="italic"
-	        android:background="@drawable/edit_text_background"
-	        android:text="Mother"
-	        android:padding="10dp" />
-         
-        <TextView
-	        android:id="@+id/brother"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:textStyle="italic"
-	        android:background="@drawable/edit_text_background"
-	        android:text="Brother"
-	        android:padding="10dp" />
-        
-        <TextView
-	        android:id="@+id/sister"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:textStyle="italic"
-	        android:background="@drawable/edit_text_background"
-	        android:text="Sister"
-	        android:padding="10dp" />
-        
-        <TextView
-	        android:id="@+id/spouse"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:textStyle="italic"
-	        android:background="@drawable/edit_text_background"
-	        android:text="Spouse"
-	        android:padding="10dp" />
-        
-        <TextView
-	        android:id="@+id/son"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:textStyle="italic"
-	        android:background="@drawable/edit_text_background"
-	        android:text="Son"
-	        android:padding="10dp" />
-        
-        <TextView
-	        android:id="@+id/daughter"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_margin="10dp"
-	        android:textStyle="italic"
-	        android:background="@drawable/edit_text_background"
-	        android:text="Daughter"
-	        android:padding="10dp" />
-        -->
+       <AutoCompleteTextView
+            android:id="@+id/autocompleterelationlocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/edit_text_background"
+            android:ems="10"
+            android:hint="Locality"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            android:textColorHint="@color/pt_lightblue"
+            android:textStyle="italic" />
 
         <Button
             android:id="@+id/create"
@@ -191,7 +144,7 @@
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
             android:background="@drawable/rounded_corners_blue"
-            android:text="Create" 
+            android:text="Submit" 
             android:textColor="@color/pt_white"/>
     </LinearLayout>
 

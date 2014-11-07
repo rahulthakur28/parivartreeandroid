@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 
 public class CreateEventFragment extends Fragment implements OnClickListener, ValidationListener {
+	boolean set = false;
 	private String TAG = "CreateEventFragment";
 	@Required(order = 1)
 	private EditText editEventName;
@@ -57,7 +59,7 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 	private ArrayList<String> locationHints;
 	SearchPlacesTask searchPlacesTask;
 	private Button btnCreateEvent;
-	//private DatePicker datePicker;
+	// private DatePicker datePicker;
 	private Spinner spinnerEvntName, spinnerReach, spinnerEventHour, spinnerEventMin;
 	private ArrayList<String> spinnerevntNameList, spinnerReachList, spinnerevntHourList, spinnerEventMinList;
 	// Shared preferences
@@ -65,6 +67,7 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 	String sessionname;
 	// Saripaar validator
 	Validator validator;
+
 	public CreateEventFragment() {
 	}
 
@@ -86,8 +89,9 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 		spinnerEvntName = (Spinner) rootView.findViewById(R.id.spinner1);
 		editEventDate = (EditText) rootView.findViewById(R.id.editeventdate);
 		editEventName = (EditText) rootView.findViewById(R.id.editText3);
-		
-		//datePicker = (DatePicker) rootView.findViewById(R.id.datePickercreate);
+
+		// datePicker = (DatePicker)
+		// rootView.findViewById(R.id.datePickercreate);
 		editEventDescrition = (EditText) rootView.findViewById(R.id.editText4);
 		editLocation = (AutoCompleteTextView) rootView.findViewById(R.id.editText5);
 		spinnerReach = (Spinner) rootView.findViewById(R.id.spinner2);
@@ -136,8 +140,8 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 		spinnerevntHourList.add("22");
 		spinnerevntHourList.add("23");
 		spinnerevntHourList.add("24");
-		spinnerEventHour.setAdapter(new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, spinnerevntHourList));
+		spinnerEventHour.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
+				spinnerevntHourList));
 		spinnerEventMinList = new ArrayList<String>();
 		spinnerEventMinList.add("00");
 		spinnerEventMinList.add("15");
@@ -153,7 +157,7 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
 		editLocation.setAdapter(locationHintAdpter);
 		editLocation.addTextChangedListener(new TextWatcher() {
-			
+
 			@Override
 			public void onTextChanged(CharSequence s, int start, int count, int after) {
 				// TODO Auto-generated method stub
@@ -165,23 +169,22 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 					}
 					Log.d("Search user", "AsyncTask calling");
 					searchPlacesTask = new SearchPlacesTask();
-					searchPlacesTask.execute(s.toString().trim(),
-							getResources().getString(R.string.places_key));
+					searchPlacesTask.execute(s.toString().trim(), getResources().getString(R.string.places_key));
 				} else {
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
 			}
-			
+
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		return rootView;
@@ -194,13 +197,13 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 			dateDialog(editEventDate);
 		}
 		if (v.getId() == R.id.btncreate) {
-//			int day = datePicker.getDayOfMonth();
-//			int month = datePicker.getMonth() + 1;
-//			int year = datePicker.getYear();	
-//			String date = day + "-" + month + "-" + year;
+			// int day = datePicker.getDayOfMonth();
+			// int month = datePicker.getMonth() + 1;
+			// int year = datePicker.getYear();
+			// String date = day + "-" + month + "-" + year;
 			validator.validate();
 			Log.d(TAG, "button clicked");
-			
+
 		}
 	}
 
@@ -281,52 +284,56 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 
 		}
 	}
+
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
-		//private ProgressDialog pDialog;
+		// private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
 
 			// TODO Auto-generated method stub
 		}
+
 		@Override
 		protected String doInBackground(String... params) {
-		Log.d(TAG, "doInBackground uid  " + params[0]);
-		return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
+			Log.d(TAG, "doInBackground uid  " + params[0]);
+			return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
 		}
+
 		protected void onPostExecute(String response) {
 
-		super.onPostExecute(response);
-		//pDialog.dismiss();
-		Log.i("Ceate Event Response ", response);
-		try {
-		JSONObject createEventObject = new JSONObject(response);
-		JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
-		/*
-		String responseResult = createEventObject.getString("Status");
-		Log.d(TAG, "onpostexecute" + responseResult);
-		if (responseResult.equals("Success")) {
+			super.onPostExecute(response);
+			// pDialog.dismiss();
+			Log.i("Ceate Event Response ", response);
+			try {
+				JSONObject createEventObject = new JSONObject(response);
+				JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
+				/*
+				 * String responseResult =
+				 * createEventObject.getString("Status"); Log.d(TAG,
+				 * "onpostexecute" + responseResult); if
+				 * (responseResult.equals("Success")) { }
+				 */
+				locationHints.clear();
+				for (int i = 0; i < predictionsArray.length() && i < 20; i++) {
+					JSONObject tempItem = predictionsArray.getJSONObject(i);
+					locationHints.add(tempItem.getString("description"));
+				}
+				locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
+				editLocation.setAdapter(locationHintAdpter);
+				locationHintAdpter.notifyDataSetChanged();
+			} catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					Log.d("Exception thrown: ",
+							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+									+ tempStack.getMethodName());
+				}
+				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Log.d(TAG, "Invalid Server content!!");
+			}
 		}
-		*/
-		locationHints.clear();
-		for(int i=0; i<predictionsArray.length() && i<20; i++) {
-		JSONObject tempItem = predictionsArray.getJSONObject(i);
-		locationHints.add(tempItem.getString("description"));
-		}
-		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
-		editLocation.setAdapter(locationHintAdpter);
-		locationHintAdpter.notifyDataSetChanged();
-		} catch (Exception e) {
-		for (StackTraceElement tempStack : e.getStackTrace()) {
-		Log.d("Exception thrown: ",
-		"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
-		+ tempStack.getMethodName());
-		}
-		Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
-		Log.d(TAG, "Invalid Server content!!");
-		}
-		}
-		}
+	}
+
 	public void dateDialog(final EditText txtview) {
 		// TODO Auto-generated method stub
 		int day, month, year;
@@ -336,19 +343,35 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 		day = cal.get(Calendar.DAY_OF_MONTH);
 		month = cal.get(Calendar.MONTH);
 		year = cal.get(Calendar.YEAR);
-		DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+		final DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
 
 			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-				String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
-				txtview.setText(date);
-
+				if (set) {
+					String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
+					txtview.setText(date);
+				}
 			}
 		}, year, month, day);
+		dpd.setButton(DialogInterface.BUTTON_POSITIVE, "SET", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				if (which == DialogInterface.BUTTON_POSITIVE) {
+					set = true;
+				}
+			}
+		});
 
+		dpd.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				if (which == DialogInterface.BUTTON_NEGATIVE) {
+					set = false;
+					dpd.hide();
+				}
+			}
+		});
 		dpd.show();
 	}
+
 	@Override
 	public void onValidationSucceeded() {
 		// TODO Auto-generated method stub
@@ -384,16 +407,16 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 				Log.d(TAG, "You Set Reach as Private");
 			}
 			Log.d(TAG, "hour" + spinnerEventHour.getSelectedItem().toString());
-			//Log.d(TAG, "doInBackground uid" + date);
+			// Log.d(TAG, "doInBackground uid" + date);
 
 			boolean bool = new ConDetect(getActivity()).isOnline();
 			if (bool) {
 
 				CreateEventTask createEventTask = new CreateEventTask();
-				createEventTask.execute(sharedPreferences.getString("user_id", null), editEventDate.getText().toString(), eventnumber,
-						editEventName.getText().toString(), editEventDescrition.getText().toString(), editLocation
-								.getText().toString(), reachnumber, spinnerEventHour.getSelectedItem().toString()
-								.trim(), spinnerEventMin.getSelectedItem().toString().trim(), sessionname);
+				createEventTask.execute(sharedPreferences.getString("user_id", null), editEventDate.getText()
+						.toString(), eventnumber, editEventName.getText().toString(), editEventDescrition.getText()
+						.toString(), editLocation.getText().toString(), reachnumber, spinnerEventHour.getSelectedItem()
+						.toString().trim(), spinnerEventMin.getSelectedItem().toString().trim(), sessionname);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}

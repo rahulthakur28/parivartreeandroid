@@ -41,7 +41,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	String relationship_type;
 	String relationships[] = new String[] {"relationship", "Father", "Mother", "Wife", "Brother", "Sister", "Son", "Daughter", "Husband"};
 	int position = 0;
-	String userName = "";
+	String userName = "",toWhomName;
 
 	public AutoCompleteRelationArrayAdapter(Context context, int layoutResourceId, ArrayList<MyObject> data) {
 		super(context, layoutResourceId, data);
@@ -53,6 +53,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 				mContext.getPackageName() + mContext.getResources().getString(R.string.USER_PREFERENCES),
 				Context.MODE_PRIVATE);
 		userId = sharedPreferences.getString("user_id", null);
+		toWhomName = (sharedPreferences.getString("node_first_name", "NA")+" "+sharedPreferences.getString("node_last_name", "NA"));
 		sessionname = sharedPreferences.getString("sessionname", "Not Available");
 		sharedPreferencesEditor = sharedPreferences.edit();
 	}
@@ -196,9 +197,8 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 					Log.d(TAG, " success...........!!");
 					sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
 					sharedPreferencesEditor.commit();
-					
-					if(request_type == 1) {
-						String nodeName = userName;
+					String nodeName = userName;
+					if(request_type == 1) {				
 								//AutoCompleteRelationArrayAdapter.this.userName;
 						Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
 					} else if (request_type == 2) {
