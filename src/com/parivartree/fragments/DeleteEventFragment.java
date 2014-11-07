@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -60,6 +61,8 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 	private SharedPreferences sharedPreferences;
 	LinearLayout linear;
 	Fragment fragment;
+	Activity activity;
+	Context context;
 
 	public DeleteEventFragment() {
 
@@ -71,6 +74,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+		activity = getActivity();
 		View rootView = inflater.inflate(R.layout.fragment_delete_event, container, false);
 		sharedPreferences = this
 				.getActivity()
@@ -119,13 +123,43 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		joineesArrayList = new ArrayList<Event>();
 		Log.d(TAG, "eventid : " + eventIdbd);
 
-		boolean bool = new ConDetect(getActivity()).isOnline();
+		boolean bool = new ConDetect(activity).isOnline();
 		if (bool) {
 			GetJoineesTask getJoineesTask = new GetJoineesTask();
 			getJoineesTask.execute(eventIdbd);
 		} else {
-			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
+		
+		if (googleMap == null) {
+			Log.d(TAG, "map not found");
+			// removeMap();
+			boolean connected = new ConDetect(activity).isOnline();
+			if (connected) {
+				googleMap = getGoogleMap();
+			} else {
+				Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+			}
+			// googleMap.addMarker(new MarkerOptions().position(new LatLng(0,
+			// 0)));
+		} else {
+			Log.d(TAG, "Map was not called");
+		}
+		Geocoder gc = new Geocoder(activity);
+		try {
+			List<Address> li = gc.getFromLocationName(locationbd, 5);
+			Address ad = li.get(0);
+			Double lat = ad.getLatitude();
+			Double lon = ad.getLongitude();
+			LatLng gizmeon = new LatLng(lat, lon);
+			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gizmeon, 15));
+			googleMap.addMarker(new MarkerOptions().title(locationbd).snippet(locationbd).position(gizmeon));
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
 		return rootView;
 	}
@@ -135,12 +169,12 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		// TODO Auto-generated method stub
 		if (v.getId() == R.id.btndelete) {
 			// showdeleteDialog(eventIdbd,eventNamebd);
-			boolean bool = new ConDetect(getActivity()).isOnline();
+			boolean bool = new ConDetect(activity).isOnline();
 			if (bool) {
 				DeleteEventsTask deleteEventTask = new DeleteEventsTask();
 				deleteEventTask.execute(eventIdbd, userId);
 			} else {
-				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
 		}
 		if (v.getId() == R.id.btnedit) {
@@ -156,7 +190,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			bundle2.putInt("eventreach", eventReachPos);
 			// fragment=new EditEventFragment();
 			// fragment.setArguments(bundle2);
-			((MainActivity) this.getActivity()).changeFragment("EditEventFragment", bundle2);
+			((MainActivity) activity).changeFragment("EditEventFragment", bundle2);
 
 		}
 		// change to the new fragment
@@ -178,7 +212,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
-			pDialog = new ProgressDialog(getActivity());
+			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Deleting...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
@@ -194,7 +228,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 					params[0],
 					params[1],
 					getResources().getString(R.string.hostname)
-							+ getActivity().getResources().getString(R.string.url_delete_event));
+							+ activity.getResources().getString(R.string.url_delete_event));
 		}
 
 		protected void onPostExecute(String response) {
@@ -227,7 +261,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content in Delete Event!!");
 			}
 
@@ -242,7 +276,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
-			pDialog = new ProgressDialog(getActivity());
+			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
@@ -255,7 +289,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			Log.d(TAG, "doInBackground" + params[0]);
 
 			return HttpConnectionUtils.getJoineesResponse(params[0], getResources().getString(R.string.hostname)
-					+ getActivity().getResources().getString(R.string.url_find_joinees));
+					+ activity.getResources().getString(R.string.url_find_joinees));
 		}
 
 		protected void onPostExecute(String response) {
@@ -293,7 +327,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content joinees!!");
 			}
 
@@ -306,7 +340,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		if (joineesArrayList.size() > 0) {
 			for (Event name : joineesArrayList) {
 
-				LinearLayout LL = new LinearLayout(getActivity());
+				LinearLayout LL = new LinearLayout(activity);
 				LayoutParams LLParams = new LayoutParams(LayoutParams.WRAP_CONTENT, 280);
 				LLParams.setMargins(5, 5, 5, 5);
 				LL.setLayoutParams(LLParams);
@@ -315,7 +349,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 				LL.setBackgroundResource(R.drawable.layout_border_file);
 				LL.setOrientation(LinearLayout.VERTICAL);
 
-				ImageView imv = new ImageView(getActivity());
+				ImageView imv = new ImageView(activity);
 				LayoutParams imvParams = new LayoutParams(150, 150);
 				imvParams.gravity = Gravity.CENTER_HORIZONTAL;
 				imv.setLayoutParams(imvParams);
@@ -324,7 +358,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 								+ "PROFILE.jpeg", getResources().getDrawable(R.drawable.dummyphoto1), 0);
 				//imv.setImageResource(R.drawable.dummyphoto1);
 
-				TextView tv = new TextView(getActivity());
+				TextView tv = new TextView(activity);
 				LayoutParams tvParams = new LayoutParams(150, LayoutParams.WRAP_CONTENT);
 				tvParams.setMargins(5, 5, 5, 5);
 				tv.setLayoutParams(tvParams);
@@ -380,34 +414,6 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (googleMap == null) {
-			Log.d(TAG, "map not found");
-			// removeMap();
-			boolean bool = new ConDetect(getActivity()).isOnline();
-			if (bool) {
-				googleMap = getGoogleMap();
-			} else {
-				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-			}
-			// googleMap.addMarker(new MarkerOptions().position(new LatLng(0,
-			// 0)));
-		} else {
-			Log.d(TAG, "Map was not called");
-		}
-		Geocoder gc = new Geocoder(getActivity());
-		try {
-			List<Address> li = gc.getFromLocationName(locationbd, 5);
-			Address ad = li.get(0);
-			Double lat = ad.getLatitude();
-			Double lon = ad.getLongitude();
-			LatLng gizmeon = new LatLng(lat, lon);
-			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gizmeon, 15));
-			googleMap.addMarker(new MarkerOptions().title(locationbd).snippet(locationbd).position(gizmeon));
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
@@ -415,7 +421,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		removeMap();
+		//removeMap();
 		Log.d(TAG, "onPause of fragment called");
 	}
 
@@ -437,7 +443,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 	}
 
 	private GoogleMap getGoogleMap() {
-		if (googleMap == null && getActivity() != null && getActivity().getSupportFragmentManager() != null) {
+		if (googleMap == null && activity != null && getActivity().getSupportFragmentManager() != null) {
 			SupportMapFragment smf = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(
 					R.id.map1);
 			if (smf != null) {

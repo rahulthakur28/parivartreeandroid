@@ -94,12 +94,14 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	int flag = 0;
 	// Saripaar validator
 	Validator validator;
-
+	
+	public CreateRelationFragment() {}
+	
 	public CreateRelationFragment(String relationId, String nodeId) {
 		this.relationId = relationId;
 		this.nodeId = nodeId;
 	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

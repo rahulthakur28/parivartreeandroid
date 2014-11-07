@@ -107,7 +107,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		Mint.initAndStartSession(this, "2a8a05f6");
+		//Mint.initAndStartSession(this, "2a8a05f6");
 
 		ActionBar actionBar = this.getActionBar();
 

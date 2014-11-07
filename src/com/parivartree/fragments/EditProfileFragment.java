@@ -242,19 +242,19 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			} else {
 				progressDialogCount--;
 			}
-
+			
 			Log.i("Profile update Fetch Response ", "" + response);
 			try {
-
+				
 				JSONObject loginResponseObject = new JSONObject(response);
 				String responseResult = loginResponseObject.getString("Status");
 				if (responseResult.equals("Success")) {
 					// TODO store the login response and
 					JSONArray data = loginResponseObject.getJSONArray("data");
 					JSONObject userProfileData = (JSONObject) data.get(0);
-
+					
 					UserProfile userProfile = new UserProfile();
-
+					
 					userProfile.setDob(userProfileData.getString("Dob"));
 					userProfile.setEmail(userProfileData.getString("Email"));
 					userProfile.setFirstName(userProfileData.getString("Firstname"));
@@ -328,7 +328,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					} else {
 						editTextProfession.setText("");
 					}
-
+					
 					int spinPosition = 0;
 					if (userProfile.getMaritalStatus().equals("NA")) {
 						spinPosition = 0;
@@ -339,7 +339,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					} else if (userProfile.getMaritalStatus().equals("Divorced")) {
 						spinPosition = 3;
 					}
-
+					
 					spinnerRelationStatus.setSelection(spinPosition);
 					for (int i = 0; i < religionList.size(); i++) {
 						if ((religionList.get(i).getValue()).equals(userProfile.getReligion())) {

@@ -1,38 +1,48 @@
 package com.parivartree;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.Required;
+import com.parivartree.adapters.LocationHintAdapter;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 
 public class SignUpDetailsActivity extends Activity implements OnClickListener, ValidationListener {
-
+	
 	ImageView next;
 	int day, month, year;
 	DatePicker datePicker;
@@ -43,26 +53,36 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	EditText editTextLastName;
 	@Required(order = 3)
 	EditText editTextEmail;
-
-	EditText editTextPhone;
-
+	
+	@Required(order = 4)
+	AutoCompleteTextView editTextLocation;
+	private LocationHintAdapter locationHintAdpter;
+	private ArrayList<String> locationHints;
+	SearchPlacesTask searchPlacesTask;
+	
+	TextView enterCode;
+	
+	View alertDialogView;
+	
+	//EditText editTextPhone;
+	
 	// @Required(order = 4)
 	EditText editTextPassword;
-
+	
 	// @ConfirmPassword(order = 5)
 	EditText editTextRePassword;
-
+	
 	Switch switchGender;
-
+	
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
-
+	
 	// Saripaar validator
 	Validator validator;
 	Activity activity;
-
+	
 	private final String TAG = "SignUpDetailsActivity";
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,19 +93,25 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		validator.setValidationListener(this);
 		editTextFirstName = (EditText) findViewById(R.id.editText1);
 		editTextLastName = (EditText) findViewById(R.id.editText2);
-		editTextEmail = (EditText) findViewById(R.id.editText6);
-		editTextPhone = (EditText) findViewById(R.id.editText3);
-		editTextPassword = (EditText) findViewById(R.id.editText4);
-		editTextRePassword = (EditText) findViewById(R.id.editText5);
-
+		editTextEmail = (EditText) findViewById(R.id.editText3);
+		
+		editTextLocation = (AutoCompleteTextView) findViewById(R.id.editText4);
+		
+		enterCode = (TextView) findViewById(R.id.enterCode);
+		enterCode.setOnClickListener(this);
+		
+		//editTextPhone = (EditText) findViewById(R.id.editText3);
+		//editTextPassword = (EditText) findViewById(R.id.editText4);
+		//editTextRePassword = (EditText) findViewById(R.id.editText5);
+		
 		switchGender = (Switch) findViewById(R.id.switch1);
-
+		
 		// datePicker = (DatePicker) findViewById(R.id.datePicker1);
-
+		
 		next = (ImageView) findViewById(R.id.nextButton);
 		next.setOnClickListener(this);
 		switchGender.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+			
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
@@ -96,9 +122,51 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 					// Gender="Male";
 					Gender = "1";
 				}
-
 			}
 		});
+		
+		// provide hinting for the location fields from Google Places API
+				locationHints = new ArrayList<String>();
+				locationHintAdpter = new LocationHintAdapter(activity,
+						R.layout.item_location, locationHints);
+				editTextLocation.setAdapter(locationHintAdpter);
+				editTextLocation.addTextChangedListener(new TextWatcher() {
+
+					@Override
+					public void onTextChanged(CharSequence s, int start, int count,
+							int after) {
+						// TODO Auto-generated method stub
+						Log.d("Search User ", "s=" + s + " ,start=" + start
+								+ " ,count=" + count + " ,after=" + after);
+						boolean bool = new ConDetect(activity).isOnline();
+						if (bool) {
+							if (searchPlacesTask != null) {
+								searchPlacesTask.cancel(true);
+							}
+							Log.d("Search user", "AsyncTask calling");
+							searchPlacesTask = new SearchPlacesTask();
+							searchPlacesTask.execute(s.toString().trim(),
+									getResources().getString(R.string.places_key));
+						} else {
+							Toast.makeText(activity,
+									"!No Internet Connection,Try again",
+									Toast.LENGTH_LONG).show();
+						}
+					}
+					
+					@Override
+					public void beforeTextChanged(CharSequence arg0, int arg1,
+							int arg2, int arg3) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void afterTextChanged(Editable arg0) {
+						// TODO Auto-generated method stub
+
+					}
+				});
 	}
 
 	@Override
@@ -123,15 +191,42 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		validator.validate();
-		/*
-		 * if(v.getId()==R.id.nextButton){ SignUpDetailsTask sigupTask = new
-		 * SignUpDetailsTask();
-		 * sigupTask.execute(editTextEmail.getText().toString
-		 * (),editTextFirstName
-		 * .getText().toString(),editTextLastName.getText().toString
-		 * (),switchGender.getText().toString()); }
-		 */
+		if (v.getId() == R.id.nextButton) {
+			validator.validate();
+			
+		} else if (v.getId() == R.id.enterCode) {
+			
+			// show popup for entering code
+			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+			
+			// Setting Dialog Title
+			alertDialog.setTitle("Account confirmation");
+			
+			// set custom view
+			alertDialogView = getLayoutInflater().inflate(R.layout.alert_dialog_otp_code, null);
+			alertDialog.setView(alertDialogView);
+			
+			// Setting Dialog Message
+			//alertDialog.setMessage("Enter code");
+			alertDialog.setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					EditText otpCode = (EditText) alertDialogView.findViewById(R.id.editText1);
+					
+					// TODO send edit code to the server and show appropriate response
+				}
+			});
+			
+			// Setting Negative "NO" Button
+			alertDialog.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					// Write your code here to invoke NO event
+					dialog.cancel();
+				}
+			});
+			
+			alertDialog.show();
+			
+		}
 	}
 
 	public class SignUpDetailsTask extends AsyncTask<String, String, String> {
@@ -205,7 +300,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			}
 		}
 	}
-
+	
 	@Override
 	public void onValidationSucceeded() {
 		// TODO Auto-generated method stub
@@ -214,40 +309,17 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		 */
 		// SignUpDetailsTask sUDT = new SignUpDetailsTask();
 		// sUDT.execute(params)
-
-		/*
-		 * day = datePicker.getDayOfMonth(); month = datePicker.getMonth() + 1;
-		 * year = datePicker.getYear();
-		 */
+		
 		sharedPreferences = this.getApplicationContext().getSharedPreferences(
 				this.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
 		sharedPreferencesEditor = sharedPreferences.edit();
-		/*
-		 * sharedPreferencesEditor.putString("fname", "");
-		 * sharedPreferencesEditor.putString("lname", "");
-		 * sharedPreferencesEditor.putString("pass", "");
-		 * sharedPreferencesEditor.putString("email", "");
-		 * sharedPreferencesEditor.putString("phone", "");
-		 * sharedPreferencesEditor.putString("gender", "");
-		 * sharedPreferencesEditor.putString("dob", day + "-" + month + "-" +
-		 * year);
-		 */
+		
 		sharedPreferencesEditor.commit();
-
-		/*
-		 * Intent signUpIntent = new Intent(this, SignUpActivity.class);
-		 * signUpIntent.putExtra("fname",
-		 * editTextFirstName.getText().toString());
-		 * signUpIntent.putExtra("lname",
-		 * editTextLastName.getText().toString()); signUpIntent.putExtra("pass",
-		 * editTextPassword.getText().toString());
-		 * signUpIntent.putExtra("email", editTextEmail.getText().toString());
-		 * startActivity(signUpIntent);
-		 */
 		Log.d(TAG, "email:" + editTextEmail.getText().toString() + ", fname:" + editTextFirstName.getText().toString()
 				+ ", lname" + editTextLastName.getText().toString() + ", gender :" + Gender);
-
+		
 		boolean bool = new ConDetect(activity).isOnline();
+		
 		if (bool) {
 			SignUpDetailsTask sigupTask = new SignUpDetailsTask();
 			sigupTask.execute(editTextEmail.getText().toString(), editTextFirstName.getText().toString(),
@@ -267,6 +339,64 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			((EditText) failedView).setError(message);
 		} else {
 			Log.d("Signup Response ", message);
+		}
+	}
+	
+	/**
+	 * Get hint of places from google servers
+	 * @author rahul
+	 *
+	 */
+	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
+		// private ProgressDialog pDialog;
+		
+		@Override
+		protected void onPreExecute() {
+			
+			// TODO Auto-generated method stub
+		}
+		
+		@Override
+		protected String doInBackground(String... params) {
+			Log.d(TAG, "doInBackground uid  " + params[0]);
+			return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
+		}
+		
+		protected void onPostExecute(String response) {
+			
+			super.onPostExecute(response);
+			// pDialog.dismiss();
+			Log.i("Ceate Event Response ", response);
+			try {
+				JSONObject createEventObject = new JSONObject(response);
+				JSONArray predictionsArray = createEventObject
+						.getJSONArray("predictions");
+				/*
+				 * String responseResult =
+				 * createEventObject.getString("Status"); Log.d(TAG,
+				 * "onpostexecute" + responseResult); if
+				 * (responseResult.equals("Success")) { }
+				 */
+				locationHints.clear();
+				for (int i = 0; i < predictionsArray.length() && i < 20; i++) {
+					JSONObject tempItem = predictionsArray.getJSONObject(i);
+					locationHints.add(tempItem.getString("description"));
+				}
+				locationHintAdpter = new LocationHintAdapter(activity,
+						R.layout.item_location, locationHints);
+				editTextLocation.setAdapter(locationHintAdpter);
+				locationHintAdpter.notifyDataSetChanged();
+			} catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					Log.d("Exception thrown: ", "" + tempStack.getLineNumber()
+							+ " methodName: " + tempStack.getClassName() + "-"
+							+ tempStack.getMethodName());
+				}
+				Toast.makeText(activity,
+						"Invalid Server Content - " + e.getMessage(),
+						Toast.LENGTH_LONG).show();
+				Log.d(TAG, "Invalid Server content!!");
+			}
 		}
 	}
 }

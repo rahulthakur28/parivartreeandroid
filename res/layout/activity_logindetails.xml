@@ -3,142 +3,152 @@
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/parivar_mobile_bg_3_0"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
     android:weightSum="1.0" >
-    
+
     <RelativeLayout
         android:id="@+id/relativeLayout0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical" >
-        
-	    <ImageView
-	        android:id="@+id/imageView1"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerHorizontal="true"
-	        android:src="@drawable/parivartree_logo_127" />
-    
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/parivartree_logo_127" />
     </RelativeLayout>
-    <ScrollView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-         android:layout_margin="20dp"
-         android:background="@drawable/parivar_mobile_square_transparent"
-        android:gravity="center"
-        android:alpha="1"
-         android:paddingTop="8dp" 
-        >
-    <LinearLayout
-        android:id="@+id/relativeLayout1"
+
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"    
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:alpha="1"
+        android:background="@drawable/parivar_mobile_square_transparent"
+        android:gravity="center"
+        android:paddingTop="8dp" >
+
         <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:weightSum="1.0"
-            android:paddingRight="18dp"
-            android:paddingLeft="18dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_width="match_parent"
+            android:id="@+id/relativeLayout1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/linearLayout1"
-            android:alpha="1">
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".2"
-                android:src="@drawable/parivar_mobile_icon01" />
-            <EditText
-                android:id="@+id/editText1"
-                android:layout_width="0dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".8"
-                android:textStyle="italic"
-                android:textColorHint="@color/pt_ashgrey"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                android:hint="Email Address"
-                android:background="@drawable/parivar_mobile_field_1_2"
-                android:paddingRight="2dp"
-                android:paddingEnd="2dp"
-                android:paddingLeft="8dp"
-                android:paddingStart="8dp" />
-           
-            
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:weightSum="1.0"
-            android:paddingRight="18dp"
-            android:paddingLeft="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/linearLayout2"
-            android:alpha="1">
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".2"
-                android:src="@drawable/parivar_mobile_icon02" />
-            <EditText
-                android:id="@+id/editText2"
-                android:layout_width="0dp"
+                android:alpha="1"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:paddingTop="5dp"
+                android:weightSum="1.0" >
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".2"
+                    android:src="@drawable/parivar_mobile_icon01" />
+
+                <EditText
+                    android:id="@+id/editText1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".8"
+                    android:background="@drawable/parivar_mobile_field_1_2"
+                    android:ems="10"
+                    android:hint="Email-id or mobile number"
+                    android:inputType="textEmailAddress"
+                    android:paddingEnd="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="2dp"
+                    android:paddingStart="8dp"
+                    android:textColorHint="@color/pt_ashgrey"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".8"
-                android:textStyle="italic"
-                android:textColorHint="@color/pt_ashgrey"
-                android:ems="10"
-                android:inputType="textPassword"
-                android:hint="Password"
-                android:background="@drawable/parivar_mobile_field"
-                android:padding="8dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="1.0"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/linearLayout4">
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/parivar_mobile_login_btn_0_35"/>
-        </LinearLayout>
-        <LinearLayout
-            android:gravity="center"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:orientation="horizontal"
-            android:background="@drawable/parivar_mobile_forget_username_2_5"
-            android:weightSum="1.0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/linearLayout5" />
-        <RelativeLayout
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <!--  
+                android:alpha="1"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:weightSum="1.0" >
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".2"
+                    android:src="@drawable/parivar_mobile_icon02" />
+
+                <EditText
+                    android:id="@+id/editText2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".8"
+                    android:background="@drawable/parivar_mobile_field"
+                    android:ems="10"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    android:textColorHint="@color/pt_ashgrey"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:weightSum="1.0" >
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/parivar_mobile_login_btn_0_35" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/parivar_mobile_forget_username_2_5"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingTop="10dp"
+                android:weightSum="1.0" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingTop="10dp" >
+
+                <!--
             <ImageView
                 android:src="@drawable/Parivar_mobile_FB_btn"
                 android:layout_width="wrap_content"
@@ -149,35 +159,34 @@
                 android:cropToPadding="false"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="-11dp" />
-            -->
-            
-            
-            <ImageView
-                android:src="@drawable/parivar_mobile_or_0_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView5"
-                android:padding="0dp"
-                android:scaleType="fitCenter"
-                android:layout_centerHorizontal="true" />
-            
-            <com.facebook.widget.LoginButton
-                android:id="@+id/facebookLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/imageView5"
-                facebook:login_text="Log in"
-                facebook:confirm_logout="false"
-                facebook:fetch_user_info="true" />
-            <!-- android:src="@drawable/parivar_mobile_fb_btn_0_74" -->
-            
-            <com.google.android.gms.common.SignInButton
-	    		android:id="@+id/googleLogin"
-	    		android:layout_toRightOf="@id/imageView5"
-	    		android:layout_width="wrap_content"
-	    		android:layout_height="wrap_content" />
-            <!-- android:src="@drawable/parivar_mobile_google_btn_0_71" -->
-            <!--
+                -->
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:padding="0dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/parivar_mobile_or_0_2" />
+
+                <com.facebook.widget.LoginButton
+                    android:id="@+id/facebookLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/imageView5"
+                    facebook:confirm_logout="false"
+                    facebook:fetch_user_info="true"
+                    facebook:login_text="Log in" />
+                <!-- android:src="@drawable/parivar_mobile_fb_btn_0_74" -->
+
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/googleLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/imageView5" />
+                <!-- android:src="@drawable/parivar_mobile_google_btn_0_71" -->
+                <!--
             <ImageView
                 android:src="@drawable/Parivar_mobile_google_btn"
                 android:layout_width="wrap_content"
@@ -186,8 +195,9 @@
                 android:id="@+id/imageButton2"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="-11dp" />
-            -->
-        </RelativeLayout>
-    </LinearLayout>
+                -->
+            </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

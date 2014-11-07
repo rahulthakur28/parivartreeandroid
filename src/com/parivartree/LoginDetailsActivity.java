@@ -53,44 +53,45 @@ import com.parivartree.helpers.HttpConnectionUtils;
 
 public class LoginDetailsActivity extends Activity implements OnClickListener, ConnectionCallbacks,
 		OnConnectionFailedListener, ValidationListener {
-
+	
 	private String TAG = "LoginDetailsActivity";
 	private SharedPreferences sharedPreferences;
 	private Editor sharedPreferencesEditor;
 	private Button loginButton;
 	String email, emailtext;
+	
 	/**
 	 * Facebook
 	 */
 	private LoginButton facebookButton;
-
+	
 	// Your Facebook APP ID
 	private static String FACEBOOK_APP_ID = "344736635684076"; // Replace your
 																// App ID here
 	private UiLifecycleHelper uiHelper;
-
+	
 	private static final List<String> PERMISSIONS = Arrays.asList("publish_stream");
 	// private static final List<String> PERMISSIONS =
 	// Arrays.asList("publish_actions","email");
-
+	
 	// List<String> PERMISSIONS;
-
+	
 	// Instance of Facebook Class
 	private Facebook facebook;
-
+	
 	/**
 	 * Google Plus
 	 */
 	private SignInButton googleButton;
 	private ConnectionResult mConnectionResult;
-
+	
 	private static final int RC_SIGN_IN = 0;
-
+	
 	PlusOptions plusOptions;
-
+	
 	// Google client to interact with Google API
 	private GoogleApiClient mGoogleApiClient;
-
+	
 	/**
 	 * A flag indicating that a PendingIntent is in progress and prevents us
 	 * from starting further intents.
@@ -193,7 +194,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		editTextPassword.clearFocus();
 		login.setFocusable(true);
 		login.requestFocus();
-		// uiHelper.onResume();
+		uiHelper.onResume();
 		// buttonsEnabled(Session.getActiveSession().isOpened());
 	}
 
@@ -254,7 +255,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			Log.d(TAG, "Google Client - resolveSignInError called...");
 		} else if (v.getId() == R.id.facebookLogin) {
 			// facebookButton.setSessionStatusCallback(fbStatusCallback);
-
+			Log.d(TAG, "Facebook button clciked");
 			facebookButton.setUserInfoChangedCallback(new UserInfoChangedCallback() {
 				@Override
 				public void onUserInfoFetched(GraphUser user) {
@@ -698,7 +699,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
-
+			
 		}
 
 		@Override
@@ -716,7 +717,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			pDialog.dismiss();
 			Log.i("Facebook Login Response ", response);
 			try {
-
+				
 				JSONObject faceloginResponseObject = new JSONObject(response);
 				int status = faceloginResponseObject.getInt("AuthenticationStatus");
 				Log.d("Facebook Login AuthenticationStatus : ", "" + status);
@@ -735,7 +736,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 					sharedPreferencesEditor.putString("sessionname", username);
 					sharedPreferencesEditor.putString("sessionemail", email);
 					sharedPreferencesEditor.commit();
-
+					
 					startActivity(new Intent(activity, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 							| Intent.FLAG_ACTIVITY_CLEAR_TASK));
 				} else {
@@ -743,9 +744,8 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 					Toast.makeText(context, "Facebook Login Not Successful", Toast.LENGTH_LONG).show();
 					if (status == 1) {
 						// TODO successful authentication
-
+						
 					}
-
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
@@ -759,7 +759,6 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
-
 	}
 	
 	@Override

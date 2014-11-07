@@ -152,6 +152,38 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
+		
+		if (googleMap == null) {
+			Log.d(TAG, "map not found");
+			// removeMap();
+			boolean connected = new ConDetect(getActivity()).isOnline();
+			if (connected) {
+				googleMap = getGoogleMap();
+			} else {
+				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+			}
+			// googleMap.addMarker(new MarkerOptions().position(new LatLng(0,
+			// 0)));
+		} else {
+			Log.d(TAG, "Map was not called");
+		}
+		Geocoder gc = new Geocoder(getActivity());
+		try {
+			List<Address> li = gc.getFromLocationName(locationbd, 5);
+			Address ad = li.get(0);
+			Log.d(TAG, "lat.." + ad.getLatitude() + " longitude..." + ad.getLongitude());
+			Double lat = ad.getLatitude();
+			Double lon = ad.getLongitude();
+			LatLng gizmeon = new LatLng(lat, lon);
+			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gizmeon, 15));
+			googleMap.addMarker(new MarkerOptions().title(locationbd).snippet(locationbd).position(gizmeon));
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		return rootView;
 	}
 
@@ -300,7 +332,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 			super.onPostExecute(response);
 			pDialog.dismiss();
 			Log.i("joinees list Response ", response);
-
+			
 			try {
 				JSONObject eventListResponseObject = new JSONObject(response);
 				String responseResult = eventListResponseObject.getString("Status");
@@ -320,7 +352,6 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 							eventObject.setName(firstname + " " + lastname);
 							joineesArrayList.add(eventObject);
 						}
-
 					}
 					addJoinees();
 				}
@@ -334,7 +365,6 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content joinees!!");
 			}
-
 		}
 	}
 
@@ -382,11 +412,11 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 				LL.addView(imv);
 				LL.addView(tv);
 				linear.addView(LL);
-
+				
 			}
 		}
-
 	}
+	
 	private void showsJoinDialog(final String arg, final String id, final String authid) {
 		// Create Object of Dialog class
 		final Dialog join = new Dialog(getActivity());
@@ -433,7 +463,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 				join.dismiss();
 			}
 		});
-
+		
 		// Make dialog box visible.
 		join.show();
 	}
@@ -441,43 +471,14 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (googleMap == null) {
-			Log.d(TAG, "map not found");
-			// removeMap();
-			boolean bool = new ConDetect(getActivity()).isOnline();
-			if (bool) {
-				googleMap = getGoogleMap();
-			} else {
-				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-			}
-			// googleMap.addMarker(new MarkerOptions().position(new LatLng(0,
-			// 0)));
-		} else {
-			Log.d(TAG, "Map was not called");
-		}
-		Geocoder gc = new Geocoder(getActivity());
-		try {
-			List<Address> li = gc.getFromLocationName(locationbd, 5);
-			Address ad = li.get(0);
-			Log.d(TAG, "lat.." + ad.getLatitude() + " longitude..." + ad.getLongitude());
-			Double lat = ad.getLatitude();
-			Double lon = ad.getLongitude();
-			LatLng gizmeon = new LatLng(lat, lon);
-			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gizmeon, 15));
-			googleMap.addMarker(new MarkerOptions().title(locationbd).snippet(locationbd).position(gizmeon));
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		
 	}
 
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		removeMap();
+		//removeMap();
 		Log.d(TAG, "onPause of fragment called");
 	}
 

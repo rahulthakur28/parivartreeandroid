@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:parivartree="http://schemas.android.com/apk/res/com.gizmeon.parivartree"
-  android:layout_width="match_parent"
+  	android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/parivar_mobile_bg_3_0"
     android:padding="10dp"
@@ -11,7 +11,8 @@
     
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_weight=".25" >
         
 	    <ImageView
 	        android:id="@+id/imageView1"
@@ -19,7 +20,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_centerInParent="true"
 	        android:src="@drawable/parivartree_logo_small" />
-	    
+	    	
     </RelativeLayout>
     
 	<!--  
@@ -32,7 +33,7 @@
         parivartree:border_color="@color/pt_dark_grey"
         parivartree:border_width="4dp" />
     -->
-    <!--  
+    <!--
     <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
@@ -49,13 +50,12 @@
 	    <LinearLayout
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
+	        android:layout_weight=".75"
 	        android:padding="20dp"
 	        android:background="@drawable/parivar_mobile_square_transparent"
 	        android:orientation="vertical"
 	        android:gravity="center">
-	
-	        
-	        
+			
 	        <EditText
 	            android:id="@+id/editText1"
 	            android:layout_width="wrap_content"
@@ -81,16 +81,27 @@
 	            android:padding="8dp" />
 	        
 	        <EditText
-	            android:id="@+id/editText6"
+	            android:id="@+id/editText3"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:textStyle="italic"
-	            android:hint="Email ID"
+	            android:hint="Email-id or mobile number"
 	            android:padding="8dp"
 	            android:textColorHint="@color/pt_ashgrey"
 	            android:background="@drawable/parivar_mobile_field_1_2"
 	            android:ems="10"
 	            android:inputType="textEmailAddress" />
+	        
+	        <AutoCompleteTextView
+	            android:id="@+id/editText4"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textStyle="italic"
+	            android:textColorHint="@color/pt_ashgrey"
+	            android:ems="10"
+	            android:background="@drawable/parivar_mobile_field_1_2"
+	            android:hint="Location"
+	            android:padding="8dp" />
 	        <!--  
 	        <EditText
 	            android:id="@+id/editText3"
@@ -178,6 +189,17 @@
 			        -->
 			        
 		    </LinearLayout>
+		    
+	        <TextView
+	            android:id="@+id/enterCode"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:padding="4dp"
+	            android:textSize="18dp"
+	            android:layout_marginTop="15dp"
+	            android:textColor="@color/pt_blue"
+	            android:background="@drawable/edit_text_background"
+	            android:text="Enter Code" />
 	        
 	    </LinearLayout>
     

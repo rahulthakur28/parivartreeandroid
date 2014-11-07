@@ -104,6 +104,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		/**
          * Set up zooming listner and control classes
          */
+		
         mZoomControl = new DynamicZoomControl();
         
         mPinchZoomListener = new PinchZoomListener(this.getActivity());
@@ -114,7 +115,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
         mZoomControl.setAspectQuotient(contentHolder.getAspectQuotient());
         resetZoomState();
         contentHolder.setOnTouchListener(mPinchZoomListener);
-
+        
 		userTreeMessage = (LinearLayout) rootView.findViewById(R.id.userTreeMessage);
 		textViewUserMessage = (TextView) rootView.findViewById(R.id.textViewUserMessage);
 
@@ -517,10 +518,10 @@ public class HomeFragment extends Fragment implements OnClickListener {
 
 		}
 	}
-
+	
 	public class HideUserTask extends AsyncTask<String, String, String> {
 		private ProgressDialog pDialog;
-
+		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -531,14 +532,14 @@ public class HomeFragment extends Fragment implements OnClickListener {
 			pDialog.setCancelable(true);
 			pDialog.show();
 		}
-
+		
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			return HttpConnectionUtils.getHideUserResponse(params[0], params[1], getActivity().getResources()
 					.getString(R.string.hostname) + getResources().getString(R.string.url_hide_user));
 		}
-
+		
 		@Override
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub

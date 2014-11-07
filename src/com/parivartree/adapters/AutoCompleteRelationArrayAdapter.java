@@ -38,6 +38,8 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	ArrayList<MyObject> data = new ArrayList<MyObject>();
 	String userId, sessionname;
 	int request_type = 1;
+	String relationship_type;
+	String relationships[] = new String[] {"relationship", "Father", "Mother", "Wife", "Brother", "Sister", "Son", "Daughter", "Husband"};
 	int position = 0;
 	String userName = "";
 
@@ -97,7 +99,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 				buttonItem.setVisibility(View.GONE);
 				textViewItem.setText(objectItem.objectName);
 			}
-
+			
 			buttonItem.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -160,12 +162,14 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 			String httpResponse = null;
 			if (params[0].equals("exist")) {
 				request_type = 1;
+				relationship_type = relationships[Integer.parseInt(params[3])];
 				httpResponse = HttpConnectionUtils.createExistRelationResponse(params[1], params[2], params[3],
 						params[4], params[5], mContext.getResources().getString(R.string.hostname)
 								+ mContext.getResources().getString(R.string.url_invite_user));
 			}
 			if (params[0].equals("others")) {
 				request_type = 2;
+				relationship_type = relationships[Integer.parseInt(params[3])];
 				httpResponse = HttpConnectionUtils.createOthersRelationResponse(params[1], params[2], params[3],
 						params[4], params[5], params[6], mContext.getResources().getString(R.string.hostname)
 								+ mContext.getResources().getString(R.string.url_invite_user));
@@ -198,7 +202,9 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 								//AutoCompleteRelationArrayAdapter.this.userName;
 						Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
 					} else if (request_type == 2) {
-						
+						String recommendedUserName = userName;
+						String nodeName = sharedPreferences.getString("node_first_name", " ") + " " + sharedPreferences.getString("node_last_name", " ");
+						Crouton.makeText(activity, "You have successfully recommended " + recommendedUserName + " to " + nodeName + " for " + relationship_type + " relation.", Style.INFO).show();
 					}
 					//Toast.makeText(mContext, "You have successfully invited ", Toast.LENGTH_SHORT).show();
 					((MainActivity) mContext).changeFragment("HomeFragment");
