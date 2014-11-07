@@ -3,10 +3,11 @@ package com.parivartree.helpers;
 import java.util.Arrays;
 import java.util.List;
 
+import android.graphics.Point;
 import android.os.Environment;
+import android.view.Display;
 
 public class AppConstant {
-
 	// Number of columns of Grid View
 	public static final int NUM_OF_COLUMNS = 3;
 

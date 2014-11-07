@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/text_selector"
                 android:gravity="center_vertical"
-                android:hint="Create Photos"
+                android:text="Create Photos"
                 android:textStyle="bold" />
 
             <TextView
@@ -34,7 +34,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/text_selector"
                 android:gravity="center_vertical"
-                android:hint="Create Videos"
+                android:text="Create Videos"
                 android:textStyle="bold" />
         </LinearLayout>
 

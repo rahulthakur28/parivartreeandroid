@@ -81,10 +81,10 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 	String userId, ownerid;
 	String sessionname;
 	String view;
-	View viewEditProfile, viewEditfamily, viewEditAlbum;
+	View viewEditProfile, viewEditfamily, viewEditAlbum ,viewImmediate;
 	LinearLayout linearLayoutOverlay, linearDeceased, linearDeleteUser,linearMobile1, linearDob1, linearGender1,
 			linearRelation1, linearWedDate1, linearLocation1, linearHomeTown1, linearProfession1, linearReligion1,
-			linearPincode1, linearCommunity1, linearGothra1,immediateFamilyMembers;
+			linearPincode1, linearCommunity1, linearGothra1;
 	ArrayList<String> listFamilyId;
 	static final int IMAGE_PICKER_SELECT = 100;
 	HorizontalListView horizontialListView;
@@ -128,7 +128,6 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		linearPincode1 = (LinearLayout) rootView.findViewById(R.id.linearpincode1);
 		linearCommunity1 = (LinearLayout) rootView.findViewById(R.id.linearcommunity1);
 		linearGothra1 = (LinearLayout) rootView.findViewById(R.id.lineargothra1);
-		immediateFamilyMembers = (LinearLayout) rootView.findViewById(R.id.immediatefamilymembers);
 
 		imageViewProfilePic = (RectangularImageView) rootView.findViewById(R.id.imageView1);
 		imageViewCamera = (ImageView) rootView.findViewById(R.id.camera);
@@ -183,6 +182,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		btndeleteuser = (Button) rootView.findViewById(R.id.buttondeleteuser);
 
 		viewEditProfile = rootView.findViewById(R.id.view2);
+		viewImmediate = rootView.findViewById(R.id.view3);
 		//viewEditfamily = rootView.findViewById(R.id.imageView3);
 		//viewEditAlbum = rootView.findViewById(R.id.imageView25);
 
@@ -1119,9 +1119,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					// ifa.notifyDataSetInvalidated();
 					
 					ifa.notifyDataSetChanged();
-//					if(immediateFamily.size()==0){
-//						horizontialListView.setVisibility(View.GONE);
-//					}
+					if(immediateFamily.size()==0){
+						viewImmediate.setVisibility(View.GONE);
+						horizontialListView.setVisibility(View.GONE);
+					}else{
+						viewImmediate.setVisibility(View.VISIBLE);
+						horizontialListView.setVisibility(View.VISIBLE);
+					}
 					Log.d("ImmediateFamilyTask", "immediateFamily size -" + immediateFamily.size());
 
 					//

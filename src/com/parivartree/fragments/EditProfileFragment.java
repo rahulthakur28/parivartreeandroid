@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
@@ -23,7 +24,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -39,18 +39,17 @@ import com.parivartree.MainActivity;
 import com.parivartree.R;
 import com.parivartree.adapters.CustomDropDownAdapter;
 import com.parivartree.adapters.LocationHintAdapter;
-import com.parivartree.fragments.CreateEventFragment.SearchPlacesTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.SpinnerItem;
 import com.parivartree.models.UserProfile;
 
 public class EditProfileFragment extends Fragment implements OnClickListener, OnItemSelectedListener {
-
+	boolean set = false;
 	private EditText editTextFirstName, editTextLastName, editTextGender, editTextPincode, editTextHometown,
 			editTextMobile, editTextWeddingDate, editTextReligion, editTextCommunity, editTextHomeTown, editTextGothra,
 			editTextProfession, editTextDobdate, editTextAddGothra, editTextAddCommunity;
-	TextView textViewName,textViewEmail;
+	TextView textViewName, textViewEmail;
 	// editTextEmail
 	private AutoCompleteTextView editTextLocality;
 	private LocationHintAdapter locationHintAdpter;
@@ -69,7 +68,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
 
-	String userId,nodeId;
+	String userId, nodeId;
 	UserProfile changedUserProfile;
 
 	ArrayList<SpinnerItem> religionList, communityList, gothraList;
@@ -112,8 +111,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		RelationStatusList.add("Single");
 		RelationStatusList.add("Married");
 		RelationStatusList.add("Divorced");
-		spinnerRelationStatus.setAdapter(new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, RelationStatusList));
+		spinnerRelationStatus.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
+				RelationStatusList));
 
 		editTextLocality = (AutoCompleteTextView) rootView.findViewById(R.id.editTextLocality);
 		editTextHomeTown = (EditText) rootView.findViewById(R.id.editTextHometown);
@@ -169,7 +168,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
 		editTextLocality.setAdapter(locationHintAdpter);
 		editTextLocality.addTextChangedListener(new TextWatcher() {
-			
+
 			@Override
 			public void onTextChanged(CharSequence s, int start, int count, int after) {
 				// TODO Auto-generated method stub
@@ -187,17 +186,17 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
 			}
-			
+
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		return rootView;
@@ -226,8 +225,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			return	HttpConnectionUtils.getProfileViewResponse(params[0],params[1],getResources().getString(R.string.hostname)
-					+ getResources().getString(R.string.url_view_profile2));
+			return HttpConnectionUtils.getProfileViewResponse(params[0], params[1],
+					getResources().getString(R.string.hostname) + getResources().getString(R.string.url_view_profile2));
 			// return null;
 		}
 
@@ -274,10 +273,10 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					userProfile.setCommunity(userProfileData.getString("community"));
 					userProfile.setGothra(userProfileData.getString("gothra"));
 					userProfile.setProfession(userProfileData.getString("profession"));
-					
-					textViewName.setText(userProfile.getFirstName()+" "+userProfile.getLastName());
-					textViewEmail.setText(userProfile.getEmail());				
-					
+
+					textViewName.setText(userProfile.getFirstName() + " " + userProfile.getLastName());
+					textViewEmail.setText(userProfile.getEmail());
+
 					if (!userProfile.getDob().equals("NA")) {
 						editTextDobdate.setText(userProfile.getDob());
 					} else {
@@ -617,7 +616,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					if (bool) {
 						// Create object of AsycTask and execute
 						ProfileTask pT = new ProfileTask();
-						pT.execute(nodeId,userId);
+						pT.execute(nodeId, userId);
 					} else {
 						Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 					}
@@ -643,7 +642,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 			changedUserProfile = new UserProfile();
 			changedUserProfile.setId(nodeId);
-			Log.d("---fff---",""+nodeId);
+			Log.d("---fff---", "" + nodeId);
 			changedUserProfile.setDob(editTextDobdate.getText().toString().trim());
 			// changedUserProfile.setEmail(editTextEmail.getText().toString());
 			changedUserProfile.setFirstName(editTextFirstName.getText().toString());
@@ -753,52 +752,56 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		}
 
 	}
+
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
-		//private ProgressDialog pDialog;
+		// private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
 
 			// TODO Auto-generated method stub
 		}
+
 		@Override
 		protected String doInBackground(String... params) {
-		Log.d(TAG, "doInBackground uid" + params[0]);
-		return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
+			Log.d(TAG, "doInBackground uid" + params[0]);
+			return HttpConnectionUtils.getPlacesResponse(params[0], params[1]);
 		}
+
 		protected void onPostExecute(String response) {
 
-		super.onPostExecute(response);
-		//pDialog.dismiss();
-		Log.i("Ceate Event Response ", response);
-		try {
-		JSONObject createEventObject = new JSONObject(response);
-		JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
-		/*
-		String responseResult = createEventObject.getString("Status");
-		Log.d(TAG, "onpostexecute" + responseResult);
-		if (responseResult.equals("Success")) {
+			super.onPostExecute(response);
+			// pDialog.dismiss();
+			Log.i("Ceate Event Response ", response);
+			try {
+				JSONObject createEventObject = new JSONObject(response);
+				JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
+				/*
+				 * String responseResult =
+				 * createEventObject.getString("Status"); Log.d(TAG,
+				 * "onpostexecute" + responseResult); if
+				 * (responseResult.equals("Success")) { }
+				 */
+				locationHints.clear();
+				for (int i = 0; i < predictionsArray.length() && i < 20; i++) {
+					JSONObject tempItem = predictionsArray.getJSONObject(i);
+					locationHints.add(tempItem.getString("description"));
+				}
+				locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
+				editTextLocality.setAdapter(locationHintAdpter);
+				locationHintAdpter.notifyDataSetChanged();
+			} catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					Log.d("Exception thrown: ",
+							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+									+ tempStack.getMethodName());
+				}
+				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Log.d(TAG, "Invalid Server content!!");
+			}
 		}
-		*/
-		locationHints.clear();
-		for(int i=0; i<predictionsArray.length() && i<20; i++) {
-		JSONObject tempItem = predictionsArray.getJSONObject(i);
-		locationHints.add(tempItem.getString("description"));
-		}
-		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
-		editTextLocality.setAdapter(locationHintAdpter);
-		locationHintAdpter.notifyDataSetChanged();
-		} catch (Exception e) {
-		for (StackTraceElement tempStack : e.getStackTrace()) {
-		Log.d("Exception thrown: ",
-		"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
-		+ tempStack.getMethodName());
-		}
-		Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
-		Log.d(TAG, "Invalid Server content!!");
-		}
-		}
-		}
+	}
+
 	private void savedSuccessfully() {
 		Log.d(TAG, "Profile edited successfully!");
 		((MainActivity) this.getActivity()).changeFragment("ProfileFragment");
@@ -855,6 +858,30 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 	}
 
+	// public void dateDialog(final EditText txtview) {
+	// // TODO Auto-generated method stub
+	// int day, month, year;
+	//
+	// Log.d("profile", "date text click!!");
+	// Calendar cal = Calendar.getInstance();
+	// day = cal.get(Calendar.DAY_OF_MONTH);
+	// month = cal.get(Calendar.MONTH);
+	// year = cal.get(Calendar.YEAR);
+	// DatePickerDialog dpd = new DatePickerDialog(getActivity(), new
+	// DatePickerDialog.OnDateSetListener() {
+	//
+	// @Override
+	// public void onDateSet(DatePicker view, int year, int monthOfYear, int
+	// dayOfMonth) {
+	//
+	// String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
+	// txtview.setText(date);
+	//
+	// }
+	// }, year, month, day);
+	//
+	// dpd.show();
+	// }
 	public void dateDialog(final EditText txtview) {
 		// TODO Auto-generated method stub
 		int day, month, year;
@@ -864,18 +891,32 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		day = cal.get(Calendar.DAY_OF_MONTH);
 		month = cal.get(Calendar.MONTH);
 		year = cal.get(Calendar.YEAR);
-		DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+		final DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
 
 			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-				String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
-				txtview.setText(date);
-
+				if (set) {
+					String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
+					txtview.setText(date);
+				}
 			}
 		}, year, month, day);
+		dpd.setButton(DialogInterface.BUTTON_POSITIVE, "SET", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				if (which == DialogInterface.BUTTON_POSITIVE) {
+					set = true;
+				}
+			}
+		});
 
+		dpd.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				if (which == DialogInterface.BUTTON_NEGATIVE) {
+					set = false;
+					dpd.hide();
+				}
+			}
+		});
 		dpd.show();
 	}
-
 }

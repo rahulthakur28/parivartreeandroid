@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -54,7 +55,6 @@ public class GridViewImageAdapter extends BaseAdapter {
 		} else {
 			imageView = (ImageView) convertView;
 		}
-
 		// get screen dimensions
 		Bitmap image = decodeFile(_filePaths.get(position), imageWidth,
 				imageWidth);

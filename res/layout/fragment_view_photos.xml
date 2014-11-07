@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:background="@drawable/text_selector"
-                android:hint="My Photos" 
+                android:text="My Photos" 
                 android:textStyle="bold"/>
 
             <TextView
@@ -33,7 +33,7 @@
                  android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/text_selector"
-                android:hint="My Videos" 
+                android:text="My Videos" 
                 android:textStyle="bold"/>
         </LinearLayout>
 

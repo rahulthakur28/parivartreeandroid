@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +37,7 @@ public class ViewPhotosFragment extends Fragment implements OnClickListener {
 	Button buttonCreatePhotos;
 	FragmentManager fragmentManager;
 	Fragment fragment;
-
+	Point size;
 	public ViewPhotosFragment() {
 	}
 
@@ -49,7 +52,6 @@ public class ViewPhotosFragment extends Fragment implements OnClickListener {
 		activity = getActivity();
 		context = getActivity().getApplicationContext();
 		utils = new Utils(activity);
-
 		// Initilizing Grid View
 		InitilizeGridLayout();
 
@@ -72,10 +74,12 @@ public class ViewPhotosFragment extends Fragment implements OnClickListener {
 		Resources r = getResources();
 		float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, AppConstant.GRID_PADDING,
 				r.getDisplayMetrics());
-
 		columnWidth = (int) ((utils.getScreenWidth() - ((AppConstant.NUM_OF_COLUMNS + 1) * padding)) / AppConstant.NUM_OF_COLUMNS);
 
-		gridView.setNumColumns(AppConstant.NUM_OF_COLUMNS);
+		Log.d("fzdfzf----------", "dd  "+(int)utils.getScreenWidth());
+		Log.d("fzdfzf----------", "dd  "+columnWidth);
+		Log.d("fzdfzf----------", "dd  "+(int)(utils.getScreenWidth()/columnWidth));
+		gridView.setNumColumns((int)(utils.getScreenWidth()/columnWidth));
 		gridView.setColumnWidth(columnWidth);
 		gridView.setStretchMode(GridView.NO_STRETCH);
 		gridView.setPadding((int) padding, (int) padding, (int) padding, (int) padding);
