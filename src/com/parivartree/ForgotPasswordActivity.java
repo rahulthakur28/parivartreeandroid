@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,9 @@ import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ForgotPasswordActivity extends Activity implements OnClickListener, ValidationListener {
 	private String TAG = "ForgotPassordActivity";
@@ -81,7 +85,7 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			pDialog = new ProgressDialog(ForgotPasswordActivity.this);
-			pDialog.setMessage("Checking...");
+			pDialog.setMessage("");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -126,6 +130,13 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 			}
 
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 	@Override
 	public void onValidationSucceeded() {
@@ -138,8 +149,17 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 		boolean bool = new ConDetect(activity).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
-			ForgotTask forgottask = new ForgotTask();
+			final ForgotTask forgottask = new ForgotTask();
 			forgottask.execute(editEmail.getText().toString());
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (forgottask.getStatus() == AsyncTask.Status.RUNNING){
+						forgottask.cancel(true);
+					}
+				}
+			}, 10000);
 		} else {
 			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}

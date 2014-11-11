@@ -3,6 +3,7 @@ package com.parivartree;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -14,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,47 +53,50 @@ import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class LoginDetailsActivity extends Activity implements OnClickListener, ConnectionCallbacks,
 		OnConnectionFailedListener, ValidationListener {
-	
+
 	private String TAG = "LoginDetailsActivity";
 	private SharedPreferences sharedPreferences;
 	private Editor sharedPreferencesEditor;
 	private Button loginButton;
 	String email, emailtext;
-	
+	LoginTask lT;
 	/**
 	 * Facebook
 	 */
 	private LoginButton facebookButton;
-	
+
 	// Your Facebook APP ID
 	private static String FACEBOOK_APP_ID = "344736635684076"; // Replace your
 																// App ID here
 	private UiLifecycleHelper uiHelper;
-	
+
 	private static final List<String> PERMISSIONS = Arrays.asList("publish_stream");
 	// private static final List<String> PERMISSIONS =
 	// Arrays.asList("publish_actions","email");
-	
+
 	// List<String> PERMISSIONS;
-	
+
 	// Instance of Facebook Class
 	private Facebook facebook;
-	
+
 	/**
 	 * Google Plus
 	 */
 	private SignInButton googleButton;
 	private ConnectionResult mConnectionResult;
-	
+
 	private static final int RC_SIGN_IN = 0;
-	
+
 	PlusOptions plusOptions;
-	
+
 	// Google client to interact with Google API
 	private GoogleApiClient mGoogleApiClient;
-	
+
 	/**
 	 * A flag indicating that a PendingIntent is in progress and prevents us
 	 * from starting further intents.
@@ -103,13 +108,13 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	Context context;
 	String packageName;
 	LinearLayout forgotpassord;
-	@Email(order = 1)
 	@Required(order = 1)
 	private EditText editTextUsername;
 	@Required(order = 2)
 	private EditText editTextPassword;
 	ImageView login;
 	Validator validator;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -287,9 +292,19 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 						if (bool) {
 							email = user.asMap().get("email").toString();
 							Log.d(TAG, "gender--------- - " + (String) user.getProperty("gender"));
-							FacebookLoginTask facebookTask = new FacebookLoginTask();
+							final FacebookLoginTask facebookTask = new FacebookLoginTask();
 							facebookTask.execute(user.asMap().get("email").toString(), user.getLastName(), gender,
 									user.getFirstName());
+							Handler handler = new Handler();
+							handler.postDelayed(new Runnable() {
+								@Override
+								public void run() {
+									if (facebookTask.getStatus() == AsyncTask.Status.RUNNING)
+									{
+										facebookTask.cancel(true);
+									}
+								}
+							}, 10000);
 							// startActivity(new
 							// Intent(activity,MainActivity.class));
 						} else {
@@ -420,8 +435,17 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				boolean bool = new ConDetect(activity).isOnline();
 				if (bool) {
 
-					FacebookLoginTask facebookTask = new FacebookLoginTask();
+					final FacebookLoginTask facebookTask = new FacebookLoginTask();
 					facebookTask.execute(email, fullName[1], gender, fullName[0]);
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (facebookTask.getStatus() == AsyncTask.Status.RUNNING){
+								facebookTask.cancel(true);
+							}
+						}
+					}, 10000);
 					// startActivity(new Intent(activity,MainActivity.class));
 				} else {
 					Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
@@ -564,7 +588,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			pDialog = new ProgressDialog(LoginDetailsActivity.this);
-			pDialog.setMessage("Loggin in...");
+			pDialog.setMessage("Login...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -574,10 +598,25 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
-
-			return HttpConnectionUtils
+			String response;
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			response = HttpConnectionUtils
 					.getLoginResponse(params[0], params[1], getResources().getString(R.string.hostname)
 							+ activity.getResources().getString(R.string.url_login));
+
+			// for (int i = 0; i < 10000; i++) {
+			// Log.d("forloop ", "running");
+			// if(isCancelled()){
+			// Log.d("isCancelled ", "hooopliiings");
+			// break;
+			// }
+			// }
+			return response;
 		}
 
 		@Override
@@ -681,9 +720,17 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				}
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
+
 			}
 		}
 
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	class FacebookLoginTask extends AsyncTask<String, Void, String> {
@@ -699,7 +746,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
-			
+
 		}
 
 		@Override
@@ -717,7 +764,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			pDialog.dismiss();
 			Log.i("Facebook Login Response ", response);
 			try {
-				
+
 				JSONObject faceloginResponseObject = new JSONObject(response);
 				int status = faceloginResponseObject.getInt("AuthenticationStatus");
 				Log.d("Facebook Login AuthenticationStatus : ", "" + status);
@@ -736,7 +783,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 					sharedPreferencesEditor.putString("sessionname", username);
 					sharedPreferencesEditor.putString("sessionemail", email);
 					sharedPreferencesEditor.commit();
-					
+
 					startActivity(new Intent(activity, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 							| Intent.FLAG_ACTIVITY_CLEAR_TASK));
 				} else {
@@ -744,7 +791,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 					Toast.makeText(context, "Facebook Login Not Successful", Toast.LENGTH_LONG).show();
 					if (status == 1) {
 						// TODO successful authentication
-						
+
 					}
 				}
 			} catch (Exception e) {
@@ -759,8 +806,15 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
-	
+
 	@Override
 	public void onValidationSucceeded() {
 		// TODO Auto-generated method stub
@@ -771,12 +825,22 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		boolean bool = new ConDetect(this).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
-			LoginTask lT = new LoginTask();
+			lT = new LoginTask();
 			lT.execute(editTextUsername.getText().toString(), editTextPassword.getText().toString());
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (lT.getStatus() == AsyncTask.Status.RUNNING){
+						lT.cancel(true);
+					}
+				}
+			}, 10000);
 		} else {
 			Toast.makeText(this, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
 	}
+
 	@Override
 	public void onValidationFailed(View failedView, Rule<?> failedRule) {
 		// TODO Auto-generated method stub

@@ -12,21 +12,19 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -34,24 +32,20 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.Required;
-import com.parivartree.LoginMainActivity;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
 import com.parivartree.adapters.AutoCompleteRelationArrayAdapter;
 import com.parivartree.adapters.LocationHintAdapter;
-import com.parivartree.adapters.AutocompleteCustomArrayAdapter.UnhideUserTask;
 import com.parivartree.customviews.CustomAutoCompleteTextView;
-import com.parivartree.fragments.CreateEventFragment.SearchPlacesTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.MyObject;
@@ -102,7 +96,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	// Saripaar validator
 	Validator validator;
 	
-	public CreateRelationFragment() {}
+	public CreateRelationFragment() {
+		
+	}
 	
 	public CreateRelationFragment(String relationId, String nodeId) {
 		this.relationId = relationId;
@@ -208,6 +204,15 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					if (flag == 0) {
 						searchUserTask = new SearchUserTask();
 						searchUserTask.execute(s.toString(), userId);
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (searchUserTask.getStatus() == AsyncTask.Status.RUNNING){
+									searchUserTask.cancel(true);
+								}
+							}
+						}, 10000);
 					}
 				} else {
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
@@ -246,6 +251,15 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 							searchPlacesTask = new SearchPlacesTask();
 							searchPlacesTask.execute(s.toString().trim(),
 									getResources().getString(R.string.places_key));
+							Handler handler = new Handler();
+							handler.postDelayed(new Runnable() {
+								@Override
+								public void run() {
+									if (searchPlacesTask.getStatus() == AsyncTask.Status.RUNNING){
+										searchPlacesTask.cancel(true);
+									}
+								}
+							}, 10000);
 						} else {
 							Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 						}
@@ -272,8 +286,17 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				if (buttonView.isChecked()) {
 					boolean bool = new ConDetect(getActivity()).isOnline();
 					if (bool) {
-						AutoGenerateEmailTask autoGenerateEmailTask = new AutoGenerateEmailTask();
+						final AutoGenerateEmailTask autoGenerateEmailTask = new AutoGenerateEmailTask();
 						autoGenerateEmailTask.execute();
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (autoGenerateEmailTask.getStatus() == AsyncTask.Status.RUNNING){
+									autoGenerateEmailTask.cancel(true);
+								}
+							}
+						}, 10000);
 					} else {
 						Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 					}
@@ -340,6 +363,13 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				Log.d(TAG, "" + "Invalid Server content !!");
 
 			}
+		}		
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 
 	}
@@ -437,6 +467,12 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
+		}		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 	public class InviteRelationTask extends AsyncTask<String, String, String> {
@@ -517,6 +553,12 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
+		}		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 	@Override
@@ -537,13 +579,23 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					}else{
 						autoEmail = emailEditText.getText().toString();
 					}
-				CreateRelationTask cRT2 = new CreateRelationTask();
+				final CreateRelationTask cRT2 = new CreateRelationTask();
 				//String sessionname = sharedPreferences.getString("sessionname", "Not Available");
 				Log.d("CreateRelation3", "Values" + nodeId + ", " + userId + ", " + relationId + ", "
 						+ firstNameEditText.getText().toString() + ", " + lastNameEditText.getText().toString()
 						+ ", " + autoEmail + ", " + finalgender + ", " + sessionname);
 				cRT2.execute("new",userId,nodeId, relationId, firstNameEditText.getText().toString(),
 						lastNameEditText.getText().toString(), autoEmail, finalgender, sessionname);
+
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (cRT2.getStatus() == AsyncTask.Status.RUNNING){
+							cRT2.cancel(true);
+						}
+					}
+				}, 10000);
 		} else {
 			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
@@ -653,6 +705,11 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				Log.d(TAG, "Invalid Server content!!");
 			}
 
+		}		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
@@ -699,6 +756,11 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 		Log.d(TAG, "Invalid Server content!!");
 		}
+		}		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 		}
 	
@@ -727,14 +789,41 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		alertDialog.setPositiveButton(btnmsg, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				if(type.equals("invite")){
-					InviteRelationTask inviteRelationTask = new InviteRelationTask();
+					final InviteRelationTask inviteRelationTask = new InviteRelationTask();
 					inviteRelationTask.execute("invite",otherid,userId, relationId,sessionname,userId);
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (inviteRelationTask.getStatus() == AsyncTask.Status.RUNNING){
+								inviteRelationTask.cancel(true);
+							}
+						}
+					}, 10000);
 			}if(type.equals("recommend")){
-				InviteRelationTask inviteRelationTask = new InviteRelationTask();
-				inviteRelationTask.execute("recommend",otherid,nodeId, relationId,sessionname,name,userId);
+				final InviteRelationTask inviteRelationTask1 = new InviteRelationTask();
+				inviteRelationTask1.execute("recommend",otherid,nodeId, relationId,sessionname,name,userId);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (inviteRelationTask1.getStatus() == AsyncTask.Status.RUNNING){
+							inviteRelationTask1.cancel(true);
+						}
+					}
+				}, 10000);
 		}else{
-				UnhideUserTask unhideTask = new UnhideUserTask();
+				final UnhideUserTask unhideTask = new UnhideUserTask();
 				unhideTask.execute(otherid, userId);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (unhideTask.getStatus() == AsyncTask.Status.RUNNING){
+							unhideTask.cancel(true);
+						}
+					}
+				}, 10000);
 			}
 			}
 		});
@@ -784,6 +873,11 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
+		}		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 }

@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -143,8 +144,17 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
-			CompleteTreeTask tVT = new CompleteTreeTask();
+			final CompleteTreeTask tVT = new CompleteTreeTask();
 			tVT.execute();
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (tVT.getStatus() == AsyncTask.Status.RUNNING){
+						tVT.cancel(true);
+					}
+				}
+			}, 10000);
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
@@ -395,8 +405,17 @@ public class HomeFragment extends Fragment implements OnClickListener {
 					boolean bool = new ConDetect(getActivity()).isOnline();
 					if (bool) {
 						// Create object of AsycTask and execute
-						HideUserTask hideTask = new HideUserTask();
+						final HideUserTask hideTask = new HideUserTask();
 						hideTask.execute(selectedNode, sharedPreferences.getString("user_id", "0"));
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (hideTask.getStatus() == AsyncTask.Status.RUNNING){
+									hideTask.cancel(true);
+								}
+							}
+						}, 10000);
 					} else {
 						Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 					}
@@ -517,6 +536,12 @@ public class HomeFragment extends Fragment implements OnClickListener {
 			}
 
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 	
 	public class HideUserTask extends AsyncTask<String, String, String> {
@@ -527,7 +552,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			pDialog = new ProgressDialog(activity);
-			pDialog.setMessage("Loading...");
+			pDialog.setMessage("Hiding...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -565,6 +590,13 @@ public class HomeFragment extends Fragment implements OnClickListener {
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 

@@ -8,11 +8,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,27 +23,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.internal.mc;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
-import com.parivartree.MainActivity;
 import com.parivartree.R;
-import com.parivartree.ForgotPasswordActivity.ForgotTask;
-import com.parivartree.fragments.HomeFragment;
 import com.parivartree.fragments.NotificationFragment;
-import com.parivartree.fragments.RelationFragment;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NotificationModel;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 @SuppressLint("ViewHolder")
 public class CustomNotificationAdapter extends BaseAdapter {
 	private String TAG = "CustomNotificationAdapter";
 	ArrayList<NotificationModel> notificationobj;
-	Context context;
+	Activity context;
 	String userId;
 	int itemPosition;
 	Fragment fragment;
 
-	public CustomNotificationAdapter(Context context, Fragment fragment, ArrayList<NotificationModel> notificationobj,
+	public CustomNotificationAdapter(Activity context, Fragment fragment, ArrayList<NotificationModel> notificationobj,
 			String userId) {
 		this.context = context;
 		this.notificationobj = notificationobj;
@@ -128,14 +126,32 @@ public class CustomNotificationAdapter extends BaseAdapter {
 						if (bool) {
 							if (notifiType == 11) {
 								Log.d(TAG, "invitationAcceptTask!!" + entityIdstr + "," + notifiIdstr + "," + userId);
-								InvitationAcceptTask invitationAcceptTask = new InvitationAcceptTask();
+								final InvitationAcceptTask invitationAcceptTask = new InvitationAcceptTask();
 								invitationAcceptTask.execute(String.valueOf(position), entityIdstr, notifiIdstr,
 										userId, "recomondation");
+								Handler handler = new Handler();
+								handler.postDelayed(new Runnable() {
+									@Override
+									public void run() {
+										if (invitationAcceptTask.getStatus() == AsyncTask.Status.RUNNING){
+											invitationAcceptTask.cancel(true);
+										}
+									}
+								}, 10000);
 							} else {
 								Log.d(TAG, "invitationAcceptTask!!" + entityIdstr + "," + notifiIdstr + "," + userId);
-								InvitationAcceptTask invitationAcceptTask = new InvitationAcceptTask();
+								final InvitationAcceptTask invitationAcceptTask = new InvitationAcceptTask();
 								invitationAcceptTask.execute(String.valueOf(position), entityIdstr, notifiIdstr,
 										userId, "invitation");
+								Handler handler = new Handler();
+								handler.postDelayed(new Runnable() {
+									@Override
+									public void run() {
+										if (invitationAcceptTask.getStatus() == AsyncTask.Status.RUNNING){
+											invitationAcceptTask.cancel(true);
+										}
+									}
+								}, 10000);
 							}
 						} else {
 							Toast.makeText(context, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
@@ -149,13 +165,31 @@ public class CustomNotificationAdapter extends BaseAdapter {
 						boolean bool = new ConDetect(context).isOnline();
 						if (bool) {
 							if (notifiType == 11) {
-								InvitationDeclineTask invitationDeclineTask = new InvitationDeclineTask();
+								final InvitationDeclineTask invitationDeclineTask = new InvitationDeclineTask();
 								invitationDeclineTask.execute(String.valueOf(position), entityIdstr, notifiIdstr,
 										"recomondation");
+								Handler handler = new Handler();
+								handler.postDelayed(new Runnable() {
+									@Override
+									public void run() {
+										if (invitationDeclineTask.getStatus() == AsyncTask.Status.RUNNING){
+											invitationDeclineTask.cancel(true);
+										}
+									}
+								}, 10000);
 							} else {
-								InvitationDeclineTask invitationDeclineTask = new InvitationDeclineTask();
+								final InvitationDeclineTask invitationDeclineTask = new InvitationDeclineTask();
 								invitationDeclineTask.execute(String.valueOf(position), entityIdstr, notifiIdstr,
 										"invitation");
+								Handler handler = new Handler();
+								handler.postDelayed(new Runnable() {
+									@Override
+									public void run() {
+										if (invitationDeclineTask.getStatus() == AsyncTask.Status.RUNNING){
+											invitationDeclineTask.cancel(true);
+										}
+									}
+								}, 10000);
 							}
 						} else {
 							Toast.makeText(context, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
@@ -226,7 +260,7 @@ public class CustomNotificationAdapter extends BaseAdapter {
 				} else if (status == 2) {
 					Toast.makeText(context, "You are not authorised to access this page!", Toast.LENGTH_LONG).show();
 				} else if (status == 3) {
-					Toast.makeText(context, "You are already connected", Toast.LENGTH_LONG).show();
+					Crouton.makeText(context, "You are already connected", Style.INFO).show();
 				} else if (status == 4) {
 					Toast.makeText(context, "You are not authorised to access this page!", Toast.LENGTH_LONG).show();
 				}
@@ -240,6 +274,13 @@ public class CustomNotificationAdapter extends BaseAdapter {
 				Log.d(TAG, "Invalid Server content accept!!");
 			}
 
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(context, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -300,6 +341,13 @@ public class CustomNotificationAdapter extends BaseAdapter {
 				Log.d(TAG, "Invalid Server content decline!!");
 			}
 
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(context, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 
 	}

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,11 +44,11 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	int position = 0;
 	String userName = "",toWhomName;
 
-	public AutoCompleteRelationArrayAdapter(Context context, int layoutResourceId, ArrayList<MyObject> data) {
+	public AutoCompleteRelationArrayAdapter(Activity context, int layoutResourceId, ArrayList<MyObject> data) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.mContext = context;
-		this.activity = (Activity) context;
+		this.activity = context;
 		this.data = data;
 		sharedPreferences = this.mContext.getApplicationContext().getSharedPreferences(
 				mContext.getPackageName() + mContext.getResources().getString(R.string.USER_PREFERENCES),
@@ -109,7 +110,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 					userName=objectItem.objectName;
 					if (objectItem.nodeid.equals(userId)) {
 						Log.d(TAG, "You  invited :" + objectItem.objectName);
-						CreateRelationTask cRT1 = new CreateRelationTask();
+						final CreateRelationTask cRT1 = new CreateRelationTask();
 						String sessionname = sharedPreferences.getString("sessionname", "Not Available");
 						Log.d("CreateRelation1", "Values : " + objectItem.objectId + ", " + userId + ", "
 								+ objectItem.relationid + ", " + objectItem.objectName);
@@ -117,9 +118,18 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 						//AutoCompleteRelationArrayAdapter.this.userName = userName.getText().toString() ;
 						
 						cRT1.execute("exist", objectItem.objectId, userId, objectItem.relationid, sessionname, userId);
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (cRT1.getStatus() == AsyncTask.Status.RUNNING){
+									cRT1.cancel(true);
+								}
+							}
+						}, 10000);
 						
 					} else {
-						CreateRelationTask cRT3 = new CreateRelationTask();
+						final CreateRelationTask cRT3 = new CreateRelationTask();
 						String sessionname = sharedPreferences.getString("sessionname", "Not Available");
 						Log.d("CreateRelation2", "Values" + objectItem.objectId + ", " + objectItem.nodeid + ", "
 								+ objectItem.relationid + ", " + objectItem.objectName + "," + userId + ","
@@ -128,6 +138,15 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 						//AutoCompleteRelationArrayAdapter.this.userName = userName.getText().toString() ;
 						cRT3.execute("others", objectItem.objectId, objectItem.nodeid, objectItem.relationid,
 								sessionname, objectItem.objectName, userId);
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (cRT3.getStatus() == AsyncTask.Status.RUNNING){
+									cRT3.cancel(true);
+								}
+							}
+						}, 10000);
 					}
 				}
 			});
@@ -151,7 +170,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			pDialog = new ProgressDialog(mContext);
-			pDialog.setMessage("Fetching profile details...");
+			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -202,9 +221,8 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 								//AutoCompleteRelationArrayAdapter.this.userName;
 						Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
 					} else if (request_type == 2) {
-						String recommendedUserName = userName;
-						String nodeName = sharedPreferences.getString("node_first_name", " ") + " " + sharedPreferences.getString("node_last_name", " ");
-						Crouton.makeText(activity, "You have successfully recommended " + recommendedUserName + " to " + nodeName + " for " + relationship_type + " relation.", Style.INFO).show();
+						String recommendedUserName = sharedPreferences.getString("node_first_name", " ") + " " + sharedPreferences.getString("node_last_name", " ");
+						Crouton.makeText(activity, "You have successfully recommended " + nodeName + " to " + recommendedUserName + " for " + relationship_type + " relation.", Style.INFO).show();
 					}
 					//Toast.makeText(mContext, "You have successfully invited ", Toast.LENGTH_SHORT).show();
 					((MainActivity) mContext).changeFragment("HomeFragment");
@@ -227,6 +245,13 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 				Toast.makeText(mContext, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 }

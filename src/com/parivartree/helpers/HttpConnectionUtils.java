@@ -1,6 +1,7 @@
 package com.parivartree.helpers;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +16,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -30,7 +35,7 @@ public class HttpConnectionUtils {
 	private static String TAG = "HttpConnecntionUtils";
 
 	public static String getProfileResponse(String userId, String url) {
-
+		String responseBody = "";
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
 		// HttpPost httpPost = new HttpPost(url);
 		// HttpGet httpGet = new HttpGet(url);
@@ -47,19 +52,36 @@ public class HttpConnectionUtils {
 		HttpGet httpGet = new HttpGet(url + "?" + paramsString);
 		Log.d(TAG, "Profile - " + url + "?" + paramsString);
 
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
+	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+	      httpGet.setParams(params);
+	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+	          .getConnectionTimeout(params)));
+	      Log.d("socket timeout",
+	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
+
 		HttpResponse response = null;
 
 		try {
 			response = httpClient.execute(httpGet);
-		} catch (ClientProtocolException e) {
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		String responseBody = "";
 
 		try {
 			if (response != null && response.getEntity() != null) {
@@ -77,7 +99,7 @@ public class HttpConnectionUtils {
 	}
 
 	public static String getCommunityResponse(String religionId, String url) {
-
+		String responseBody = "";
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
 		// HttpPost httpPost = new HttpPost(url);
 		// HttpGet httpGet = new HttpGet(url);
@@ -94,19 +116,36 @@ public class HttpConnectionUtils {
 		HttpGet httpGet = new HttpGet(url + "?" + paramsString);
 		Log.d(TAG, "Profile - " + url + "?" + paramsString);
 
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
+	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+	      httpGet.setParams(params);
+	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+	          .getConnectionTimeout(params)));
+	      Log.d("socket timeout",
+	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
+
 		HttpResponse response = null;
 
 		try {
 			response = httpClient.execute(httpGet);
-		} catch (ClientProtocolException e) {
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		String responseBody = "";
 
 		try {
 			if (response != null && response.getEntity() != null) {
@@ -152,10 +191,18 @@ public class HttpConnectionUtils {
 	}
 
 	public static String getEditProfileResponse(UserProfile userProfile, String url) {
-
+		String responseBody = "";
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
 		HttpPost httpPost = new HttpPost(url);
-
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
+	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+	      httpPost.setParams(params);
+	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+	          .getConnectionTimeout(params)));
+	      Log.d("socket timeout",
+	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
+	      
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -196,6 +243,15 @@ public class HttpConnectionUtils {
 
 		try {
 			response = httpClient.execute(httpPost);
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -203,8 +259,6 @@ public class HttpConnectionUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		String responseBody = "";
 
 		try {
 			if (response != null && response.getEntity() != null) {
@@ -222,10 +276,17 @@ public class HttpConnectionUtils {
 	}
 
 	public static String getReligionResponse(String url) {
-
+		String responseBody = "";
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
 		HttpPost httpPost = new HttpPost(url);
-
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
+	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+	      httpPost.setParams(params);
+	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+	          .getConnectionTimeout(params)));
+	      Log.d("socket timeout",
+	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -244,6 +305,15 @@ public class HttpConnectionUtils {
 
 		try {
 			response = httpClient.execute(httpPost);
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -251,8 +321,6 @@ public class HttpConnectionUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		String responseBody = "";
 
 		try {
 			if (response != null && response.getEntity() != null) {
@@ -270,10 +338,17 @@ public class HttpConnectionUtils {
 	}
 
 	public static String getGothraResponse(String url) {
-
+		String responseBody = "";
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
 		HttpPost httpPost = new HttpPost(url);
-
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
+	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+	      httpPost.setParams(params);
+	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+	          .getConnectionTimeout(params)));
+	      Log.d("socket timeout",
+	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -292,6 +367,15 @@ public class HttpConnectionUtils {
 
 		try {
 			response = httpClient.execute(httpPost);
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -299,9 +383,7 @@ public class HttpConnectionUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		String responseBody = "";
-
+		
 		try {
 			if (response != null && response.getEntity() != null) {
 				responseBody = EntityUtils.toString(response.getEntity());
@@ -318,10 +400,17 @@ public class HttpConnectionUtils {
 	}
 
 	public static String getMyTreeResponse(String nodeid, String userid, String url) {
-
+		String responseBody = "";
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
 		HttpPost httpPost = new HttpPost(url);
-
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
+	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+	      httpPost.setParams(params);
+	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+	          .getConnectionTimeout(params)));
+	      Log.d("socket timeout",
+	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -342,6 +431,15 @@ public class HttpConnectionUtils {
 
 		try {
 			response = httpClient.execute(httpPost);
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -349,8 +447,6 @@ public class HttpConnectionUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		String responseBody = "";
 
 		try {
 			if (response != null && response.getEntity() != null) {
@@ -630,7 +726,8 @@ public class HttpConnectionUtils {
 		nameValuePair.add(new BasicNameValuePair("uid", uid));
 		return processHTTPPostExecution(url, nameValuePair);
 	}
-	public static String getPlacesResponse(String inputText, String key) {	  
+	public static String getPlacesResponse(String inputText, String key) {	 
+		String responseBody = "";
 		  HttpClient httpClient = HttpClientSingleTon.getInstance();
 		  // HttpPost httpPost = new HttpPost(url);
 		  // HttpGet httpGet = new HttpGet(url);
@@ -649,23 +746,36 @@ public class HttpConnectionUtils {
 		  String paramsString = URLEncodedUtils.format(nameValuePair, "UTF-8");
 		  Log.d(TAG, "getPlacesResponse url - " + url + "?" + paramsString);
 		  HttpGet httpGet = new HttpGet(url + "?" + paramsString);
-		  
-		  
-		  String responseBody = "";
-		  HttpResponse response = null;
-		  
-		  
-		  try {
-		   response = httpClient.execute(httpGet);
-		  } catch (ClientProtocolException e) {
-		   // TODO Auto-generated catch block
-		   e.printStackTrace();
-		  } catch (IOException e) {
-		   // TODO Auto-generated catch block
-		   e.printStackTrace();
-		  }
-		  
-		  
+		  HttpParams params = new BasicHttpParams();
+			HttpConnectionParams.setConnectionTimeout(params, 10000);
+		      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+		      httpGet.setParams(params);
+		      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+		          .getConnectionTimeout(params)));
+		      Log.d("socket timeout",
+		          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
+
+			HttpResponse response = null;
+
+			try {
+				response = httpClient.execute(httpGet);
+			}catch (ConnectTimeoutException e) {
+				// TODO Auto-generated catch block
+				responseBody = "timeout";
+				e.printStackTrace();
+			}
+			catch (SocketTimeoutException e) {
+				// TODO Auto-generated catch block
+				responseBody = "timeout";
+				e.printStackTrace();
+			}
+			catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
 		  
 		  try {
 		   if (response != null && response.getEntity() != null) {
@@ -684,10 +794,18 @@ public class HttpConnectionUtils {
 		 
 	// common method for http execution
 	private static String processHTTPPostExecution(String url, List<NameValuePair> nameValuePair) {
+		String responseBody = "";
 		Log.d(TAG, "url -" + url);
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
 		HttpPost httpPost = new HttpPost(url);
-
+//		HttpParams params = new BasicHttpParams();
+//		HttpConnectionParams.setConnectionTimeout(params, 10000);
+//	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+//	      httpPost.setParams(params);
+//	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+//	          .getConnectionTimeout(params)));
+//	      Log.d("socket timeout",
+//	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -700,6 +818,15 @@ public class HttpConnectionUtils {
 		}
 		try {
 			response = httpClient.execute(httpPost);
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -707,8 +834,6 @@ public class HttpConnectionUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		String responseBody = "";
 
 		try {
 			if (response != null && response.getEntity() != null) {
@@ -726,7 +851,7 @@ public class HttpConnectionUtils {
 	}
 
 	public static String autoGenerateEmailResponse(String url) {
-
+		String responseBody = "";
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
 		// HttpPost httpPost = new HttpPost(url);
 		// HttpGet httpGet = new HttpGet(url);
@@ -737,20 +862,36 @@ public class HttpConnectionUtils {
 
 		HttpGet httpGet = new HttpGet(url);
 		Log.d(TAG, "relation auto email - " + url);
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
+	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
+	      httpGet.setParams(params);
+	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
+	          .getConnectionTimeout(params)));
+	      Log.d("socket timeout",
+	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 
 		HttpResponse response = null;
 
 		try {
 			response = httpClient.execute(httpGet);
-		} catch (ClientProtocolException e) {
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		String responseBody = "";
 
 		try {
 			if (response != null && response.getEntity() != null) {

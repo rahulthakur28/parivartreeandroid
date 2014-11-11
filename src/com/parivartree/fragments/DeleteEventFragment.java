@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,6 +18,7 @@ import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -30,9 +30,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,18 +42,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
-import com.parivartree.ForgotPasswordActivity.ForgotTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.Event;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class DeleteEventFragment extends Fragment implements OnClickListener {
 	private String TAG = "DeleteEventFragment";
 	private ImageView imageViewDelete;
-	private TextView txtEevntName, txtLocation, txtDateTime, txtYourName, txtDialogDelete, txtEevntDescription;
-	private Button btnDeleteEvent, btnEditEvent, btnDialogdelete, btnDialogCancel;
-	private String eventIdbd, eventNamebd, eventDatebd, eventDescritionbd, locationbd, time, timeHourbd, timeMinbd,
-			yourNamebd, reachListbd, eventListbd;
+	private TextView txtEevntName, txtLocation, txtDateTime, txtYourName, txtEevntDescription;
+	private Button btnDeleteEvent, btnEditEvent;
+	private String eventIdbd, eventNamebd, eventDatebd, eventDescritionbd, locationbd, time,
+			yourNamebd;
 	int eventNamePos, eventReachPos;
 	private String userId = null;
 	// private HashMap<Integer, String> joineesHash;
@@ -125,8 +127,17 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 
 		boolean bool = new ConDetect(activity).isOnline();
 		if (bool) {
-			GetJoineesTask getJoineesTask = new GetJoineesTask();
+			final GetJoineesTask getJoineesTask = new GetJoineesTask();
 			getJoineesTask.execute(eventIdbd);
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (getJoineesTask.getStatus() == AsyncTask.Status.RUNNING){
+						getJoineesTask.cancel(true);
+					}
+				}
+			}, 10000);
 		} else {
 			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
@@ -171,8 +182,17 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			// showdeleteDialog(eventIdbd,eventNamebd);
 			boolean bool = new ConDetect(activity).isOnline();
 			if (bool) {
-				DeleteEventsTask deleteEventTask = new DeleteEventsTask();
+				final DeleteEventsTask deleteEventTask = new DeleteEventsTask();
 				deleteEventTask.execute(eventIdbd, userId);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (deleteEventTask.getStatus() == AsyncTask.Status.RUNNING){
+							deleteEventTask.cancel(true);
+						}
+					}
+				}, 10000);
 			} else {
 				Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
@@ -266,6 +286,13 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			}
 
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class GetJoineesTask extends AsyncTask<String, Void, String> {
@@ -303,6 +330,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 				Log.d(TAG, "onpostexecute" + responseResult);
 				if (responseResult.equals("success")) {
 					Log.d(TAG, "onpostexecute : got my joinees");
+					joineesArrayList.clear();
 					JSONArray dataArray = eventListResponseObject.getJSONArray("data");
 					for (int i = 0; i < dataArray.length(); i++) {
 						JSONObject c = dataArray.getJSONObject(i);
@@ -331,6 +359,13 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 				Log.d(TAG, "Invalid Server content joinees!!");
 			}
 
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 

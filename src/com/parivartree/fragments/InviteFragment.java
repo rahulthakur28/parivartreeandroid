@@ -1,7 +1,6 @@
 package com.parivartree.fragments;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,14 +11,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -31,10 +29,12 @@ import android.widget.Toast;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
 import com.parivartree.adapters.AutocompleteCustomArrayAdapter;
-import com.parivartree.customviews.CustomAutoCompleteView;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.MyObject;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class InviteFragment extends Fragment {
 	ArrayAdapter<MyObject> myAdapter;
@@ -113,7 +113,16 @@ EditText searchNameEdit;
 					}
 					Log.d("Search user", "AsyncTask calling");
 					searchUserTask = new SearchUserTask();
-					searchUserTask.execute(s.toString(), userId);
+					searchUserTask.execute(s.toString(), userId);			
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (searchUserTask.getStatus() == AsyncTask.Status.RUNNING){
+								searchUserTask.cancel(true);
+							}
+						}
+					}, 10000);
 				} else {
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
@@ -227,7 +236,12 @@ EditText searchNameEdit;
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
-
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	@Override

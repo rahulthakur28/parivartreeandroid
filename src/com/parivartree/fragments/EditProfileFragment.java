@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,10 +45,13 @@ import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.SpinnerItem;
 import com.parivartree.models.UserProfile;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class EditProfileFragment extends Fragment implements OnClickListener, OnItemSelectedListener {
 	boolean set = false;
-	private EditText editTextFirstName, editTextLastName, editTextGender, editTextPincode, editTextHometown,
-			editTextMobile, editTextWeddingDate, editTextReligion, editTextCommunity, editTextHomeTown, editTextGothra,
+	private EditText editTextFirstName, editTextLastName, editTextGender, editTextPincode,
+			editTextMobile, editTextWeddingDate, editTextHomeTown,
 			editTextProfession, editTextDobdate, editTextAddGothra, editTextAddCommunity;
 	TextView textViewName, textViewEmail;
 	// editTextEmail
@@ -155,11 +159,29 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
-			ReligionTask rT = new ReligionTask();
+			final ReligionTask rT = new ReligionTask();
 			rT.execute();
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (rT.getStatus() == AsyncTask.Status.RUNNING){
+						rT.cancel(true);
+					}
+				}
+			}, 10000);
 
-			GothraTask gT = new GothraTask();
+			final GothraTask gT = new GothraTask();
 			gT.execute();
+			Handler handler1 = new Handler();
+			handler1.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (gT.getStatus() == AsyncTask.Status.RUNNING){
+						gT.cancel(true);
+					}
+				}
+			}, 10000);
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
@@ -182,6 +204,15 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					searchPlacesTask = new SearchPlacesTask();
 					searchPlacesTask.execute(editTextLocality.getText().toString().trim(),
 							getResources().getString(R.string.places_key));
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (searchPlacesTask.getStatus() == AsyncTask.Status.RUNNING){
+								searchPlacesTask.cancel(true);
+							}
+						}
+					}, 10000);
 				} else {
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
@@ -373,6 +404,12 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class ReligionTask extends AsyncTask<String, String, String> {
@@ -456,6 +493,12 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -553,6 +596,12 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class GothraTask extends AsyncTask<String, String, String> {
@@ -615,8 +664,17 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					boolean bool = new ConDetect(getActivity()).isOnline();
 					if (bool) {
 						// Create object of AsycTask and execute
-						ProfileTask pT = new ProfileTask();
+						final ProfileTask pT = new ProfileTask();
 						pT.execute(nodeId, userId);
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (pT.getStatus() == AsyncTask.Status.RUNNING){
+									pT.cancel(true);
+								}
+							}
+						}, 10000);
 					} else {
 						Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 					}
@@ -632,6 +690,12 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -685,8 +749,17 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			boolean bool = new ConDetect(getActivity()).isOnline();
 			if (bool) {
 				// Create object of AsycTask and execute
-				SaveProfileTask sPT = new SaveProfileTask();
+				final SaveProfileTask sPT = new SaveProfileTask();
 				sPT.execute(changedUserProfile);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (sPT.getStatus() == AsyncTask.Status.RUNNING){
+							sPT.cancel(true);
+						}
+					}
+				}, 10000);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
@@ -708,7 +781,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			pDialog = new ProgressDialog(activity);
-			pDialog.setMessage("Loggin in...");
+			pDialog.setMessage("submitting data...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -749,6 +822,13 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 
 	}
@@ -800,6 +880,12 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	private void savedSuccessfully() {
@@ -821,8 +907,17 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			boolean bool = new ConDetect(getActivity()).isOnline();
 			if (bool) {
 				// Create object of AsycTask and execute
-				CommunityTask communityTask = new CommunityTask();
+				final CommunityTask communityTask = new CommunityTask();
 				communityTask.execute("" + religionList.get(spos).getId());
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (communityTask.getStatus() == AsyncTask.Status.RUNNING){
+							communityTask.cancel(true);
+						}
+					}
+				}, 10000);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}

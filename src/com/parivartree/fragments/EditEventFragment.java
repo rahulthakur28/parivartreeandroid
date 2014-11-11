@@ -6,6 +6,7 @@ import java.util.Calendar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -36,10 +38,11 @@ import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.R;
 import com.parivartree.adapters.LocationHintAdapter;
-import com.parivartree.fragments.CreateEventFragment.SearchPlacesTask;
-import com.parivartree.fragments.DeleteEventFragment.GetJoineesTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class EditEventFragment extends Fragment implements OnClickListener, ValidationListener {
 
@@ -68,7 +71,7 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 	private String userId = null, sessionname;
 	// Saripaar validator
 	Validator validator;
-
+Activity activity;
 	public EditEventFragment() {
 
 	}
@@ -172,6 +175,16 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 					searchPlacesTask = new SearchPlacesTask();
 					searchPlacesTask.execute(editLocation.getText().toString().trim(),
 							getResources().getString(R.string.places_key));
+
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (searchPlacesTask.getStatus() == AsyncTask.Status.RUNNING){
+								searchPlacesTask.cancel(true);
+							}
+						}
+					}, 10000);
 				} else {
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
@@ -192,7 +205,12 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 		populateViews();
 		return rootView;
 	}
-
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		activity= getActivity();
+	}
 	private void populateViews() {
 		int day, month, year;
 		Bundle bndle = getArguments();
@@ -328,6 +346,13 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 			}
 
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
@@ -378,6 +403,12 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -455,11 +486,20 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 			boolean bool = new ConDetect(getActivity()).isOnline();
 			if (bool) {
 				// Create object of AsycTask and execute
-				EditEventTask editEventTask = new EditEventTask();
+				final EditEventTask editEventTask = new EditEventTask();
 				editEventTask.execute(eventIdbd, eventnumber, editEventName.getText().toString(), editEventDate
 						.getText().toString(), editEventDescrition.getText().toString(), editLocation.getText()
 						.toString(), reachnumber, spinnerEventEditHour.getSelectedItem().toString(),
 						spinnerEventEditMin.getSelectedItem().toString(), sessionname, userId);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (editEventTask.getStatus() == AsyncTask.Status.RUNNING){
+							editEventTask.cancel(true);
+						}
+					}
+				}, 10000);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
