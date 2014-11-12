@@ -7,12 +7,13 @@ import java.util.Date;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,9 @@ import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NotificationModel;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class NotificationFragment extends Fragment {
 	private String TAG = "NotificationFragment";
 	private String userId;
@@ -37,8 +41,8 @@ public class NotificationFragment extends Fragment {
 	CustomNotificationAdapter notificationCustomAdapter;
 	private SharedPreferences sharedPreferences;
 	NotificationModel notifiObject;
-
-	BroadcastReceiver mBroadcastReceiver;
+	Activity activity;
+	//BroadcastReceiver mBroadcastReceiver;
 
 	public NotificationFragment() {
 	}
@@ -67,6 +71,12 @@ public class NotificationFragment extends Fragment {
 		// viewAll.setOnClickListener(this);
 		return rootView;
 	}
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		activity= getActivity();
+	}
 
 	@Override
 	public void onResume() {
@@ -74,8 +84,17 @@ public class NotificationFragment extends Fragment {
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
-			GetNotificationTask getnotificationTask = new GetNotificationTask();
+			final GetNotificationTask getnotificationTask = new GetNotificationTask();
 			getnotificationTask.execute(userId);
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (getnotificationTask.getStatus() == AsyncTask.Status.RUNNING){
+						getnotificationTask.cancel(true);
+					}
+				}
+			}, 10000);
 
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
@@ -179,7 +198,7 @@ public class NotificationFragment extends Fragment {
 					// Toast.LENGTH_SHORT).show();
 				}
 
-			} catch (Exception e) {
+			}catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ",
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
@@ -189,6 +208,13 @@ public class NotificationFragment extends Fragment {
 				Log.d(TAG, "Invalid Server content from Notification!!");
 			}
 
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -271,8 +297,17 @@ public class NotificationFragment extends Fragment {
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
-			GetNotificationTask getnotificationTask = new GetNotificationTask();
+			final GetNotificationTask getnotificationTask = new GetNotificationTask();
 			getnotificationTask.execute(userId);
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (getnotificationTask.getStatus() == AsyncTask.Status.RUNNING){
+						getnotificationTask.cancel(true);
+					}
+				}
+			}, 10000);
 
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();

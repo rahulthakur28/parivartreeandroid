@@ -10,13 +10,14 @@ import java.util.Locale;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,14 +32,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
 import com.parivartree.adapters.CustomAdapter;
-import com.parivartree.fragments.AllEventsFragment.GetJoineesTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.Event;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class CommunityFragment extends Fragment implements OnClickListener, OnItemClickListener {
 	private String TAG = "CommunityFragment";
@@ -53,6 +55,7 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 	ArrayList<Event> eventArrayList;
 	CustomAdapter listAdapter;
 	String whichEvent;
+	Activity activity;
 	RelativeLayout txtmyevntLayout, txtupcmgevntLayout, txtrecentevntLayout;
 
 	public CommunityFragment() {
@@ -96,13 +99,27 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 		getMyEvent();
 		return rootView;
 	}
-
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		activity= getActivity();
+	}
 	private void getMyEvent() {
 		whichEvent = "myevents";
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
-			GetMyEventsTask myEventsTask1 = new GetMyEventsTask();
+			final GetMyEventsTask myEventsTask1 = new GetMyEventsTask();
 			myEventsTask1.execute("myevents", userId);
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (myEventsTask1.getStatus() == AsyncTask.Status.RUNNING){
+						myEventsTask1.cancel(true);
+					}
+				}
+			}, 10000);
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
@@ -185,8 +202,17 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 			whichEvent = "upcomingevents";
 			boolean bool = new ConDetect(getActivity()).isOnline();
 			if (bool) {
-				GetMyEventsTask myEventsTask2 = new GetMyEventsTask();
+				final GetMyEventsTask myEventsTask2 = new GetMyEventsTask();
 				myEventsTask2.execute("upcomingevents", userId);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (myEventsTask2.getStatus() == AsyncTask.Status.RUNNING){
+							myEventsTask2.cancel(true);
+						}
+					}
+				}, 10000);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
@@ -199,8 +225,17 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 
 			boolean bool1 = new ConDetect(getActivity()).isOnline();
 			if (bool1) {
-				GetMyEventsTask myEventsTask3 = new GetMyEventsTask();
+				final GetMyEventsTask myEventsTask3 = new GetMyEventsTask();
 				myEventsTask3.execute("upcomingevents", userId);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (myEventsTask3.getStatus() == AsyncTask.Status.RUNNING){
+							myEventsTask3.cancel(true);
+						}
+					}
+				}, 10000);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
@@ -393,6 +428,13 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 				Log.d(TAG, "Invalid Server content!!");
 			}
 
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 }

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +27,6 @@ import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
 import com.mobsandgeeks.saripaar.annotation.Password;
-import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.R;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
@@ -168,7 +168,7 @@ public class SettingsFragment extends Fragment implements OnClickListener, Valid
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			pDialog = new ProgressDialog(getActivity());
-			pDialog.setMessage("Loading...");
+			pDialog.setMessage("Setting Password...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -210,6 +210,14 @@ public class SettingsFragment extends Fragment implements OnClickListener, Valid
 			}
 
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
+
 	}
 
 	@Override
@@ -223,8 +231,17 @@ public class SettingsFragment extends Fragment implements OnClickListener, Valid
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
-			SetPasswordTask setPasswordTask = new SetPasswordTask();
+			final SetPasswordTask setPasswordTask = new SetPasswordTask();
 			setPasswordTask.execute(userId, editNewPassword.getText().toString().trim());
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (setPasswordTask.getStatus() == AsyncTask.Status.RUNNING){
+						setPasswordTask.cancel(true);
+					}
+				}
+			}, 10000);
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}

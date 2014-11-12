@@ -134,11 +134,11 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 			if (gender == 1) {
 				holder.image.setBorderColor(context.getResources().getColor(R.color.pt_blue));
 				UrlImageViewHelper.setUrlDrawable(holder.image, "https://www.parivartree.com/profileimages/thumbs/"
-						+ id + "PROFILE.jpeg", context.getResources().getDrawable(R.drawable.male), 60000);
+						+ id + "PROFILE.jpeg", context.getResources().getDrawable(R.drawable.male), 10000);
 			} else {
 				holder.image.setBorderColor(Color.MAGENTA);
 				UrlImageViewHelper.setUrlDrawable(holder.image, "https://www.parivartree.com/profileimages/thumbs/"
-						+ id + "PROFILE.jpeg", context.getResources().getDrawable(R.drawable.female), 60000);
+						+ id + "PROFILE.jpeg", context.getResources().getDrawable(R.drawable.female), 10000);
 			}
 			Log.d("ImmediateFamilyAdapter", "image set: gender - " + gender);
 			Log.d("ImmediateFamilyAdapter---------------", "Firstname - "

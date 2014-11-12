@@ -70,7 +70,6 @@ public class CreatePhotosFragment extends Fragment implements OnClickListener,  
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(R.layout.fragment_create_photos, container, false);
-		activity = getActivity();
 		context = getActivity().getApplicationContext();
 		sharedPreferences = activity.getSharedPreferences(
 				activity.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
@@ -102,7 +101,12 @@ public class CreatePhotosFragment extends Fragment implements OnClickListener,  
 		spinnerReach.setAdapter(spinnerReachAdapter);
 		return rootView;
 	}
-
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		activity= getActivity();
+	}
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub	

@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,7 +79,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
 	String nodeId;
-	String userId, ownerid;
+	String userId;
 	String sessionname;
 	String view;
 	View viewEditProfile, viewEditfamily, viewEditAlbum ,viewImmediate;
@@ -196,7 +197,8 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		userId = sharedPreferences.getString("user_id", "0");
 		nodeId = sharedPreferences.getString("node_id", userId);
 		sessionname = sharedPreferences.getString("sessionname", "Unknown");
-
+		
+		
 		horizontialListView = (HorizontalListView) rootView.findViewById(R.id.horizontalScrollViewFamilyMembers);
 		immediateFamily = new ArrayList<HashMap<String, String>>();
 		ifa = new ImmediateFamilyAdapter(context, immediateFamily);
@@ -214,12 +216,18 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				if ((btn.getText().toString().trim()).equals("Make Me Alive")) {
 					boolean bool = new ConDetect(getActivity()).isOnline();
 					if (bool) {
-
-						// change if an owner with id
-						ownerid = userId;
 						// Create object of AsycTask and execute
-						MakeAliveTask MakeAliveTask = new MakeAliveTask();
-						MakeAliveTask.execute(ownerid, userId);
+						final MakeAliveTask MakeAliveTask = new MakeAliveTask();
+						MakeAliveTask.execute(nodeId,userId);
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (MakeAliveTask.getStatus() == AsyncTask.Status.RUNNING){
+									MakeAliveTask.cancel(true);
+								}
+							}
+						}, 10000);
 					} else {
 						Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 					}
@@ -243,8 +251,17 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 												+ "," + sessionname);
 										if (flag == 0) {
 											flag = 1;
-											DeceasedUserTask deceasedTask = new DeceasedUserTask();
+											final DeceasedUserTask deceasedTask = new DeceasedUserTask();
 											deceasedTask.execute(userId, nodeId, date, sessionname);
+											Handler handler = new Handler();
+											handler.postDelayed(new Runnable() {
+												@Override
+												public void run() {
+													if (deceasedTask.getStatus() == AsyncTask.Status.RUNNING){
+														deceasedTask.cancel(true);
+													}
+												}
+											}, 10000);
 										}
 									} else {
 										Toast.makeText(getActivity(), "!No Internet Connection,Try again",
@@ -282,8 +299,17 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 							// Create object of AsycTask and execute
 							if (flag == 0) {
 								flag = 1;
-								DeleteUserTask deleteUserTask = new DeleteUserTask();
+								final DeleteUserTask deleteUserTask = new DeleteUserTask();
 								deleteUserTask.execute(nodeId, userId);
+								Handler handler = new Handler();
+								handler.postDelayed(new Runnable() {
+									@Override
+									public void run() {
+										if (deleteUserTask.getStatus() == AsyncTask.Status.RUNNING){
+											deleteUserTask.cancel(true);
+										}
+									}
+								}, 10000);
 							}
 						} else {
 							Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG)
@@ -307,10 +333,29 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
-			ImmediateFamilyTask iFT = new ImmediateFamilyTask();
+			final ImmediateFamilyTask iFT = new ImmediateFamilyTask();
 			iFT.execute(nodeId);
-			ProfileTask pT = new ProfileTask();
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (iFT.getStatus() == AsyncTask.Status.RUNNING){
+						iFT.cancel(true);
+					}
+				}
+			}, 10000);
+			
+			final ProfileTask pT = new ProfileTask();
 			pT.execute(nodeId,userId);
+			Handler handler1 = new Handler();
+			handler1.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (pT.getStatus() == AsyncTask.Status.RUNNING){
+						pT.cancel(true);
+					}
+				}
+			}, 10000);
 
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
@@ -667,6 +712,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						textViewUpdatedBy.setVisibility(View.VISIBLE);
 						btndeceased.setText("Make Me Alive");
 
+					}else if ((!deceased.equals("NA")) && (!userId.equals(nodeId)) && (showdeceased.equals("1")) && (view.equals("1"))) {
+						btndeceased.setVisibility(View.VISIBLE);
+						btndeleteuser.setVisibility(View.VISIBLE);
+						textViewDeceasedDate.setVisibility(View.VISIBLE);
+						textViewUpdatedBy.setVisibility(View.VISIBLE);
+						btndeceased.setText("Make Me Alive");
+
 					} else if ((!deceased.equals("NA")) && (!userId.equals(nodeId)) && (showdeceased.equals("1"))) {
 						btndeceased.setVisibility(View.VISIBLE);
 						btndeleteuser.setVisibility(View.VISIBLE);
@@ -680,7 +732,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						textViewDeceasedDate.setVisibility(View.VISIBLE);
 						textViewUpdatedBy.setVisibility(View.VISIBLE);
 
-					}
+					} 
 					if (deceasedDate.equals("NA")) {
 
 					} else {
@@ -700,6 +752,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -764,6 +823,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class DeleteUserTask extends AsyncTask<String, String, String> {
@@ -819,6 +885,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class MakeAliveTask extends AsyncTask<String, String, String> {
@@ -873,6 +946,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	@Override
@@ -908,7 +988,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		} else if (v.getId() == R.id.imageviewmobile) {
 			showPrivacyDialog("mobile",mobileprivacy);
 		} else if (v.getId() == R.id.imageviewrelation) {
-			showPrivacyDialog("maritalstatus",religionprivacy);
+			showPrivacyDialog("maritalstatus",maritalStatusprivacy);
 		} else if (v.getId() == R.id.imageviewweddate) {
 			showPrivacyDialog("wedding_date",weddingDateprivacy);
 		} else if (v.getId() == R.id.imageviewreligion) {
@@ -963,8 +1043,17 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			Log.d("base64 image string------", finalimageString);
 
 			// execute asyncTask for image upload
-			ImageUploadTask imageUploadTask = new ImageUploadTask();
-			imageUploadTask.execute(userId, finalimageString);
+			final ImageUploadTask imageUploadTask = new ImageUploadTask();
+			imageUploadTask.execute(userId, finalimageString);			
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (imageUploadTask.getStatus() == AsyncTask.Status.RUNNING){
+						imageUploadTask.cancel(true);
+					}
+				}
+			}, 10000);
 			// At the end remember to close the cursor or you will end with the
 			// RuntimeException!
 			cursor.close();
@@ -1048,6 +1137,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class ImmediateFamilyTask extends AsyncTask<String, String, String> {
@@ -1059,7 +1155,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			pDialog = new ProgressDialog(activity);
-			pDialog.setMessage("Fetching family details...");
+			pDialog.setMessage("Fetching Profile details...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -1140,6 +1236,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				Toast.makeText(context, "Invalid Server content - " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class FieldPrivacyTask extends AsyncTask<String, String, String> {
@@ -1189,6 +1292,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				Toast.makeText(context, "Invalid Server content - " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	private void showPrivacyDialog(final String fieldname,String setStr) {
@@ -1200,8 +1310,17 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			public void onClick(DialogInterface dialog, int item) {
 				// TODO Auto-generated method stub
 				Log.d("Field Privacy", "" + fieldname + "--------" + (item + 1) + "---------" + userId);
-				FieldPrivacyTask fieldPrivacyTask = new FieldPrivacyTask();
-				fieldPrivacyTask.execute(userId, fieldname, "" + (item + 1));
+				final FieldPrivacyTask fieldPrivacyTask = new FieldPrivacyTask();
+				fieldPrivacyTask.execute(nodeId, fieldname, "" + (item + 1));
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (fieldPrivacyTask.getStatus() == AsyncTask.Status.RUNNING){
+							fieldPrivacyTask.cancel(true);
+						}
+					}
+				}, 10000);
 				dialog.cancel();
 			}
 		});

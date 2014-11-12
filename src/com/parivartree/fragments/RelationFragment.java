@@ -100,56 +100,56 @@ public class RelationFragment extends Fragment implements OnClickListener {
 
 	}
 
-	public class ProfileTask extends AsyncTask<String, String, String> {
-
-		private ProgressDialog pDialog;
-
-		@Override
-		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-			pDialog = new ProgressDialog(getActivity());
-			pDialog.setMessage("Loading...");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(true);
-			pDialog.show();
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			// TODO Auto-generated method stub
-			return HttpConnectionUtils.getProfileResponse(
-					params[0],
-					getActivity().getResources().getString(R.string.hostname)
-							+ getResources().getString(R.string.url_view_profile));
-		}
-
-		@Override
-		protected void onPostExecute(String response) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(response);
-			pDialog.dismiss();
-			Log.i("Profile Fetch Response ", response);
-			try {
-				JSONObject loginResponseObject = new JSONObject(response);
-				String responseResult = loginResponseObject.getString("Status");
-				if (responseResult.equals("Success")) {
-					// TODO store the login response and
-					JSONArray data = loginResponseObject.getJSONArray("data");
-					JSONObject userProfileData = (JSONObject) data.get(0);
-					if (userProfileData.has("Gender")) {
-						String gender = userProfileData.getString("Gender");
-						sharedPreferencesEditor.putString("gender", gender);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			} catch (Exception e) {
-				for (StackTraceElement tempStack : e.getStackTrace()) {
-					Log.d("Exception thrown: ", "" + tempStack.getLineNumber() + " " + tempStack.getMethodName());
-				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
-				Log.d("profile", "Invalid Server content from Profile!!");
-			}
-		}
-	}
+//	public class ProfileTask extends AsyncTask<String, String, String> {
+//
+//		private ProgressDialog pDialog;
+//
+//		@Override
+//		protected void onPreExecute() {
+//			// TODO Auto-generated method stub
+//			super.onPreExecute();
+//			pDialog = new ProgressDialog(getActivity());
+//			pDialog.setMessage("Loading...");
+//			pDialog.setIndeterminate(false);
+//			pDialog.setCancelable(true);
+//			pDialog.show();
+//		}
+//
+//		@Override
+//		protected String doInBackground(String... params) {
+//			// TODO Auto-generated method stub
+//			return HttpConnectionUtils.getProfileResponse(
+//					params[0],
+//					getActivity().getResources().getString(R.string.hostname)
+//							+ getResources().getString(R.string.url_view_profile));
+//		}
+//
+//		@Override
+//		protected void onPostExecute(String response) {
+//			// TODO Auto-generated method stub
+//			super.onPostExecute(response);
+//			pDialog.dismiss();
+//			Log.i("Profile Fetch Response ", response);
+//			try {
+//				JSONObject loginResponseObject = new JSONObject(response);
+//				String responseResult = loginResponseObject.getString("Status");
+//				if (responseResult.equals("Success")) {
+//					// TODO store the login response and
+//					JSONArray data = loginResponseObject.getJSONArray("data");
+//					JSONObject userProfileData = (JSONObject) data.get(0);
+//					if (userProfileData.has("Gender")) {
+//						String gender = userProfileData.getString("Gender");
+//						sharedPreferencesEditor.putString("gender", gender);
+//						sharedPreferencesEditor.commit();
+//					}
+//				}
+//			} catch (Exception e) {
+//				for (StackTraceElement tempStack : e.getStackTrace()) {
+//					Log.d("Exception thrown: ", "" + tempStack.getLineNumber() + " " + tempStack.getMethodName());
+//				}
+//				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+//				Log.d("profile", "Invalid Server content from Profile!!");
+//			}
+//		}
+//	}
 }

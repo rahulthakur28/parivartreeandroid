@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,18 +25,21 @@ import com.parivartree.R;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.MyObject;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class AutocompleteCustomArrayAdapter extends ArrayAdapter<MyObject> {
 
 	final String TAG = "AutocompleteCustomArrayAdapter";
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
-	Context mContext;
+	Activity mContext;
 	int layoutResourceId;
 	ArrayList<MyObject> data = new ArrayList<MyObject>();
 	// MyObject[] data = null;
 	String userId;
 	LayoutInflater inflater;
-	public AutocompleteCustomArrayAdapter(Context mContext, int layoutResourceId, ArrayList<MyObject> data) {
+	public AutocompleteCustomArrayAdapter(Activity mContext, int layoutResourceId, ArrayList<MyObject> data) {
 		super(mContext, layoutResourceId, data);
 
 		this.layoutResourceId = layoutResourceId;
@@ -77,8 +82,17 @@ public class AutocompleteCustomArrayAdapter extends ArrayAdapter<MyObject> {
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					if (objectItem.objectStatus.equalsIgnoreCase("Unhide")) {
-						UnhideUserTask unhideTask = new UnhideUserTask();
+						final UnhideUserTask unhideTask = new UnhideUserTask();
 						unhideTask.execute(objectItem.objectId, sharedPreferences.getString("user_id", "0"));
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (unhideTask.getStatus() == AsyncTask.Status.RUNNING){
+									unhideTask.cancel(true);
+								}
+							}
+						}, 10000);
 					}
 				}
 			});
@@ -128,6 +142,12 @@ public class AutocompleteCustomArrayAdapter extends ArrayAdapter<MyObject> {
 				Toast.makeText(mContext, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(mContext, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 }

@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,7 +19,7 @@ import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.service.dreams.DreamService;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -31,9 +32,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,12 +43,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.R;
-import com.parivartree.ForgotPasswordActivity.ForgotTask;
-import com.parivartree.R.drawable;
-import com.parivartree.fragments.DeleteEventFragment.GetJoineesTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.Event;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 @SuppressLint("ResourceAsColor")
 public class AllEventsFragment extends Fragment implements OnClickListener {
@@ -64,6 +65,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 	LocationManager lm;
 	GoogleMap googleMap;
 	LinearLayout linear;
+	Activity activity;
 	private ArrayList<Event> joineesArrayList;
 
 	public AllEventsFragment() {
@@ -147,8 +149,17 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
-			GetJoineesTask getJoineesTask = new GetJoineesTask();
+			final GetJoineesTask getJoineesTask = new GetJoineesTask();
 			getJoineesTask.execute(eventIdbd);
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (getJoineesTask.getStatus() == AsyncTask.Status.RUNNING){
+						getJoineesTask.cancel(true);
+					}
+				}
+			}, 10000);
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
@@ -186,7 +197,12 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		
 		return rootView;
 	}
-
+@Override
+public void onActivityCreated(Bundle savedInstanceState) {
+	// TODO Auto-generated method stub
+	super.onActivityCreated(savedInstanceState);
+	activity= getActivity();
+}
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -213,8 +229,17 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		if (v.getId() == R.id.btnnotavailable) {
 			if (bool) {
 				// showsJoinDialog("decline",eventIdbd,eventAuthorId);
-				JoinEventsTask joinEventTask2 = new JoinEventsTask();
+				final JoinEventsTask joinEventTask2 = new JoinEventsTask();
 				joinEventTask2.execute("decline", eventIdbd, eventAuthorId, userId, sessionname);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (joinEventTask2.getStatus() == AsyncTask.Status.RUNNING){
+							joinEventTask2.cancel(true);
+						}
+					}
+				}, 10000);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
@@ -302,6 +327,13 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 			}
 
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class GetJoineesTask extends AsyncTask<String, Void, String> {
@@ -366,6 +398,13 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 				Log.d(TAG, "Invalid Server content joinees!!");
 			}
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	@SuppressLint("InflateParams")
@@ -417,63 +456,62 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		}
 	}
 	
-	private void showsJoinDialog(final String arg, final String id, final String authid) {
-		// Create Object of Dialog class
-		final Dialog join = new Dialog(getActivity());
-		// Set GUI of login screen
-		join.setContentView(R.layout.dialog_join);
-		join.setTitle("Fill");
-
-		// Init button of login GUI
-		btnDialogjoinok = (Button) join.findViewById(R.id.btndialogjoin);
-		btnDialogjoinCancel = (Button) join.findViewById(R.id.btnjoinCancel);
-		editDialogName = (EditText) join.findViewById(R.id.txtdialogname);
-
-		// Attached listener for login GUI button
-		btnDialogjoinok.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				dialogName = editDialogName.getText().toString();
-				boolean bool = new ConDetect(getActivity()).isOnline();
-				if (bool) {
-					if (dialogName.trim().length() > 0 && arg.equals("join")) {
-						JoinEventsTask joinEventTask = new JoinEventsTask();
-						joinEventTask.execute("join", id, authid, userId, dialogName);
-					}
-					if (dialogName.trim().length() > 0 && arg.equals("maybe")) {
-						JoinEventsTask joinEventTask = new JoinEventsTask();
-						joinEventTask.execute("maybe", id, authid, userId, dialogName);
-					}
-
-					if (dialogName.trim().length() > 0 && arg.equals("decline")) {
-						JoinEventsTask joinEventTask = new JoinEventsTask();
-						joinEventTask.execute("decline", id, authid, userId, dialogName);
-					}
-
-				} else {
-					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-				}
-				join.dismiss();
-			}
-		});
-		btnDialogjoinCancel.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				join.dismiss();
-			}
-		});
-		
-		// Make dialog box visible.
-		join.show();
-	}
+//	private void showsJoinDialog(final String arg, final String id, final String authid) {
+//		// Create Object of Dialog class
+//		final Dialog join = new Dialog(getActivity());
+//		// Set GUI of login screen
+//		join.setContentView(R.layout.dialog_join);
+//		join.setTitle("Fill");
+//
+//		// Init button of login GUI
+//		btnDialogjoinok = (Button) join.findViewById(R.id.btndialogjoin);
+//		btnDialogjoinCancel = (Button) join.findViewById(R.id.btnjoinCancel);
+//		editDialogName = (EditText) join.findViewById(R.id.txtdialogname);
+//
+//		// Attached listener for login GUI button
+//		btnDialogjoinok.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//
+//				dialogName = editDialogName.getText().toString();
+//				boolean bool = new ConDetect(getActivity()).isOnline();
+//				if (bool) {
+//					if (dialogName.trim().length() > 0 && arg.equals("join")) {
+//						JoinEventsTask joinEventTask = new JoinEventsTask();
+//						joinEventTask.execute("join", id, authid, userId, dialogName);
+//					}
+//					if (dialogName.trim().length() > 0 && arg.equals("maybe")) {
+//						JoinEventsTask joinEventTask = new JoinEventsTask();
+//						joinEventTask.execute("maybe", id, authid, userId, dialogName);
+//					}
+//
+//					if (dialogName.trim().length() > 0 && arg.equals("decline")) {
+//						JoinEventsTask joinEventTask = new JoinEventsTask();
+//						joinEventTask.execute("decline", id, authid, userId, dialogName);
+//					}
+//
+//				} else {
+//					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+//				}
+//				join.dismiss();
+//			}
+//		});
+//		btnDialogjoinCancel.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				join.dismiss();
+//			}
+//		});
+//		
+//		// Make dialog box visible.
+//		join.show();
+//	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		
 	}
-
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub

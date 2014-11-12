@@ -6,6 +6,7 @@ import java.util.Calendar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -28,21 +30,19 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
-import com.mobsandgeeks.saripaar.annotation.Password;
 import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.R;
-import com.parivartree.SignUpDetailsActivity;
-import com.parivartree.ForgotPasswordActivity.ForgotTask;
 import com.parivartree.adapters.LocationHintAdapter;
-import com.parivartree.fragments.SettingsFragment.SetPasswordTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class CreateEventFragment extends Fragment implements OnClickListener, ValidationListener {
 	boolean set = false;
@@ -67,7 +67,7 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 	String sessionname;
 	// Saripaar validator
 	Validator validator;
-
+Activity activity;
 	public CreateEventFragment() {
 	}
 
@@ -170,6 +170,15 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 					Log.d("Search user", "AsyncTask calling");
 					searchPlacesTask = new SearchPlacesTask();
 					searchPlacesTask.execute(s.toString().trim(), getResources().getString(R.string.places_key));
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (searchPlacesTask.getStatus() == AsyncTask.Status.RUNNING){
+								searchPlacesTask.cancel(true);
+							}
+						}
+					}, 10000);
 				} else {
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
@@ -189,7 +198,12 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 		});
 		return rootView;
 	}
-
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		activity= getActivity();
+	}
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -283,6 +297,13 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 			}
 
 		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			pDialog.dismiss();
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
@@ -331,6 +352,12 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -412,11 +439,20 @@ public class CreateEventFragment extends Fragment implements OnClickListener, Va
 			boolean bool = new ConDetect(getActivity()).isOnline();
 			if (bool) {
 
-				CreateEventTask createEventTask = new CreateEventTask();
+				final CreateEventTask createEventTask = new CreateEventTask();
 				createEventTask.execute(sharedPreferences.getString("user_id", null), editEventDate.getText()
 						.toString(), eventnumber, editEventName.getText().toString(), editEventDescrition.getText()
 						.toString(), editLocation.getText().toString(), reachnumber, spinnerEventHour.getSelectedItem()
 						.toString().trim(), spinnerEventMin.getSelectedItem().toString().trim(), sessionname);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (createEventTask.getStatus() == AsyncTask.Status.RUNNING){
+							createEventTask.cancel(true);
+						}
+					}
+				}, 10000);
 			} else {
 				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
