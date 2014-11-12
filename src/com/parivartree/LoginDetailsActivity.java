@@ -137,7 +137,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		activity = this;
 		context = getApplicationContext();
 		packageName = getPackageName();
-
+		Intent intent = getIntent();
+		Bundle bndl = intent.getExtras();
+		if(bndl != null){		
+			if(bndl.containsKey("croutonmsg")){
+				String msg = bndl.getString("croutonmsg");
+				Crouton.makeText(activity, msg, Style.INFO).show();
+			}	
+		}
 		uiHelper = new UiLifecycleHelper(this, statusCallback);
 		uiHelper.onCreate(savedInstanceState);
 
@@ -661,19 +668,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 						 * authentication failure attempts! Please click on
 						 * forgot password to re-generate your password
 						 */
-						Toast.makeText(
-								LoginDetailsActivity.this,
-								"Your account has been blocked!.Please click on forgot password to re-generate your password",
-								Toast.LENGTH_LONG).show();
+						Crouton.makeText(activity, "Your account has been blocked!.Please click on forgot password to re-generate your password", Style.ALERT).show();
 					} else if (status == 3) {
 						// TODO account disable
 						/**
 						 * Your account has been deactivated. Please contact the
 						 * administrator!
 						 */
-						Toast.makeText(LoginDetailsActivity.this,
-								"Your account has been deactivated. Please contact the administrator!",
-								Toast.LENGTH_LONG).show();
+						Crouton.makeText(activity, "Your account has been deactivated. Please contact the administrator!", Style.ALERT).show();
 					} else if (status == 4) {
 						// TODO second last failed attempt. Just one more
 						// attempt left
@@ -683,8 +685,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 						 * authenticattion failure. One more attempt, and you
 						 * shall be blocked from accessing
 						 */
-						Toast.makeText(LoginDetailsActivity.this, "Authentication Failed!, Just one more attempt left",
-								Toast.LENGTH_LONG).show();
+						Crouton.makeText(activity, "Authentication Failed!, Just one more attempt left", Style.ALERT).show();
 					} else if (status == 5 || status == 7) {
 						// TODO authentication failed please check your
 						// email/password
@@ -692,7 +693,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 						 * Authentication Failed! Please check your Email Id or
 						 * Password!
 						 */
-						Toast.makeText(LoginDetailsActivity.this, "Login Not Successful", Toast.LENGTH_LONG).show();
+						Crouton.makeText(activity, "Login Not Successful", Style.ALERT).show();
 					} else if (status == 6) {
 						// TODO authentication failed and account has been
 						// blocked
@@ -701,8 +702,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 						 * Password! Your account has been blocked for 5
 						 * continous authentication failure attempts
 						 */
-						Toast.makeText(LoginDetailsActivity.this,
-								"Your last attempt failed and account has been blocked", Toast.LENGTH_LONG).show();
+						Crouton.makeText(activity, "Your last attempt failed and account has been blocked", Style.ALERT).show();
 					} else {
 						// TODO redirect to home page "status=8"
 						/**
@@ -825,6 +825,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		boolean bool = new ConDetect(this).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
+			emailtext = editTextUsername.getText().toString();
 			lT = new LoginTask();
 			lT.execute(editTextUsername.getText().toString(), editTextPassword.getText().toString());
 			Handler handler = new Handler();

@@ -1,5 +1,7 @@
 package com.parivartree;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,9 +29,15 @@ public class LoginMainActivity extends Activity implements OnClickListener {
 		this.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 		// setContentView(R.layout.activity_login_main);
 		setContentView(R.layout.activity_loginmain);
-
-		activity = this;
-
+		activity = this;	
+		Intent intent = getIntent();
+		Bundle bndl = intent.getExtras();
+		if(bndl != null){		
+			if(bndl.containsKey("croutonmsg")){
+				String msg = bndl.getString("croutonmsg");
+				Crouton.makeText(activity, msg, Style.INFO).show();
+			}	
+		}
 		sharedPreferences = this.getApplicationContext().getSharedPreferences(
 				this.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
 		userId = sharedPreferences.getString("user_id", "0");

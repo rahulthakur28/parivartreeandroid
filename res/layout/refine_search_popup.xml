@@ -37,7 +37,7 @@
         android:layout_marginTop="7dp"
         android:background="@drawable/edit_text_background"
         android:ems="10"
-        android:inputType="textMultiLine"
+        android:inputType="number"
         android:padding="10dp" />
 
     <TextView
