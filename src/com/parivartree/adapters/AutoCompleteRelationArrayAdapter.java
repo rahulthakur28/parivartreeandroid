@@ -42,7 +42,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	String relationships[] = new String[] {"relationship", "Father", "Mother", "Wife", "Brother", "Sister", "Son", "Daughter", "Husband"};
 	int position = 0;
 	String userName = "",toWhomName;
-
+	
 	public AutoCompleteRelationArrayAdapter(Context context, int layoutResourceId, ArrayList<MyObject> data) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
@@ -60,9 +60,9 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-
+			
 		try {
-
+			
 			/*
 			 * The convertView argument is essentially a "ScrapView" as
 			 * described is Lucas post
@@ -72,12 +72,13 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 			 * convertView is not null, you should simply update its contents
 			 * instead of inflating a new row layout.
 			 */
+			
 			if (convertView == null) {
 				// inflate the layout
 				LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = inflater.inflate(layoutResourceId, parent, false);
 			}
-
+			
 			// object item based on the position
 			final MyObject objectItem = data.get(position);
 
@@ -202,9 +203,9 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 								//AutoCompleteRelationArrayAdapter.this.userName;
 						Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
 					} else if (request_type == 2) {
-						String recommendedUserName = userName;
-						String nodeName = sharedPreferences.getString("node_first_name", " ") + " " + sharedPreferences.getString("node_last_name", " ");
-						Crouton.makeText(activity, "You have successfully recommended " + recommendedUserName + " to " + nodeName + " for " + relationship_type + " relation.", Style.INFO).show();
+						//String  = userName;
+						String recommendedUserName= sharedPreferences.getString("node_first_name", " ") + " " + sharedPreferences.getString("node_last_name", " ");
+						Crouton.makeText(activity, "You have successfully recommended " + nodeName + " to " + recommendedUserName  + " for " + relationship_type + " relation.", Style.INFO).show();
 					}
 					//Toast.makeText(mContext, "You have successfully invited ", Toast.LENGTH_SHORT).show();
 					((MainActivity) mContext).changeFragment("HomeFragment");

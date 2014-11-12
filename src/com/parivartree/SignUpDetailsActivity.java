@@ -79,8 +79,6 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
 	
-	private ArrayList<String> locationHints;
-	SearchPlacesTask searchPlacesTask;
 	// Saripaar validator
 	Validator validator;
 	Activity activity;
@@ -171,11 +169,13 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 
 					}
 				});
+		
+				/*
 		// provide hinting for the location fields from Google Places API
 		locationHints = new ArrayList<String>();
 		locationHintAdpter = new LocationHintAdapter(activity, R.layout.item_location, locationHints);
-		editLocation.setAdapter(locationHintAdpter);
-		editLocation.addTextChangedListener(new TextWatcher() {
+		editTextLocation.setAdapter(locationHintAdpter);
+		editTextLocation.addTextChangedListener(new TextWatcher() {
 			
 			@Override
 			public void onTextChanged(CharSequence s, int start, int count, int after) {
@@ -207,6 +207,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 				
 			}
 		});
+		*/
 	}
 
 	@Override
@@ -442,6 +443,8 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			}
 		}
 	}
+	
+	/*
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
 		//private ProgressDialog pDialog;
 
@@ -463,12 +466,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		try {
 		JSONObject createEventObject = new JSONObject(response);
 		JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
-		/*
-		String responseResult = createEventObject.getString("Status");
-		Log.d(TAG, "onpostexecute" + responseResult);
-		if (responseResult.equals("Success")) {
-		}
-		*/
+		
 		locationHints.clear();
 		for(int i=0; i<predictionsArray.length() && i<20; i++) {
 		JSONObject tempItem = predictionsArray.getJSONObject(i);
@@ -488,4 +486,5 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		}
 		}
 		}
+	*/
 }

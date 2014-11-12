@@ -85,7 +85,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	// Action Bar items
 	ImageView imageView1, imageView2, imageView3, imageView4;
 
-	private Fragment fragment,currentFragment;
+	private Fragment fragment, currentFragment;
 
 	// nav drawer title
 	private CharSequence mDrawerTitle;
@@ -110,26 +110,33 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		//Mint.initAndStartSession(this, "2a8a05f6");
 
+		Mint.initAndStartSession(this, "2a8a05f6");
+		
 		ActionBar actionBar = this.getActionBar();
 
 		// add the custom view to the action bar
 		actionBar.setCustomView(R.layout.actionbar_view);
-		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-		imageView1 = (ImageView) actionBar.getCustomView().findViewById(R.id.imageView1);
-		imageView2 = (ImageView) actionBar.getCustomView().findViewById(R.id.imageView2);
-		imageView3 = (ImageView) actionBar.getCustomView().findViewById(R.id.imageView3);
-		imageView4 = (ImageView) actionBar.getCustomView().findViewById(R.id.imageView4);
-
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+				| ActionBar.DISPLAY_SHOW_HOME);
+		imageView1 = (ImageView) actionBar.getCustomView().findViewById(
+				R.id.imageView1);
+		imageView2 = (ImageView) actionBar.getCustomView().findViewById(
+				R.id.imageView2);
+		imageView3 = (ImageView) actionBar.getCustomView().findViewById(
+				R.id.imageView3);
+		imageView4 = (ImageView) actionBar.getCustomView().findViewById(
+				R.id.imageView4);
+		
 		imageView1.setOnClickListener(this);
 		imageView2.setOnClickListener(this);
 		imageView3.setOnClickListener(this);
 		imageView4.setOnClickListener(this);
 
 		sharedPreferences = this.getApplicationContext().getSharedPreferences(
-				this.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
+				this.getPackageName()
+						+ getResources().getString(R.string.USER_PREFERENCES),
+				Context.MODE_PRIVATE);
 		sharedPreferencesEditor = sharedPreferences.edit();
 		mTitle = mDrawerTitle = getTitle();
 
@@ -137,33 +144,43 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
 
 		// nav drawer icons from resources
-		navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
+		navMenuIcons = getResources()
+				.obtainTypedArray(R.array.nav_drawer_icons);
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 		mDrawerList.setBackgroundResource(R.color.pt_menu_background);
-		mDrawerList.setDivider(this.getResources().getDrawable(R.drawable.divider));
+		mDrawerList.setDivider(this.getResources().getDrawable(
+				R.drawable.divider));
 		mDrawerList.setDividerHeight(1);
 
 		navDrawerItems = new ArrayList<NavDrawerItem>();
 
 		// adding nav drawer items to array
 		// Home
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons
+				.getResourceId(0, -1)));
 		// Find on Map
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons
+				.getResourceId(1, -1)));
 		// Find People
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons
+				.getResourceId(2, -1)));
 		// Photos
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons
+				.getResourceId(3, -1)));
 		// Communities, Will add a counter here
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons
+				.getResourceId(4, -1)));
 		// Pages
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons
+				.getResourceId(5, -1)));
 		// What's hot, We will add a counter here
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons
+				.getResourceId(6, -1)));
 		// Request Received
-		navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons
+				.getResourceId(7, -1)));
 		// Sign Out
 		// navDrawerItems.add(new NavDrawerItem(navMenuTitles[8],
 		// navMenuIcons.getResourceId(8, -1)));
@@ -174,18 +191,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 
 		// setting the nav drawer list adapter
-		adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems);
+		adapter = new NavDrawerListAdapter(getApplicationContext(),
+				navDrawerItems);
 		mDrawerList.setAdapter(adapter);
 
 		// enabling action bar app icon and behaving it as toggle button
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar_background));
+		getActionBar().setBackgroundDrawable(
+				getResources().getDrawable(R.drawable.action_bar_background));
 
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, // nav
-																								// menu
-																								// toggle
-																								// icon
+		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+				R.drawable.ic_drawer, // nav
+										// menu
+										// toggle
+										// icon
 				R.string.app_name, // nav drawer open - description for
 									// accessibility
 				R.string.app_name // nav drawer close - description for
@@ -209,6 +229,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (savedInstanceState == null) {
 			// on first time display view for first nav item
 			displayView(0);
+			Log.v(TAG, "SavedInstanceState is null");
 		}
 	}
 
@@ -247,9 +268,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	/**
 	 * Slide menu item click listener
 	 * */
-	private class SlideMenuClickListener implements ListView.OnItemClickListener {
+	private class SlideMenuClickListener implements
+			ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
 			// display view for selected nav drawer item
 			displayView(position);
 		}
@@ -272,48 +295,55 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private void displayView(int position) {
 
 		// update the main content by replacing fragments
-		Fragment fragment = null;
-		//fragment = null;
+		//Fragment fragment;
+		// fragment = null;
 		switch (position) {
 		case 0:
 			sharedPreferencesEditor = sharedPreferences.edit();
-			sharedPreferencesEditor.putString("node_id",sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
 			fragment = new HomeFragment();
 			break;
 		case 1:
 			sharedPreferencesEditor = sharedPreferences.edit();
-			sharedPreferencesEditor.putString("node_id",sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
 			fragment = new ProfileFragment();
 			break;
 		case 2:
 			sharedPreferencesEditor = sharedPreferences.edit();
-			sharedPreferencesEditor.putString("node_id",sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
 			fragment = new FindPeopleFragment();
 			break;
 		case 3:
 			sharedPreferencesEditor = sharedPreferences.edit();
-			sharedPreferencesEditor.putString("node_id",sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
 			fragment = new ViewPhotosFragment();
 			break;
 		case 4:
 			sharedPreferencesEditor = sharedPreferences.edit();
-			sharedPreferencesEditor.putString("node_id",sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
 			fragment = new CommunityFragment();
 			break;
 		case 5:
 			sharedPreferencesEditor = sharedPreferences.edit();
-			sharedPreferencesEditor.putString("node_id",sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
 			fragment = new PagesFragment();
 			break;
 		case 6:
 			sharedPreferencesEditor = sharedPreferences.edit();
-			sharedPreferencesEditor.putString("node_id",sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
 			fragment = new SettingsFragment();
 			break;
@@ -331,51 +361,56 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// Setting Icon to Dialog
 			alertDialog.setIcon(R.drawable.signoutconfirm);
 			// Setting Positive "Yes" Button
-			alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					// Write your code here to invoke YES event
-					Intent signout = new Intent(getApplicationContext(), LoginMainActivity.class);
-					signout.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-					sharedPreferencesEditor = sharedPreferences.edit();
-					sharedPreferencesEditor.clear();
-					sharedPreferencesEditor.commit();
-					startActivity(signout);
-				}
-			});
-			
+			alertDialog.setPositiveButton("YES",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							// Write your code here to invoke YES event
+							Intent signout = new Intent(
+									getApplicationContext(),
+									LoginMainActivity.class);
+							signout.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+									| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+							sharedPreferencesEditor = sharedPreferences.edit();
+							sharedPreferencesEditor.clear();
+							sharedPreferencesEditor.commit();
+							startActivity(signout);
+						}
+					});
+
 			// Setting Negative "NO" Button
-			alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					// Write your code here to invoke NO event
-					dialog.cancel();
-				}
-			});
-			
+			alertDialog.setNegativeButton("NO",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							// Write your code here to invoke NO event
+							dialog.cancel();
+						}
+					});
+
 			// Showing Alert Message
 			alertDialog.show();
 			break;
-			
+
 		default:
 			break;
 
 		}
-		
+
 		// any section accessed through the sliding bar will show main user's
 		// data
-		sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
+		sharedPreferencesEditor.putString("node_id",
+				sharedPreferences.getString("user_id", "0"));
 		sharedPreferencesEditor.commit();
-		
+
 		if (fragment != null) {
-			fragmentManager = getSupportFragmentManager();
-			//fragmentManager.beginTransaction().addToBackStack(null).commit();
-			   
-			   fragmentManager
-			   .beginTransaction()
-			   .replace(R.id.frame_container, fragment)
-			   // Add this transaction to the back stack
-			   .addToBackStack(null)
-			   .commit();
-			   currentFragment = fragment;
+			FragmentManager fragmentManager = getSupportFragmentManager();
+			// fragmentManager.beginTransaction().addToBackStack(null).commit();
+
+			fragmentManager.beginTransaction()
+					// Add this transaction to the back stack
+					.addToBackStack(null)
+					.replace(R.id.frame_container, fragment).commit();
+			Log.e(TAG, "comitted fragment class - " + fragment.getClass().getName());
+			currentFragment = fragment;
 			// update selected item and title, then close the drawer
 			mDrawerList.setItemChecked(position, true);
 			mDrawerList.setSelection(position);
@@ -386,7 +421,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			Log.e("MainActivity", "Error in creating fragment");
 		}
 	}
-	
+
 	@Override
 	public void setTitle(CharSequence title) {
 		mTitle = title;
@@ -440,22 +475,29 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			fragment = new RelationFragment();
 		} else if (fragmentName.equals("HomeFragment")) {
 			fragment = new HomeFragment();
-		  } else if (fragmentName.equals("ViewPhotosFragment")) {
-			   fragment = new ViewPhotosFragment();
-			  }
+		} else if (fragmentName.equals("ViewPhotosFragment")) {
+			fragment = new ViewPhotosFragment();
+		}
 
 		// change to the new fragment
 		if (fragment != null) {
-			fragmentManager = getSupportFragmentManager();
-			
-			//fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.frame_container, fragment).commit();
-				if((fragment instanceof NotificationFragment) || (fragment instanceof DiscussionFragment) || (fragment instanceof InviteFragment) || (fragment instanceof MessageFragment)) {
-					fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null).commit();
-				}
-				else {
-					fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-				}
-				currentFragment = fragment;
+			FragmentManager fragmentManager = getSupportFragmentManager();
+
+			// fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.frame_container,
+			// fragment).commit();
+			if ((fragment instanceof NotificationFragment)
+					|| (fragment instanceof DiscussionFragment)
+					|| (fragment instanceof InviteFragment)
+					|| (fragment instanceof MessageFragment)) {
+				fragmentManager.beginTransaction().addToBackStack(null)
+						.replace(R.id.frame_container, fragment).commit();
+				Log.e(TAG, "comitted fragment class - " + fragment.getClass().getName());
+			} else {
+				fragmentManager.beginTransaction().addToBackStack(null)
+						.replace(R.id.frame_container, fragment).commit();
+				Log.e(TAG, "comitted fragment class - " + fragment.getClass().getName());
+			}
+			currentFragment = fragment;
 			mDrawerLayout.closeDrawer(mDrawerList);
 		} else {
 			// error in creating fragment
@@ -477,18 +519,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		} else if (fragmentName.equals("ProfileFragment")) {
 			fragment = new ProfileFragment();
 			fragment.setArguments(bundle);
-		  }else if (fragmentName.equals("FullScreenFragment")) {
-			   fragment = new FullScreenFragment();
-			   fragment.setArguments(bundle);
-			  }
-		
+		} else if (fragmentName.equals("FullScreenFragment")) {
+			fragment = new FullScreenFragment();
+			fragment.setArguments(bundle);
+		}
+
 		// change to the new fragment
 		if (fragment != null) {
-			fragmentManager = getSupportFragmentManager();
-			fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-			//fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.frame_container, fragment).commit();
-			currentFragment = fragment;
 			mDrawerLayout.closeDrawer(mDrawerList);
+			FragmentManager fragmentManager = getSupportFragmentManager();
+			fragmentManager.beginTransaction().addToBackStack(null)
+					.replace(R.id.frame_container, fragment).commit();
+			// fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.frame_container,
+			// fragment).commit();
+			Log.e(TAG, "comitted fragment class - " + fragment.getClass().getName());
+			currentFragment = fragment;
+			
 		} else {
 			// error in creating fragment
 			Log.e("MainContainerActivity", "Error in creating fragment");
@@ -517,12 +563,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 	}
 
-	protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent result) {
 		super.onActivityResult(requestCode, resultCode, result);
 		Log.d(TAG, "onActivityResult");
-		if (requestCode == Crop.REQUEST_PICK && resultCode == Activity.RESULT_OK) {
+		if (requestCode == Crop.REQUEST_PICK
+				&& resultCode == Activity.RESULT_OK) {
 			beginCrop(result.getData());
-		} else if (requestCode == Crop.REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+		} else if (requestCode == Crop.REQUEST_TAKE_PHOTO
+				&& resultCode == Activity.RESULT_OK) {
 			Log.d(TAG, "cameraImagePath - " + cameraImagePath);
 			if (cameraImagePath != null) {
 				beginCrop(cameraImagePath);
@@ -552,7 +601,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			Log.d("ProfileFragment", Crop.getOutput(result).toString());
 			String imagePath = Crop.getOutput(result).getPath();
 			// this.getFilesDir()
-			Log.d(TAG, "internal files directory - " + getFilesDir() + ", imgepath -" + imagePath);
+			Log.d(TAG, "internal files directory - " + getFilesDir()
+					+ ", imgepath -" + imagePath);
 			// String imagePath =
 			// "file:///data/data/com.parivartree/cache/cropped";
 			String base64str = null;
@@ -569,7 +619,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			String finalimageString = "data:image/" + extension.trim() + ";base64," + base64str;
+			String finalimageString = "data:image/" + extension.trim()
+					+ ";base64," + base64str;
 			Log.d("base64 image string - ", finalimageString);
 
 			String userId = sharedPreferences.getString("user_id", "0");
@@ -578,7 +629,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			ImageUploadTask imageUploadTask = new ImageUploadTask();
 			imageUploadTask.execute(nodeId, finalimageString);
 		} else if (resultCode == Crop.RESULT_ERROR) {
-			Toast.makeText(this, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, Crop.getError(result).getMessage(),
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -603,7 +655,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					params[0],
 					params[1],
 					getResources().getString(R.string.hostname)
-							+ getResources().getString(R.string.url_profile_imageupload));
+							+ getResources().getString(
+									R.string.url_profile_imageupload));
 		}
 
 		@Override
@@ -623,26 +676,27 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
-				Toast.makeText(MainActivity.this, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(MainActivity.this,
+						"Invalid Server Content - " + e.getMessage(),
+						Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
 	}
-	
+
 	private String encodeFileToBase64Binary(String fileName) throws IOException {
 
 		File file = new File(fileName);
 		byte[] bytes = loadFile(file);
 		byte[] encoded = Base64.encodeBase64(bytes);
 		String encodedString = new String(encoded);
-		
+
 		return encodedString;
 	}
-	
+
 	private static byte[] loadFile(File file) throws IOException {
 		InputStream is = new FileInputStream(file);
-		
+
 		long length = file.length();
 		if (length > Integer.MAX_VALUE) {
 			// File is too large
@@ -651,124 +705,142 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 		int offset = 0;
 		int numRead = 0;
-		while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+		while (offset < bytes.length
+				&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
 			offset += numRead;
 		}
 
 		if (offset < bytes.length) {
 			is.close();
-			throw new IOException("Could not completely read file " + file.getName());
+			throw new IOException("Could not completely read file "
+					+ file.getName());
 		}
 
 		is.close();
 		return bytes;
 	}
-	
+
 	public void createRelation(String realtionId, String nodeId) {
 		fragment = new CreateRelationFragment(realtionId, nodeId);
 		// change to the new fragment
 		if (fragment != null) {
 			FragmentManager fragmentManager = getSupportFragmentManager();
-			fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+			fragmentManager.beginTransaction().addToBackStack(null)
+					.replace(R.id.frame_container, fragment).commit();
+			Log.e(TAG, "comitted fragment class - " + fragment.getClass().getName());
 			// mDrawerLayout.closeDrawer(mDrawerList);
 		} else {
 			// error in creating fragment
 			Log.e("MainContainerActivity", "Error in creating fragment");
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		
-		  boolean change = false;
-		  int exitApplication = 1;
-		  //Log.e(TAG, "Fragment class - " + fragment.getClass().getPackage().getName());
-		  if (currentFragment instanceof HomeFragment) {
-		   Log.d(TAG, "instance of Home Fragment");
-		   if (((HomeFragment) currentFragment).optionsLayout.getVisibility() == View.VISIBLE) {
-		    ((HomeFragment) currentFragment).optionsLayout.setVisibility(View.INVISIBLE);
-		    exitApplication = 0;
-		   }
-		  } else if (currentFragment instanceof SelectRelationFragment) {
-		   fragment = new HomeFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof CreateEventFragment) {
-		   fragment = new CommunityFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof DeleteEventFragment) {
-		   fragment = new CommunityFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof EditEventFragment) {
-		   fragment = new CommunityFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof AllEventsFragment) {
-		   fragment = new CommunityFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof CreateRelationFragment) {
-		   Log.d(TAG, "instance of CreateRelation Fragment");
-		   fragment = new RelationFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof EditProfileFragment) {
-		   fragment = new ProfileFragment();
-		   exitApplication = 0;
-	    }
-	    else if (currentFragment instanceof FullScreenFragment) {
-		     fragment = new ViewPhotosFragment();
-		     exitApplication = 0;
-		    }
-	    else if (currentFragment instanceof ViewPhotosFragment) {
-		     fragment = new HomeFragment();
-		     exitApplication = 0;
-		    }
-	    else if (currentFragment instanceof ViewVideosFragment) {
-		     fragment = new ViewPhotosFragment();
-		     exitApplication = 0;
-	    }
-	    /*else if (currentFragment instanceof DiscussionFragment) {
-		   fragment = new HomeFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof InviteFragment) {
-		   fragment = new HomeFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof MessageFragment) {
-		   fragment = new HomeFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof NotificationFragment) {
-		   fragment = new HomeFragment();
-		   exitApplication = 0;
-		  } */else if (currentFragment instanceof RelationFragment) {
-		   Log.d(TAG, "instance of Relation Fragment");
-		   sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
-		   sharedPreferencesEditor.commit();
-		   fragment = new HomeFragment();
-		   exitApplication = 0;
-		  } else if (currentFragment instanceof ProfileFragment
-		    && !sharedPreferences.getString("node_id", "0").equals(sharedPreferences.getString("user_id", "0"))) {
-		   sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
-		   sharedPreferencesEditor.commit();
-		   fragment = new HomeFragment();
-		   exitApplication = 0;
-		  }
-		  if(exitApplication == 1 && this.fragmentManager.getBackStackEntryCount() > 0) {
-		   fragmentManager.popBackStack();
-		   //BackStackEntry tempBackStack = (BackStackEntry) fragmentManager.getBackStackEntryAt((fragmentManager.getBackStackEntryCount()-1));
-		   // currentFragment
-		   //tempBackStack.getName() + ((currentFragment instanceof HomeFragment)? true:false)
-		   Log.d(TAG, "backstack popped");
-		   //Log.d(TAG, "instance of HomeFragment - ");
-		  } else if (exitApplication == 1) {
-		   Log.e(TAG, "Application exited");
-		   LoginMainActivity.activity.finish();
-		   finish();
-		  } else if (exitApplication == 0 && fragment != null) {
-		   Log.e(TAG, "Transaction by replacing in the same view");
-		   //FragmentManager fragmentManager = getSupportFragmentManager();
-		   fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-		   currentFragment = fragment;
-		  } else {
-		   // error in creating fragment
-		   Log.e("MainActivity", "Error in creating fragment");
-		  }
+		Log.e(TAG, "Backstack entry count - " + getSupportFragmentManager().getBackStackEntryCount());
+		if(getSupportFragmentManager().getBackStackEntryCount() == 1) {
+			LoginMainActivity.activity.finish();
+			this.finish();
+		}
+		else {
+			super.onBackPressed();
+		}
+		
+		/*
+		boolean change = false;
+		int exitApplication = 1;
+		// Log.e(TAG, "Fragment class - " +
+		// fragment.getClass().getPackage().getName());
+		if (currentFragment instanceof HomeFragment) {
+			Log.d(TAG, "instance of Home Fragment");
+			if (((HomeFragment) currentFragment).optionsLayout.getVisibility() == View.VISIBLE) {
+				((HomeFragment) currentFragment).optionsLayout
+						.setVisibility(View.INVISIBLE);
+				exitApplication = 0;
+			}
+		} else if (currentFragment instanceof SelectRelationFragment) {
+			fragment = new HomeFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof CreateEventFragment) {
+			fragment = new CommunityFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof DeleteEventFragment) {
+			fragment = new CommunityFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof EditEventFragment) {
+			fragment = new CommunityFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof AllEventsFragment) {
+			fragment = new CommunityFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof CreateRelationFragment) {
+			Log.d(TAG, "instance of CreateRelation Fragment");
+			fragment = new RelationFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof EditProfileFragment) {
+			fragment = new ProfileFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof FullScreenFragment) {
+			fragment = new ViewPhotosFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof ViewPhotosFragment) {
+			fragment = new HomeFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof ViewVideosFragment) {
+			fragment = new ViewPhotosFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof RelationFragment) {
+			Log.d(TAG, "instance of Relation Fragment");
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.commit();
+			fragment = new HomeFragment();
+			exitApplication = 0;
+		} else if (currentFragment instanceof ProfileFragment
+				&& !sharedPreferences.getString("node_id", "0").equals(
+						sharedPreferences.getString("user_id", "0"))) {
+			sharedPreferencesEditor.putString("node_id",
+					sharedPreferences.getString("user_id", "0"));
+			sharedPreferencesEditor.commit();
+			fragment = new HomeFragment();
+			exitApplication = 0;
+		}
+		if (exitApplication == 1
+				&& this.fragmentManager.getBackStackEntryCount() > 0) {
+			fragmentManager.popBackStack();
+			// BackStackEntry tempBackStack = (BackStackEntry)
+			// fragmentManager.getBackStackEntryAt((fragmentManager.getBackStackEntryCount()-1));
+			// currentFragment
+			// tempBackStack.getName() + ((currentFragment instanceof
+			// HomeFragment)? true:false)
+			Log.d(TAG, "backstack popped");
+			// Log.d(TAG, "instance of HomeFragment - ");
+		} else if (exitApplication == 1) {
+			Log.e(TAG, "Application exited");
+			LoginMainActivity.activity.finish();
+			finish();
+		} else if (exitApplication == 0 && fragment != null) {
+			Log.e(TAG, "Transaction by replacing in the same view");
+			// FragmentManager fragmentManager = getSupportFragmentManager();
+			fragmentManager.beginTransaction()
+					.replace(R.id.frame_container, fragment).commit();
+			currentFragment = fragment;
+		} else {
+			// error in creating fragment
+			Log.e("MainActivity", "Error in creating fragment");
+		}
+		*/
+
+		/*
+		 * else if (currentFragment instanceof DiscussionFragment) { fragment =
+		 * new HomeFragment(); exitApplication = 0; } else if (currentFragment
+		 * instanceof InviteFragment) { fragment = new HomeFragment();
+		 * exitApplication = 0; } else if (currentFragment instanceof
+		 * MessageFragment) { fragment = new HomeFragment(); exitApplication =
+		 * 0; } else if (currentFragment instanceof NotificationFragment) {
+		 * fragment = new HomeFragment(); exitApplication = 0; }
+		 */
 	}
 
 	@Override

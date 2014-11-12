@@ -394,7 +394,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		// TODO Auto-generated method stub
 		mGoogleApiClient.connect();
 	}
-
+	
 	/**
 	 * Fetching Google user's information name, email, profile pic
 	 * */
@@ -407,19 +407,19 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				String personPhotoUrl = currentPerson.getImage().getUrl();
 				String personGooglePlusProfile = currentPerson.getUrl();
 				email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-
+				
 				sharedPreferencesEditor.putString("google_id", personId);
 				sharedPreferencesEditor.putString("google_email", email);
 				sharedPreferencesEditor.commit();
-
+				
 				String[] fullName = personName.split(" ");
 				String gender = (currentPerson.getGender() == 0) ? "male" : "female";
 				Log.i(TAG, "ID" + personId + "Name: " + personName + ", plusProfile: " + personGooglePlusProfile
 						+ ", email: " + email + ", Image: " + personPhotoUrl + " gender" + currentPerson.getGender());
-
+				
 				boolean bool = new ConDetect(activity).isOnline();
 				if (bool) {
-
+					
 					FacebookLoginTask facebookTask = new FacebookLoginTask();
 					facebookTask.execute(email, fullName[1], gender, fullName[0]);
 					// startActivity(new Intent(activity,MainActivity.class));
@@ -683,13 +683,13 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
-
+		
 	}
-
+	
 	class FacebookLoginTask extends AsyncTask<String, Void, String> {
-
+		
 		private ProgressDialog pDialog;
-
+		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -701,7 +701,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			pDialog.show();
 			
 		}
-
+		
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -709,7 +709,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			return HttpConnectionUtils.getFacebookResponse(params[0], params[1], params[2], params[3], getResources()
 					.getString(R.string.hostname) + activity.getResources().getString(R.string.url_facebook_login));
 		}
-
+		
 		@Override
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
@@ -789,4 +789,5 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			Log.d("Signup settings ", message);
 		}
 	}
+	
 }
