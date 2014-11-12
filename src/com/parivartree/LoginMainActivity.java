@@ -61,15 +61,15 @@ public class LoginMainActivity extends Activity implements OnClickListener {
 		} else {
 			// StartActivity (typeof(MainActivity));
 		}
-
+		
 		loginButton = (ImageView) findViewById(R.id.login);
 		signUpButton = (ImageView) findViewById(R.id.sign_up);
 		termsview = (ImageView) findViewById(R.id.termimage);
-
+		
 		termsview.setOnClickListener(this);
 		loginButton.setOnClickListener(this);
 		signUpButton.setOnClickListener(this);
-
+		
 	}
 
 	@Override

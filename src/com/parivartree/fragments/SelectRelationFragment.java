@@ -17,13 +17,14 @@ import com.parivartree.R;
 
 public class SelectRelationFragment extends Fragment {
 
+	View rootView;
 	Context context;
 	ImageView userImageView, connectorFatherMother, connectorBrother, connectorSister, connectorSonDaughterSpouse;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.fragment_select_relation, container, false);
+		//rootView = inflater.inflate(R.layout.fragment_select_relation, container, false);
 
 		context = this.getActivity().getApplicationContext();
 

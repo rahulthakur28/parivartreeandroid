@@ -43,7 +43,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	String relationships[] = new String[] {"relationship", "Father", "Mother", "Wife", "Brother", "Sister", "Son", "Daughter", "Husband"};
 	int position = 0;
 	String userName = "",toWhomName;
-
+	
 	public AutoCompleteRelationArrayAdapter(Activity context, int layoutResourceId, ArrayList<MyObject> data) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
@@ -61,9 +61,9 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-
+			
 		try {
-
+			
 			/*
 			 * The convertView argument is essentially a "ScrapView" as
 			 * described is Lucas post
@@ -73,12 +73,13 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 			 * convertView is not null, you should simply update its contents
 			 * instead of inflating a new row layout.
 			 */
+			
 			if (convertView == null) {
 				// inflate the layout
 				LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = inflater.inflate(layoutResourceId, parent, false);
 			}
-
+			
 			// object item based on the position
 			final MyObject objectItem = data.get(position);
 
