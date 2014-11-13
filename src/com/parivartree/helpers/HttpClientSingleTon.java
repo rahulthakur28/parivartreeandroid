@@ -2,14 +2,20 @@ package com.parivartree.helpers;
 
 import java.util.List;
 
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 public class HttpClientSingleTon extends DefaultHttpClient {
 
 	public static HttpClientSingleTon httpclient = null;
-
+	private static HttpParams httpParams = null;
+	
 	private HttpClientSingleTon() {
+		super();
 	}
 
 	public static synchronized HttpClientSingleTon getInstance() {
@@ -17,21 +23,10 @@ public class HttpClientSingleTon extends DefaultHttpClient {
 			httpclient = new HttpClientSingleTon();
 		}
 		List<Cookie> mCookies = null;
-		// client.addHeader("Cookie", "PHPSESSID=rcd7s8h59o632mfie1qd4hjpt6");
+		
 		mCookies = HttpClientSingleTon.httpclient.getCookieStore().getCookies();
 		int cookieLength = mCookies.size();
-
-		// if (mCookies.isEmpty()) {
-		// Log.d("test_runner", "Cookies: None");
-		// } else {
-		// for (int cookieCount = 0;cookieCount < cookieLength; cookieCount++) {
-		// Log.i("SingleTonn", "Cookies: [" + cookieCount + "]" +
-		// mCookies.get(cookieCount ).toString());
-		// }
-		// }
-		// Log.d("test_runner", "Cookies: [" +1+ "]" +
-		// mCookies.get(2).toString());
-
+		
 		return httpclient;
 	}
 

@@ -62,6 +62,8 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	private LocationHintAdapter locationHintAdpter;
 	private ArrayList<String> locationHints;
 	SearchPlacesTask searchPlacesTask;
+	
+	private ProgressDialog pDialog;
 
 	TextView enterCode;
 
@@ -163,6 +165,16 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			}
 		});
 	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		if ((pDialog != null) && pDialog.isShowing())
+			pDialog.dismiss();
+		pDialog = null;
+	    
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -227,7 +239,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 
 	public class SignUpDetailsTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -253,7 +265,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Signup Response ", result);
 			try {
 
@@ -299,7 +313,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}

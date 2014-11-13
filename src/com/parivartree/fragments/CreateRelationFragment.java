@@ -534,11 +534,11 @@ public class CreateRelationFragment extends Fragment implements
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
-
+	
 	public class InviteRelationTask extends AsyncTask<String, String, String> {
-
+		
 		private ProgressDialog pDialog;
-
+		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -549,7 +549,7 @@ public class CreateRelationFragment extends Fragment implements
 			pDialog.setCancelable(true);
 			pDialog.show();
 		}
-
+		
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -680,10 +680,11 @@ public class CreateRelationFragment extends Fragment implements
 				final CreateRelationTask cRT2 = new CreateRelationTask();
 			// String sessionname = sharedPreferences.getString("sessionname",
 			// "Not Available");
-			Log.d("CreateRelation3", "Values" + nodeId + ", " + userId + ", "
-					+ relationId + ", "
-					+ firstNameEditText.getText().toString() + ", "
-					+ lastNameEditText.getText().toString() + ", " + autoEmail
+				Log.d("CreateRelation3", "Values" + nodeId + ", " + userId + ", " + relationId + ", "
+						+ firstNameEditText.getText().toString() + ", " + lastNameEditText.getText().toString()
+						+ ", " + autoEmail + ", " + finalgender + ", " + sessionname);
+				cRT2.execute("new",userId,nodeId, relationId, firstNameEditText.getText().toString(),
+						lastNameEditText.getText().toString(), autoEmail, finalgender, sessionname);
 
 				Handler handler = new Handler();
 				handler.postDelayed(new Runnable() {
@@ -917,7 +918,7 @@ public class CreateRelationFragment extends Fragment implements
 					public void onClick(DialogInterface dialog, int which) {
 						if (type.equals("invite")) {
 					final InviteRelationTask inviteRelationTask = new InviteRelationTask();
-							inviteRelationTask.execute("invite", otherid,
+					inviteRelationTask.execute("invite",otherid,userId, relationId,sessionname,userId);
 					Handler handler = new Handler();
 					handler.postDelayed(new Runnable() {
 						@Override
@@ -927,6 +928,7 @@ public class CreateRelationFragment extends Fragment implements
 							}
 						}
 					}, 10000);
+			}if(type.equals("recommend")){
 				final InviteRelationTask inviteRelationTask1 = new InviteRelationTask();
 				inviteRelationTask1.execute("recommend",otherid,nodeId, relationId,sessionname,name,userId);
 				Handler handler = new Handler();
@@ -938,7 +940,7 @@ public class CreateRelationFragment extends Fragment implements
 						}
 					}
 				}, 10000);
-						} else {
+			} else {
 				final UnhideUserTask unhideTask = new UnhideUserTask();
 							unhideTask.execute(otherid, userId);
 				Handler handler = new Handler();
