@@ -401,7 +401,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				if (responseResult.equals("Success")) {
 					// TODO store the login response and
 					
-					JSONObject userProfilePrivacy = loginResponseObject.getJSONObject("access");
+					//JSONObject userProfilePrivacy = loginResponseObject.getJSONObject("access");
+					JSONArray access = loginResponseObject.getJSONArray("access");
+					JSONObject userProfilePrivacy = (JSONObject) access.get(0);
 					JSONArray data = loginResponseObject.getJSONArray("data");
 					JSONObject userProfileData = (JSONObject) data.get(0);
 

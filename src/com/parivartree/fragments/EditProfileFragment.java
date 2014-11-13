@@ -808,7 +808,13 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				int authenticationStatus = loginResponseObject.getInt("AuthenticationStatus");
 				// if(responseResult.equals("Success")) {
 				if (authenticationStatus == 1) {
+					if(loginResponseObject.has("flag")){
+						
+						
+						
+					}else{	
 					savedSuccessfully();
+					}
 				}
 
 			} catch (Exception e) {

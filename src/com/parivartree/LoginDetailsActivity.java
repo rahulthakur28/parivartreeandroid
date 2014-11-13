@@ -635,9 +635,9 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			try {
 
 				JSONObject loginResponseObject = new JSONObject(response);
-				if (loginResponseObject.has("result")) {
 					String responseResult = loginResponseObject.getString("result");
-					if (responseResult.equals("success")) {
+					int status = loginResponseObject.getInt("AuthenticationStatus");
+					if (status == 1) {
 						// TODO store the login response and
 						int userId = loginResponseObject.getInt("user_id");
 						String username = loginResponseObject.getString("username");
@@ -654,13 +654,6 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 
 						startActivity(new Intent(activity, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 								| Intent.FLAG_ACTIVITY_CLEAR_TASK));
-					}
-				} else {
-					int status = loginResponseObject.getInt("AuthenticationStatus");
-					Log.d("Login AuthenticationStatus : ", "" + status);
-					if (status == 1) {
-						// TODO successful authentication
-
 					} else if (status == 2) {
 						// TODO Account blocked
 						/**
@@ -709,7 +702,6 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 						 * this means a failure from the api
 						 */
 					}
-				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					// Log.d("Exception thrown: Treeview Fetch", "" +

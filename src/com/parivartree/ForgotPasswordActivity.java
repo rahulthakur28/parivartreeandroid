@@ -175,7 +175,7 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 			super.onPostExecute(response);
 			pDialog.dismiss();
 			Log.i("forgot password Response ", response);
-
+			String flag ="";
 			try {
 				JSONObject forgotResponseObject = new JSONObject(response);
 				int status = forgotResponseObject.getInt("AuthenticationStatus");
@@ -192,14 +192,17 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 					sharedPreferencesEditor.putString("user_hash_forgot", mobileHash);
 					sharedPreferencesEditor.commit();
 				}
+				if (forgotResponseObject.has("flag")){
+					flag = forgotResponseObject.getString("flag");
+				}
 				Log.d(TAG, "onpostexecute" + responseResult);
 				if (status == 1) {
 					Log.d(TAG, "onpostexecute : Check u r mail");
 					// mail send to user
 					Log.d(TAG, "User is connected!");
-					if (forgotResponseObject.has("mobilecode")) {
+					if (flag.equals("mobile")) {
 						Crouton.makeText(activity, message, Style.INFO).show();
-					}else{				
+					}else if(flag.equals("email")){				
 						String croutonmsg =  "Please check your Mail and Click the Link";
 						Intent intentsuccess = new Intent(ForgotPasswordActivity.this, LoginDetailsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 						intentsuccess.putExtra("croutonmsg", croutonmsg);
