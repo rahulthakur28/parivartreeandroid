@@ -1,7 +1,7 @@
 package com.parivartree.models;
 
 public class UserProfile {
-	String id, dob, email, firstName, lastName, gender, locality, pincode, hometown, mobile, maritalStatus,
+	String uid,userid, dob, email, firstName, lastName, gender, locality, pincode, hometown, mobile, maritalStatus,
 			weddingDate, religion, community, gothra, profession, addCommunity, addGothra;
 
 	public String getAddCommunity() {
@@ -20,12 +20,20 @@ public class UserProfile {
 		this.addGothra = addGothra;
 	}
 
-	public String getId() {
-		return id;
+	public String getUid() {
+		return uid;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
 	}
 
 	public String getDob() {

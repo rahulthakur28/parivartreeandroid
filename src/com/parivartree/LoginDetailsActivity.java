@@ -116,6 +116,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	private EditText editTextPassword;
 	ImageView login;
 	Validator validator;
+	ProgressDialog pDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +140,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		activity = this;
 		context = getApplicationContext();
 		packageName = getPackageName();
-
+		Intent intent = getIntent();
+		Bundle bndl = intent.getExtras();
+		if (bndl != null) {
+			if (bndl.containsKey("croutonmsg")) {
+				String msg = bndl.getString("croutonmsg");
+				Crouton.makeText(activity, msg, Style.INFO).show();
+			}
+		}
 		uiHelper = new UiLifecycleHelper(this, statusCallback);
 		uiHelper.onCreate(savedInstanceState);
 
@@ -306,8 +314,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 							handler.postDelayed(new Runnable() {
 								@Override
 								public void run() {
-									if (facebookTask.getStatus() == AsyncTask.Status.RUNNING)
-									{
+									if (facebookTask.getStatus() == AsyncTask.Status.RUNNING) {
 										facebookTask.cancel(true);
 									}
 								}
@@ -416,7 +423,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		// TODO Auto-generated method stub
 		mGoogleApiClient.connect();
 	}
-	
+
 	/**
 	 * Fetching Google user's information name, email, profile pic
 	 * */
@@ -429,26 +436,26 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				String personPhotoUrl = currentPerson.getImage().getUrl();
 				String personGooglePlusProfile = currentPerson.getUrl();
 				email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-				
+
 				sharedPreferencesEditor.putString("google_id", personId);
 				sharedPreferencesEditor.putString("google_email", email);
 				sharedPreferencesEditor.commit();
-				
+
 				String[] fullName = personName.split(" ");
 				String gender = (currentPerson.getGender() == 0) ? "male" : "female";
 				Log.i(TAG, "ID" + personId + "Name: " + personName + ", plusProfile: " + personGooglePlusProfile
 						+ ", email: " + email + ", Image: " + personPhotoUrl + " gender" + currentPerson.getGender());
-				
+
 				boolean bool = new ConDetect(activity).isOnline();
 				if (bool) {
-					
+
 					final FacebookLoginTask facebookTask = new FacebookLoginTask();
 					facebookTask.execute(email, fullName[1], gender, fullName[0]);
 					Handler handler = new Handler();
 					handler.postDelayed(new Runnable() {
 						@Override
 						public void run() {
-							if (facebookTask.getStatus() == AsyncTask.Status.RUNNING){
+							if (facebookTask.getStatus() == AsyncTask.Status.RUNNING) {
 								facebookTask.cancel(true);
 							}
 						}
@@ -588,8 +595,6 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 
 	public class LoginTask extends AsyncTask<String, String, String> {
 		
-		//private ProgressDialog pDialog;
-		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -611,9 +616,9 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			response = HttpConnectionUtils
-					.getLoginResponse(params[0], params[1], getResources().getString(R.string.hostname)
-							+ activity.getResources().getString(R.string.url_login));
+			response = HttpConnectionUtils.getLoginResponse(params[0], params[1],
+					getResources().getString(R.string.hostname)
+							+ activity.getResources().getString(R.string.url_login1));
 
 			// for (int i = 0; i < 10000; i++) {
 			// Log.d("forloop ", "running");
@@ -638,87 +643,78 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			try {
 
 				JSONObject loginResponseObject = new JSONObject(response);
-				if (loginResponseObject.has("result")) {
-					String responseResult = loginResponseObject.getString("result");
-					if (responseResult.equals("success")) {
-						// TODO store the login response and
-						int userId = loginResponseObject.getInt("user_id");
-						String username = loginResponseObject.getString("username");
-						sharedPreferences = getSharedPreferences(
-								getPackageName() + getResources().getString(R.string.USER_PREFERENCES),
-								Context.MODE_PRIVATE);
-						sharedPreferencesEditor = sharedPreferences.edit();
-						Log.d(TAG, "SharedPreference: userid - " + userId);
-						sharedPreferencesEditor.putString("user_id", "" + userId);
-						sharedPreferencesEditor.putString("node_id", "" + userId);
-						sharedPreferencesEditor.putString("sessionname", username);
-						sharedPreferencesEditor.putString("sessionemail", emailtext);
-						sharedPreferencesEditor.commit();
+				String responseResult = loginResponseObject.getString("result");
+				int status = loginResponseObject.getInt("AuthenticationStatus");
+				if (status == 1) {
+					// TODO store the login response and
+					int userId = loginResponseObject.getInt("user_id");
+					String username = loginResponseObject.getString("username");
+					sharedPreferences = getSharedPreferences(
+							getPackageName() + getResources().getString(R.string.USER_PREFERENCES),
+							Context.MODE_PRIVATE);
+					sharedPreferencesEditor = sharedPreferences.edit();
+					Log.d(TAG, "SharedPreference: userid - " + userId);
+					sharedPreferencesEditor.putString("user_id", "" + userId);
+					sharedPreferencesEditor.putString("node_id", "" + userId);
+					sharedPreferencesEditor.putString("sessionname", username);
+					sharedPreferencesEditor.putString("sessionemail", emailtext);
+					sharedPreferencesEditor.commit();
 
-						startActivity(new Intent(activity, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-								| Intent.FLAG_ACTIVITY_CLEAR_TASK));
-					}
+					startActivity(new Intent(activity, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+							| Intent.FLAG_ACTIVITY_CLEAR_TASK));
+				} else if (status == 2) {
+					// TODO Account blocked
+					/**
+					 * Your account has been blocked for crossing maximum
+					 * authentication failure attempts! Please click on forgot
+					 * password to re-generate your password
+					 */
+					Crouton.makeText(
+							activity,
+							"Your account has been blocked!.Please click on forgot password to re-generate your password",
+							Style.ALERT).show();
+				} else if (status == 3) {
+					// TODO account disable
+					/**
+					 * Your account has been deactivated. Please contact the
+					 * administrator!
+					 */
+					Crouton.makeText(activity, "Your account has been deactivated. Please contact the administrator!",
+							Style.ALERT).show();
+				} else if (status == 4) {
+					// TODO second last failed attempt. Just one more
+					// attempt left
+					/**
+					 * Authentication Failed! Please check your Email Id or
+					 * Password! This is your fourth consecutive authenticattion
+					 * failure. One more attempt, and you shall be blocked from
+					 * accessing
+					 */
+					Crouton.makeText(activity, "Authentication Failed!, Just one more attempt left", Style.ALERT)
+							.show();
+				} else if (status == 5 || status == 7) {
+					// TODO authentication failed please check your
+					// email/password
+					/**
+					 * Authentication Failed! Please check your Email Id or
+					 * Password!
+					 */
+					Crouton.makeText(activity, "Login Not Successful", Style.ALERT).show();
+				} else if (status == 6) {
+					// TODO authentication failed and account has been
+					// blocked
+					/**
+					 * Authentication Failed! Please check your Email Id or
+					 * Password! Your account has been blocked for 5 continous
+					 * authentication failure attempts
+					 */
+					Crouton.makeText(activity, "Your last attempt failed and account has been blocked", Style.ALERT)
+							.show();
 				} else {
-					int status = loginResponseObject.getInt("AuthenticationStatus");
-					Log.d("Login AuthenticationStatus : ", "" + status);
-					if (status == 1) {
-						// TODO successful authentication
-
-					} else if (status == 2) {
-						// TODO Account blocked
-						/**
-						 * Your account has been blocked for crossing maximum
-						 * authentication failure attempts! Please click on
-						 * forgot password to re-generate your password
-						 */
-						Toast.makeText(
-								LoginDetailsActivity.this,
-								"Your account has been blocked!.Please click on forgot password to re-generate your password",
-								Toast.LENGTH_LONG).show();
-					} else if (status == 3) {
-						// TODO account disable
-						/**
-						 * Your account has been deactivated. Please contact the
-						 * administrator!
-						 */
-						Toast.makeText(LoginDetailsActivity.this,
-								"Your account has been deactivated. Please contact the administrator!",
-								Toast.LENGTH_LONG).show();
-					} else if (status == 4) {
-						// TODO second last failed attempt. Just one more
-						// attempt left
-						/**
-						 * Authentication Failed! Please check your Email Id or
-						 * Password! This is your fourth consecutive
-						 * authenticattion failure. One more attempt, and you
-						 * shall be blocked from accessing
-						 */
-						Toast.makeText(LoginDetailsActivity.this, "Authentication Failed!, Just one more attempt left",
-								Toast.LENGTH_LONG).show();
-					} else if (status == 5 || status == 7) {
-						// TODO authentication failed please check your
-						// email/password
-						/**
-						 * Authentication Failed! Please check your Email Id or
-						 * Password!
-						 */
-						Toast.makeText(LoginDetailsActivity.this, "Login Not Successful", Toast.LENGTH_LONG).show();
-					} else if (status == 6) {
-						// TODO authentication failed and account has been
-						// blocked
-						/**
-						 * Authentication Failed! Please check your Email Id or
-						 * Password! Your account has been blocked for 5
-						 * continous authentication failure attempts
-						 */
-						Toast.makeText(LoginDetailsActivity.this,
-								"Your last attempt failed and account has been blocked", Toast.LENGTH_LONG).show();
-					} else {
-						// TODO redirect to home page "status=8"
-						/**
-						 * this means a failure from the api
-						 */
-					}
+					// TODO redirect to home page "status=8"
+					/**
+					 * this means a failure from the api
+					 */
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
@@ -733,20 +729,20 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 
 			}
 		}
-		
+
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) {
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
-	
+
 	class FacebookLoginTask extends AsyncTask<String, Void, String> {
-		
-		private ProgressDialog pDialog;
-		
+
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -758,7 +754,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			pDialog.show();
 
 		}
-		
+
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -766,12 +762,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			return HttpConnectionUtils.getFacebookResponse(params[0], params[1], params[2], params[3], getResources()
 					.getString(R.string.hostname) + activity.getResources().getString(R.string.url_facebook_login));
 		}
-		
+
 		@Override
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) {
+				pDialog.dismiss();
+			}
 			Log.i("Facebook Login Response ", response);
 			try {
 
@@ -816,11 +814,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
+
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) {
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
@@ -835,13 +836,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		boolean bool = new ConDetect(this).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
+			emailtext = editTextUsername.getText().toString();
 			lT = new LoginTask();
 			lT.execute(editTextUsername.getText().toString(), editTextPassword.getText().toString());
 			Handler handler = new Handler();
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if (lT.getStatus() == AsyncTask.Status.RUNNING){
+					if (lT.getStatus() == AsyncTask.Status.RUNNING) {
 						lT.cancel(true);
 					}
 				}
@@ -863,5 +865,5 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			Log.d("Signup settings ", message);
 		}
 	}
-	
+
 }

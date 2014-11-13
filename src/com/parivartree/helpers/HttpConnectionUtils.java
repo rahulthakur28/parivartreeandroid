@@ -57,15 +57,6 @@ public class HttpConnectionUtils {
 		HttpGet httpGet = new HttpGet(url + "?" + paramsString);
 		Log.d(TAG, "Profile - " + url + "?" + paramsString);
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-	      httpGet.setParams(params);
-	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
-	          .getConnectionTimeout(params)));
-	      Log.d("socket timeout",
-	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
-
 		HttpResponse response = null;
 
 		try {
@@ -121,14 +112,6 @@ public class HttpConnectionUtils {
 		HttpGet httpGet = new HttpGet(url + "?" + paramsString);
 		Log.d(TAG, "Profile - " + url + "?" + paramsString);
 
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-	      httpGet.setParams(params);
-	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
-	          .getConnectionTimeout(params)));
-	      Log.d("socket timeout",
-	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 
 		HttpResponse response = null;
 
@@ -170,11 +153,16 @@ public class HttpConnectionUtils {
 	
 	// above two are get requests
 
+//		nameValuePair.add(new BasicNameValuePair("email", userName));
+//		nameValuePair.add(new BasicNameValuePair("pass", password));
+//
+//		return processHTTPPostExecution(url, nameValuePair);
+//	}
 	public static String getLoginResponse(String userName, String password, String url) {
 		// Building post parameters key and value pair
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
 		nameValuePair.add(new BasicNameValuePair("email", userName));
-		nameValuePair.add(new BasicNameValuePair("pass", password));
+		nameValuePair.add(new BasicNameValuePair("password", password));
 
 		return processHTTPPostExecution(url, nameValuePair);
 	}
@@ -187,13 +175,14 @@ public class HttpConnectionUtils {
 		return processHTTPPostExecution(url, nameValuePair);
 	}
 
-	public static String getSignupResponse(String email, String firstname, String lastname, String gender, String url) {
+	public static String getSignupResponse(String email, String firstname, String lastname, String gender, String locality, String url) {
 		// Building post parameters key and value pair
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
 		nameValuePair.add(new BasicNameValuePair("email", email));
-		nameValuePair.add(new BasicNameValuePair("fname", firstname));
-		nameValuePair.add(new BasicNameValuePair("lname", lastname));
+		nameValuePair.add(new BasicNameValuePair("firstname", firstname));
+		nameValuePair.add(new BasicNameValuePair("lastname", lastname));
 		nameValuePair.add(new BasicNameValuePair("gender", gender));
+		nameValuePair.add(new BasicNameValuePair("locality", locality));
 
 		return processHTTPPostExecution(url, nameValuePair);
 	}
@@ -208,14 +197,6 @@ public class HttpConnectionUtils {
 	    HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT);
 	    ((DefaultHttpClient) httpClient).setParams(httpParams);
 		
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-	      httpPost.setParams(params);
-	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
-	          .getConnectionTimeout(params)));
-	      Log.d("socket timeout",
-	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 	      
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
@@ -223,12 +204,11 @@ public class HttpConnectionUtils {
 
 		// Building post parameters key and value pair
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("userid", userProfile.getUserid()));
+		nameValuePair.add(new BasicNameValuePair("uid", userProfile.getUid()));
 		nameValuePair.add(new BasicNameValuePair("dob", userProfile.getDob()));
-		nameValuePair.add(new BasicNameValuePair("userid", userProfile.getId()));
 		nameValuePair.add(new BasicNameValuePair("firstname", userProfile.getFirstName()));
 		nameValuePair.add(new BasicNameValuePair("lastname", userProfile.getLastName()));
-		// nameValuePair.add(new BasicNameValuePair("id",
-		// userProfile.getGender()));
 		nameValuePair.add(new BasicNameValuePair("locality", userProfile.getLocality()));
 		nameValuePair.add(new BasicNameValuePair("pin", userProfile.getPincode()));
 		nameValuePair.add(new BasicNameValuePair("hometown", userProfile.getHometown()));
@@ -299,14 +279,6 @@ public class HttpConnectionUtils {
 	    HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT);
 	    ((DefaultHttpClient) httpClient).setParams(httpParams);
 		
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-	      httpPost.setParams(params);
-	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
-	          .getConnectionTimeout(params)));
-	      Log.d("socket timeout",
-	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -367,14 +339,6 @@ public class HttpConnectionUtils {
 	    HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT);
 	    ((DefaultHttpClient) httpClient).setParams(httpParams);
 	    
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-	      httpPost.setParams(params);
-	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
-	          .getConnectionTimeout(params)));
-	      Log.d("socket timeout",
-	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -435,14 +399,6 @@ public class HttpConnectionUtils {
 	    HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT);
 	    ((DefaultHttpClient) httpClient).setParams(httpParams);
 	    
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-	      httpPost.setParams(params);
-	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
-	          .getConnectionTimeout(params)));
-	      Log.d("socket timeout",
-	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -587,7 +543,14 @@ public class HttpConnectionUtils {
 
 		return processHTTPPostExecution(url, nameValuePair);
 	}
+	public static String changePasswordResponse(String sessionhash, String password, String url) {
+		// Building post parameters key and value pair
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(4);
+		nameValuePair.add(new BasicNameValuePair("sessionhash", sessionhash));
+		nameValuePair.add(new BasicNameValuePair("password", password));
 
+		return processHTTPPostExecution(url, nameValuePair);
+	}
 	public static String getGeneralSettingresponse(String url) {
 		// Building post parameters key and value pair
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
@@ -759,6 +722,22 @@ public class HttpConnectionUtils {
 		nameValuePair.add(new BasicNameValuePair("userid", userid));
 		nameValuePair.add(new BasicNameValuePair("uid", uid));
 		return processHTTPPostExecution(url, nameValuePair);
+	}public static String getMobileVerifyResponse(String userhash, String smscode,String url) {
+
+		// Building post parameters key and value pair
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("userhash", userhash));
+		nameValuePair.add(new BasicNameValuePair("smscode", smscode));
+		return processHTTPPostExecution(url, nameValuePair);
+	}public static String getMobileVerifyProfileUpdateResponse(String userhash, String smscode,String mobileno, String userid, String url) {
+
+		// Building post parameters key and value pair
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("userhash", userhash));
+		nameValuePair.add(new BasicNameValuePair("smscode", smscode));
+		nameValuePair.add(new BasicNameValuePair("mobile", mobileno));
+		nameValuePair.add(new BasicNameValuePair("userid", userid));
+		return processHTTPPostExecution(url, nameValuePair);
 	}
 	
 	// not calling
@@ -782,14 +761,6 @@ public class HttpConnectionUtils {
 		  String paramsString = URLEncodedUtils.format(nameValuePair, "UTF-8");
 		  Log.d(TAG, "getPlacesResponse url - " + url + "?" + paramsString);
 		  HttpGet httpGet = new HttpGet(url + "?" + paramsString);
-		  HttpParams params = new BasicHttpParams();
-			HttpConnectionParams.setConnectionTimeout(params, 10000);
-		      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-		      httpGet.setParams(params);
-		      Log.d("connection timeout", String.valueOf(HttpConnectionParams
-		          .getConnectionTimeout(params)));
-		      Log.d("socket timeout",
-		          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 
 			HttpResponse response = null;
 
@@ -847,6 +818,10 @@ public class HttpConnectionUtils {
 //	    .getConnectionTimeout(params)));
 //	    Log.d("socket timeout",
 //	    String.valueOf(HttpConnectionParams.getSoTimeout(params)));
+		BasicHttpParams httpParams = new BasicHttpParams();
+	     HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
+	     ((DefaultHttpClient) httpClient).setParams(httpParams);
+	     
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -908,14 +883,6 @@ public class HttpConnectionUtils {
 
 		HttpGet httpGet = new HttpGet(url);
 		Log.d(TAG, "relation auto email - " + url);
-		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-	      HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-	      httpGet.setParams(params);
-	      Log.d("connection timeout", String.valueOf(HttpConnectionParams
-	          .getConnectionTimeout(params)));
-	      Log.d("socket timeout",
-	          String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 
 		HttpResponse response = null;
 

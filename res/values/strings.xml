@@ -51,10 +51,10 @@
     <string name="crop__pick_error">No image sources available</string>
     <string name="crop__done">Done</string>
     <string name="crop__cancel">Cancel</string>
-    
+
     <!-- Google Places API Browser Key -->
     <string name="places_key">AIzaSyB0s0JzVM5Rva51-Bj0ph0LxGE6rUXegmw</string>
-    
+
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
@@ -109,10 +109,14 @@
     <!-- Parivar Tree API -->
     <string name="host">http://115.124.125.53/app_dev.php/</string>
     <string name="hostname">https://www.parivartree.com/app.php/</string>
-    <string name="url_login">mobilelogin</string>
-    <string name="url_signup">addnewuser</string>
-    <string name="url_view_profile">mobileprofile</string>
-    <string name="url_forgot_password">mobileforgotpassword</string>
+   <string name="url_login1">mobilelogin1</string>
+    <!-- <string name="url_signup">addnewuser</string> -->
+    <string name="url_mobileverify">mobilesmsverify</string>
+    <string name="url_mobileverifyprofileupdate">mobilesmsverifyprofileupdate</string>
+    <string name="url_signup">mobile/signup1</string>
+    <!-- <string name="url_view_profile">mobileprofile</string> -->
+    <!-- <string name="url_forgot_password">mobileforgotpassword</string> -->
+    <string name="url_forgot_password">mobileforgotpassword1</string>
     <string name="url_create_event">mobilecreateevent</string>
     <string name="url_delete_event">mobiledeleteevent</string>
     <string name="url_edit_event">mobileeditevent</string>
@@ -121,11 +125,13 @@
     <string name="url_join_event">mobilejoinevent</string>
     <string name="url_maybe_event">mobilemaybeevent</string>
     <string name="url_decline_event">mobiledeclineevent</string>
-    <string name="url_edit_profile_url">mobileprofileupdate</string>
+    <!-- <string name="url_edit_profile_url">mobileprofileupdate</string> -->
+    <string name="url_edit_profile1_url">mobileupdateprofile1</string> 
     <string name="url_religion">religion</string>
     <string name="url_community">mobilecommunity</string>
     <string name="url_gothra">mobilegothra</string>
     <string name="url_mytree">mobilemytree</string>
+    <string name="url_change_password">mobilechangepassword</string>
     <string name="url_set_password">mobilesetpassword</string>
     <string name="url_notification">mobilenotification</string>
     <string name="url_search_users">mobilesearchusers</string>
@@ -186,5 +192,7 @@
     <string name="make_alive_url">http://115.124.125.53/app_dev.php/mobilemakemealive</string>
     <string name="immediate_family_url">http://115.124.125.53/app_dev.php/mobileimediaterelations</string>
     <string name="field_privacy_url">http://115.124.125.53/app_dev.php/mobilesetfieldprivacy</string>
+    <string name="title_activity_changing_password">ChangingPasswordActivity</string>
+    <string name="title_activity_otpcode">OtpcodeActivity</string>
 
 </resources>

@@ -11,6 +11,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parivartree.MainActivity;
+import com.parivartree.OtpcodeActivity;
 import com.parivartree.R;
 import com.parivartree.adapters.CustomDropDownAdapter;
 import com.parivartree.adapters.LocationHintAdapter;
@@ -61,25 +63,21 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 	SearchPlacesTask searchPlacesTask;
 	Button buttonSave;
 	Spinner spinnerReligion, spinnerCommunity, spinnerGothra, spinnerRelationStatus;
-	ProgressDialog progressDialog;
+	ProgressDialog pDialog;
 	LinearLayout linearAddGothra, linearAddCommunity, linearGothra;
 	String religion, community, gothra;
 	int religionPos, communityPos, gothraPos;
 
 	Activity activity;
 	Context context;
-
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
-
 	String userId, nodeId;
 	UserProfile changedUserProfile;
 
 	ArrayList<SpinnerItem> religionList, communityList, gothraList;
 	ArrayList<String> RelationStatusList;
-
-	int progressDialogCount = 0;
-
+	String mobileUid,mobileNumber, mobileCode, successHash,croutonmsg;
 	private final String TAG = "EditProfileFragment";
 
 	@Override
@@ -142,9 +140,6 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		spinnerGothra.setOnItemSelectedListener(this);
 		editTextDobdate.setOnClickListener(this);
 		editTextWeddingDate.setOnClickListener(this);
-
-		progressDialog = new ProgressDialog(getActivity());
-
 		religionList = new ArrayList<SpinnerItem>();
 		// religionList.add("Select");
 		communityList = new ArrayList<SpinnerItem>();
@@ -183,7 +178,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				}
 			}, 10000);
 		} else {
-			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
 		// provide hinting for the location fields from Google Places API
 		locationHints = new ArrayList<String>();
@@ -214,7 +209,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 						}
 					}, 10000);
 				} else {
-					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+					Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
 			}
 
@@ -232,25 +227,26 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		});
 		return rootView;
 	}
-
+	@Override
+	 public void onPause() {
+	  super.onPause();
+	  
+	  if ((pDialog != null) && pDialog.isShowing())
+	   pDialog.dismiss();
+	  pDialog = null;
+	     
+	 }
 	public class ProfileTask extends AsyncTask<String, String, String> {
-
-		// private ProgressDialog pDialog;
-
-		@Override
+	@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			// pDialog = new ProgressDialog(activity);
-			if (progressDialogCount == 0) {
-				progressDialog.setMessage("Fetching data...");
-				progressDialog.setIndeterminate(false);
-				progressDialog.setCancelable(true);
-				progressDialog.show();
-				progressDialogCount++;
-			} else {
-				progressDialogCount++;
-			}
+			pDialog = new ProgressDialog(activity);
+			pDialog.setMessage("Loading...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
 		}
 
 		@Override
@@ -265,13 +261,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-
-			if (progressDialogCount == 1) {
-				progressDialog.dismiss();
-				progressDialogCount--;
-			} else {
-				progressDialogCount--;
-			}
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			
 			Log.i("Profile update Fetch Response ", "" + response);
 			try {
@@ -400,7 +392,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -408,28 +400,25 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class ReligionTask extends AsyncTask<String, String, String> {
 
-		// private ProgressDialog pDialog;
-
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			// pDialog = new ProgressDialog(activity);
-			if (progressDialogCount == 0) {
-				progressDialog.setMessage("Fetching data...");
-				progressDialog.setIndeterminate(false);
-				progressDialog.setCancelable(true);
-				progressDialog.show();
-				progressDialogCount++;
-			} else {
-				progressDialogCount++;
-			}
+			pDialog = new ProgressDialog(activity);
+			pDialog.setMessage("Loading...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
 		}
 
 		@Override
@@ -444,13 +433,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-
-			if (progressDialogCount == 1) {
-				progressDialog.dismiss();
-				progressDialogCount--;
-			} else {
-				progressDialogCount--;
-			}
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 
 			Log.i("Religion Fetch Response ", "" + response);
 			try {
@@ -490,7 +475,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -498,28 +483,25 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class CommunityTask extends AsyncTask<String, String, String> {
 
-		// private ProgressDialog pDialog;
-
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			// pDialog = new ProgressDialog(activity);
-			if (progressDialogCount == 0) {
-				progressDialog.setMessage("Fetching data...");
-				progressDialog.setIndeterminate(false);
-				progressDialog.setCancelable(true);
-				progressDialog.show();
-				progressDialogCount++;
-			} else {
-				progressDialogCount++;
-			}
+			pDialog = new ProgressDialog(activity);
+			pDialog.setMessage("Loading...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
 		}
 
 		@Override
@@ -534,13 +516,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-
-			if (progressDialogCount == 1) {
-				progressDialog.dismiss();
-				progressDialogCount--;
-			} else {
-				progressDialogCount--;
-			}
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 
 			Log.i("Community Fetch Response ", "" + response);
 			try {
@@ -592,7 +570,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -600,28 +578,25 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class GothraTask extends AsyncTask<String, String, String> {
 
-		// private ProgressDialog pDialog;
-
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			// pDialog = new ProgressDialog(activity);
-			if (progressDialogCount == 0) {
-				progressDialog.setMessage("Fetching data...");
-				progressDialog.setIndeterminate(false);
-				progressDialog.setCancelable(true);
-				progressDialog.show();
-				progressDialogCount++;
-			} else {
-				progressDialogCount++;
-			}
+			pDialog = new ProgressDialog(activity);
+			pDialog.setMessage("Loading...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
 		}
 
 		@Override
@@ -636,12 +611,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			if (progressDialogCount == 1) {
-				progressDialog.dismiss();
-				progressDialogCount--;
-			} else {
-				progressDialogCount--;
-			}
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			Log.i("Gothra Fetch Response ", "" + response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -676,7 +648,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							}
 						}, 10000);
 					} else {
-						Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+						Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 					}
 				}
 			} catch (Exception e) {
@@ -687,7 +659,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -695,6 +667,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
@@ -705,7 +680,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		if (v.getId() == R.id.buttonSave) {
 
 			changedUserProfile = new UserProfile();
-			changedUserProfile.setId(nodeId);
+			changedUserProfile.setUserid(nodeId);
+			changedUserProfile.setUid(userId);
 			Log.d("---fff---", "" + nodeId);
 			changedUserProfile.setDob(editTextDobdate.getText().toString().trim());
 			// changedUserProfile.setEmail(editTextEmail.getText().toString());
@@ -761,7 +737,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					}
 				}, 10000);
 			} else {
-				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
 		}
 		if (v.getId() == R.id.textViewdob) {
@@ -773,8 +749,6 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 	}
 
 	public class SaveProfileTask extends AsyncTask<UserProfile, String, String> {
-
-		private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -791,7 +765,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected String doInBackground(UserProfile... params) {
 			// TODO Auto-generated method stub
 			return HttpConnectionUtils.getEditProfileResponse(params[0], getResources().getString(R.string.hostname)
-					+ getResources().getString(R.string.url_edit_profile_url));
+					+ getResources().getString(R.string.url_edit_profile1_url));
 			// return null;
 		}
 
@@ -799,16 +773,45 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			Log.i("Edit Profile Response ", response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);
 				// String responseResult =
 				// loginResponseObject.getString("Status");
 				int authenticationStatus = loginResponseObject.getInt("AuthenticationStatus");
+				if (loginResponseObject.has("msg")) {
+					croutonmsg = loginResponseObject.getString("msg");
+				}
+				if (loginResponseObject.has("mobilecode")) {
+					mobileCode = loginResponseObject.getString("mobilecode");
+				}
+				if (loginResponseObject.has("newhash")) {
+					successHash = loginResponseObject.getString("newhash");
+				}
+				if (loginResponseObject.has("id")) {
+					mobileUid = loginResponseObject.getString("id");
+				}
+				if (loginResponseObject.has("mobile no")) {
+					mobileNumber = loginResponseObject.getString("mobile no");
+				}			
 				// if(responseResult.equals("Success")) {
 				if (authenticationStatus == 1) {
+					if(loginResponseObject.has("flag")){
+						Intent intentMobile = new Intent(activity,OtpcodeActivity.class);
+						intentMobile.putExtra("croutonmsg", croutonmsg);
+						intentMobile.putExtra("mobileCode", mobileCode);
+						intentMobile.putExtra("successHash", successHash);
+						intentMobile.putExtra("mobileUid", mobileUid);
+						intentMobile.putExtra("mobileNumber", mobileNumber);
+						startActivity(intentMobile);
+					}else{	
 					savedSuccessfully();
+					}
+				} else if(authenticationStatus == 2){
+					Crouton.makeText(activity, "The mobile number you entered is already registered with us. PLease enter a different mobile number", Style.ALERT).show();
 				}
 
 			} catch (Exception e) {
@@ -819,7 +822,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -827,7 +830,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			  if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 
@@ -876,7 +881,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -919,7 +924,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					}
 				}, 10000);
 			} else {
-				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 			}
 
 			break;
