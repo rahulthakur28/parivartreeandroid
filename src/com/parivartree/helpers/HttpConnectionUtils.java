@@ -158,7 +158,7 @@ public class HttpConnectionUtils {
 		// Building post parameters key and value pair
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
 		nameValuePair.add(new BasicNameValuePair("email", userName));
-		nameValuePair.add(new BasicNameValuePair("pass", password));
+		nameValuePair.add(new BasicNameValuePair("password", password));
 
 		return processHTTPPostExecution(url, nameValuePair);
 	}
@@ -194,12 +194,11 @@ public class HttpConnectionUtils {
 
 		// Building post parameters key and value pair
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("userid", userProfile.getUserid()));
+		nameValuePair.add(new BasicNameValuePair("uid", userProfile.getUid()));
 		nameValuePair.add(new BasicNameValuePair("dob", userProfile.getDob()));
-		nameValuePair.add(new BasicNameValuePair("userid", userProfile.getId()));
 		nameValuePair.add(new BasicNameValuePair("firstname", userProfile.getFirstName()));
 		nameValuePair.add(new BasicNameValuePair("lastname", userProfile.getLastName()));
-		// nameValuePair.add(new BasicNameValuePair("id",
-		// userProfile.getGender()));
 		nameValuePair.add(new BasicNameValuePair("locality", userProfile.getLocality()));
 		nameValuePair.add(new BasicNameValuePair("pin", userProfile.getPincode()));
 		nameValuePair.add(new BasicNameValuePair("hometown", userProfile.getHometown()));
@@ -699,6 +698,15 @@ public class HttpConnectionUtils {
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
 		nameValuePair.add(new BasicNameValuePair("userhash", userhash));
 		nameValuePair.add(new BasicNameValuePair("smscode", smscode));
+		return processHTTPPostExecution(url, nameValuePair);
+	}public static String getMobileVerifyProfileUpdateResponse(String userhash, String smscode,String mobileno, String userid, String url) {
+
+		// Building post parameters key and value pair
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("userhash", userhash));
+		nameValuePair.add(new BasicNameValuePair("smscode", smscode));
+		nameValuePair.add(new BasicNameValuePair("mobile", mobileno));
+		nameValuePair.add(new BasicNameValuePair("userid", userid));
 		return processHTTPPostExecution(url, nameValuePair);
 	}
 	public static String getPlacesResponse(String inputText, String key) {	 

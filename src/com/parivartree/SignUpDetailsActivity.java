@@ -88,7 +88,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	// Saripaar validator
 	Validator validator;
 	Activity activity;
-
+	ProgressDialog pDialog;
 	private final String TAG = "SignUpDetailsActivity";
 
 	@Override
@@ -173,7 +173,15 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			}
 		});
 	}
-
+	@Override
+	 public void onPause() {
+	  super.onPause();
+	  
+	  if ((pDialog != null) && pDialog.isShowing())
+	   pDialog.dismiss();
+	  pDialog = null;
+	     
+	 }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -252,8 +260,6 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 
 	public class SignUpDetailsTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
-
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -279,7 +285,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Log.i("Signup Response ", result);
 			try {
 				String message = "";
@@ -343,13 +351,14 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class MobileVerifyTask extends AsyncTask<String, String, String> {
-		private ProgressDialog pDialog;
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -374,7 +383,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Log.i("Signup Response ", result);
 			try {
 				String message = "";
@@ -421,7 +432,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}

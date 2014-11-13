@@ -91,6 +91,10 @@
             android:name=".ChangingPasswordActivity"
             android:label="@string/title_activity_changing_password" >
         </activity>
+        <activity
+            android:name=".OtpcodeActivity"
+            android:label="@string/title_activity_otpcode" >
+        </activity>
     </application>
 
 </manifest>

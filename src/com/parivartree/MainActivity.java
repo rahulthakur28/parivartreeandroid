@@ -75,6 +75,9 @@ import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NavDrawerItem;
 import com.splunk.mint.Mint;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private final String TAG = "MainActivity";
@@ -98,19 +101,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter adapter;
-
+	private Activity activity;
 	// Shared preferences
 	private SharedPreferences sharedPreferences;
 	private Editor sharedPreferencesEditor;
 	final int IMAGE_PICKER_SELECT = 100;
 	public File cameraImagePath = null;
 	FragmentManager fragmentManager;
-	
+	ProgressDialog pDialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		activity = this;
 		Mint.initAndStartSession(this, "2a8a05f6");
 		
 		ActionBar actionBar = this.getActionBar();
@@ -231,8 +234,29 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			displayView(0);
 			Log.v(TAG, "SavedInstanceState is null");
 		}
+		Intent intent = getIntent();
+		Bundle bndl = intent.getExtras();
+		if(bndl != null){		
+			if(bndl.containsKey("croutonmsg")){
+				String msg = bndl.getString("croutonmsg");
+				Crouton.makeText(activity, msg, Style.INFO).show();
+			}
+			if(bndl.containsKey("changefragment")){
+				String changeFragmentTitle = bndl.getString("changefragment");
+				//changing fragment request from OtpcodeActivity
+				changeFragment(changeFragmentTitle);		
+			}	
+		}
 	}
-
+	@Override
+	 public void onPause() {
+	  super.onPause();
+	  
+	  if ((pDialog != null) && pDialog.isShowing())
+	   pDialog.dismiss();
+	  pDialog = null;
+	     
+	 }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		/*
@@ -635,7 +659,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 
 	public class ImageUploadTask extends AsyncTask<String, String, String> {
-		private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -663,7 +686,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			 if ((pDialog != null) && pDialog.isShowing())
+				   pDialog.dismiss();
+				  pDialog = null;
 			Log.i("image upload Fetch Response ", response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);

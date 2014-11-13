@@ -50,6 +50,7 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 	Editor sharedPreferencesEditor;
 	String message,mobileCode,mobileHash,sessionHash;
 	int mobileAttempt,mobileUid;
+	ProgressDialog 	pDialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,7 +71,15 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 		enterCode = (TextView) findViewById(R.id.enterCode);
 		enterCode.setOnClickListener(this);
 	}
-
+	@Override
+	 public void onPause() {
+	  super.onPause();
+	  
+	  if ((pDialog != null) && pDialog.isShowing())
+	   pDialog.dismiss();
+	  pDialog = null;
+	     
+	 }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -150,8 +159,6 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 
 	public class ForgotTask extends AsyncTask<String, Void, String> {
 
-		private ProgressDialog pDialog;
-
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -173,7 +180,9 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Log.i("forgot password Response ", response);
 			String flag ="";
 			try {
@@ -220,7 +229,9 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
@@ -264,7 +275,7 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 		}
 	}
 	public class MobileVerifyTask extends AsyncTask<String, String, String> {
-		private ProgressDialog pDialog;
+
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -289,7 +300,9 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Log.i("Signup Response ", result);
 			try {
 				String message = "";
@@ -336,7 +349,9 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}

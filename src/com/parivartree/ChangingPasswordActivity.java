@@ -38,6 +38,7 @@ public class ChangingPasswordActivity extends Activity implements OnClickListene
 	Activity activity;
 	// Saripaar validator
 	Validator validator;
+	ProgressDialog pDialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,7 +58,15 @@ public class ChangingPasswordActivity extends Activity implements OnClickListene
 		submitButton = (Button) findViewById(R.id.submitbtn);
 		submitButton.setOnClickListener(this);
 	}
-
+	@Override
+	 public void onPause() {
+	  super.onPause();
+	  
+	  if ((pDialog != null) && pDialog.isShowing())
+	   pDialog.dismiss();
+	  pDialog = null;
+	     
+	 }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -85,7 +94,7 @@ public class ChangingPasswordActivity extends Activity implements OnClickListene
 		}
 	}
 	class SetPasswordTask extends AsyncTask<String, Void, String> {
-		private ProgressDialog pDialog;
+
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -105,7 +114,9 @@ public class ChangingPasswordActivity extends Activity implements OnClickListene
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Log.i("event list Response ", response);
 
 			try {
@@ -133,7 +144,9 @@ public class ChangingPasswordActivity extends Activity implements OnClickListene
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			pDialog.dismiss();	if ((pDialog != null) && pDialog.isShowing()) { 
+			    pDialog.dismiss();
+			   }
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 
