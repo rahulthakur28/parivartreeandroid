@@ -20,18 +20,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -41,9 +36,6 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.parivartree.adapters.NavDrawerListAdapter;
@@ -63,14 +55,12 @@ import com.parivartree.fragments.InviteFragment;
 import com.parivartree.fragments.MessageFragment;
 import com.parivartree.fragments.NotificationFragment;
 import com.parivartree.fragments.PagesFragment;
-import com.parivartree.fragments.PhotosFragment;
 import com.parivartree.fragments.ProfileFragment;
 import com.parivartree.fragments.RelationFragment;
+import com.parivartree.fragments.SearchCreateRelationFragment;
 import com.parivartree.fragments.SelectRelationFragment;
 import com.parivartree.fragments.SettingsFragment;
 import com.parivartree.fragments.ViewPhotosFragment;
-import com.parivartree.fragments.ViewStudioFragment;
-import com.parivartree.fragments.ViewVideosFragment;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NavDrawerItem;
 import com.splunk.mint.Mint;
@@ -501,6 +491,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			fragment = new HomeFragment();
 		} else if (fragmentName.equals("ViewPhotosFragment")) {
 			fragment = new ViewPhotosFragment();
+		}  else if (fragmentName.equals("SearchCreateRelationFragment")) {
+			fragment = new SearchCreateRelationFragment();
 		}
 
 		// change to the new fragment
@@ -545,6 +537,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			fragment.setArguments(bundle);
 		} else if (fragmentName.equals("FullScreenFragment")) {
 			fragment = new FullScreenFragment();
+			fragment.setArguments(bundle);
+		} else if (fragmentName.equals("SearchCreateRelationFragment")) {
+			fragment = new SearchCreateRelationFragment();
 			fragment.setArguments(bundle);
 		}
 

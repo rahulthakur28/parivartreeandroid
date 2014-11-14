@@ -155,7 +155,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if (getJoineesTask.getStatus() == AsyncTask.Status.RUNNING){
+					if (getJoineesTask.getStatus() == AsyncTask.Status.RUNNING) {
 						getJoineesTask.cancel(true);
 					}
 				}
@@ -163,7 +163,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
-		
+
 		if (googleMap == null) {
 			Log.d(TAG, "map not found");
 			// removeMap();
@@ -193,16 +193,17 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		return rootView;
 	}
-@Override
-public void onActivityCreated(Bundle savedInstanceState) {
-	// TODO Auto-generated method stub
-	super.onActivityCreated(savedInstanceState);
-	activity= getActivity();
-}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		activity = getActivity();
+	}
+
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -235,7 +236,7 @@ public void onActivityCreated(Bundle savedInstanceState) {
 				handler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						if (joinEventTask2.getStatus() == AsyncTask.Status.RUNNING){
+						if (joinEventTask2.getStatus() == AsyncTask.Status.RUNNING) {
 							joinEventTask2.cancel(true);
 						}
 					}
@@ -327,6 +328,7 @@ public void onActivityCreated(Bundle savedInstanceState) {
 			}
 
 		}
+
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
@@ -364,7 +366,7 @@ public void onActivityCreated(Bundle savedInstanceState) {
 			super.onPostExecute(response);
 			pDialog.dismiss();
 			Log.i("joinees list Response ", response);
-			
+
 			try {
 				JSONObject eventListResponseObject = new JSONObject(response);
 				String responseResult = eventListResponseObject.getString("Status");
@@ -375,12 +377,12 @@ public void onActivityCreated(Bundle savedInstanceState) {
 					for (int i = 0; i < dataArray.length(); i++) {
 						JSONObject c = dataArray.getJSONObject(i);
 						int inviteestatus = c.getInt("inviteestatus");
-						if (inviteestatus == 1) {	
+						if (inviteestatus == 1) {
 							Event eventObject = new Event();
 							String firstname = c.getString("firstname");
 							String lastname = c.getString("lastname");
-							
-							eventObject.setAuthorId(""+c.getInt("inviteeid"));
+
+							eventObject.setAuthorId("" + c.getInt("inviteeid"));
 							eventObject.setName(firstname + " " + lastname);
 							joineesArrayList.add(eventObject);
 						}
@@ -398,6 +400,7 @@ public void onActivityCreated(Bundle savedInstanceState) {
 				Log.d(TAG, "Invalid Server content joinees!!");
 			}
 		}
+
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
@@ -439,8 +442,8 @@ public void onActivityCreated(Bundle savedInstanceState) {
 				imvParams.gravity = Gravity.CENTER_HORIZONTAL;
 				imv.setLayoutParams(imvParams);
 				UrlImageViewHelper.setUrlDrawable(imv,
-						"https://www.parivartree.com/profileimages/thumbs/" + name.getAuthorId()
-								+ "PROFILE.jpeg", getResources().getDrawable(R.drawable.dummyphoto1), 0);
+						"https://www.parivartree.com/profileimages/thumbs/" + name.getAuthorId() + "PROFILE.jpeg",
+						getResources().getDrawable(R.drawable.dummyphoto1), 0);
 
 				TextView tv = new TextView(getActivity());
 				LayoutParams tvParams = new LayoutParams(150, LayoutParams.WRAP_CONTENT);
@@ -451,72 +454,75 @@ public void onActivityCreated(Bundle savedInstanceState) {
 				LL.addView(imv);
 				LL.addView(tv);
 				linear.addView(LL);
-				
+
 			}
 		}
 	}
-	
-//	private void showsJoinDialog(final String arg, final String id, final String authid) {
-//		// Create Object of Dialog class
-//		final Dialog join = new Dialog(getActivity());
-//		// Set GUI of login screen
-//		join.setContentView(R.layout.dialog_join);
-//		join.setTitle("Fill");
-//
-//		// Init button of login GUI
-//		btnDialogjoinok = (Button) join.findViewById(R.id.btndialogjoin);
-//		btnDialogjoinCancel = (Button) join.findViewById(R.id.btnjoinCancel);
-//		editDialogName = (EditText) join.findViewById(R.id.txtdialogname);
-//
-//		// Attached listener for login GUI button
-//		btnDialogjoinok.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//
-//				dialogName = editDialogName.getText().toString();
-//				boolean bool = new ConDetect(getActivity()).isOnline();
-//				if (bool) {
-//					if (dialogName.trim().length() > 0 && arg.equals("join")) {
-//						JoinEventsTask joinEventTask = new JoinEventsTask();
-//						joinEventTask.execute("join", id, authid, userId, dialogName);
-//					}
-//					if (dialogName.trim().length() > 0 && arg.equals("maybe")) {
-//						JoinEventsTask joinEventTask = new JoinEventsTask();
-//						joinEventTask.execute("maybe", id, authid, userId, dialogName);
-//					}
-//
-//					if (dialogName.trim().length() > 0 && arg.equals("decline")) {
-//						JoinEventsTask joinEventTask = new JoinEventsTask();
-//						joinEventTask.execute("decline", id, authid, userId, dialogName);
-//					}
-//
-//				} else {
-//					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-//				}
-//				join.dismiss();
-//			}
-//		});
-//		btnDialogjoinCancel.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				join.dismiss();
-//			}
-//		});
-//		
-//		// Make dialog box visible.
-//		join.show();
-//	}
+
+	// private void showsJoinDialog(final String arg, final String id, final
+	// String authid) {
+	// // Create Object of Dialog class
+	// final Dialog join = new Dialog(getActivity());
+	// // Set GUI of login screen
+	// join.setContentView(R.layout.dialog_join);
+	// join.setTitle("Fill");
+	//
+	// // Init button of login GUI
+	// btnDialogjoinok = (Button) join.findViewById(R.id.btndialogjoin);
+	// btnDialogjoinCancel = (Button) join.findViewById(R.id.btnjoinCancel);
+	// editDialogName = (EditText) join.findViewById(R.id.txtdialogname);
+	//
+	// // Attached listener for login GUI button
+	// btnDialogjoinok.setOnClickListener(new OnClickListener() {
+	// @Override
+	// public void onClick(View v) {
+	//
+	// dialogName = editDialogName.getText().toString();
+	// boolean bool = new ConDetect(getActivity()).isOnline();
+	// if (bool) {
+	// if (dialogName.trim().length() > 0 && arg.equals("join")) {
+	// JoinEventsTask joinEventTask = new JoinEventsTask();
+	// joinEventTask.execute("join", id, authid, userId, dialogName);
+	// }
+	// if (dialogName.trim().length() > 0 && arg.equals("maybe")) {
+	// JoinEventsTask joinEventTask = new JoinEventsTask();
+	// joinEventTask.execute("maybe", id, authid, userId, dialogName);
+	// }
+	//
+	// if (dialogName.trim().length() > 0 && arg.equals("decline")) {
+	// JoinEventsTask joinEventTask = new JoinEventsTask();
+	// joinEventTask.execute("decline", id, authid, userId, dialogName);
+	// }
+	//
+	// } else {
+	// Toast.makeText(getActivity(), "!No Internet Connection,Try again",
+	// Toast.LENGTH_LONG).show();
+	// }
+	// join.dismiss();
+	// }
+	// });
+	// btnDialogjoinCancel.setOnClickListener(new OnClickListener() {
+	// @Override
+	// public void onClick(View v) {
+	// join.dismiss();
+	// }
+	// });
+	//
+	// // Make dialog box visible.
+	// join.show();
+	// }
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+
 	}
+
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		//removeMap();
+		// removeMap();
 		Log.d(TAG, "onPause of fragment called");
 	}
 

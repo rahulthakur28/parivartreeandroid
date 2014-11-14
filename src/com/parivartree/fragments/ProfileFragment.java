@@ -81,7 +81,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 	String nodeId;
 	String userId;
 	String sessionname;
-	String view;
+	String view="";
 	View viewEditProfile, viewEditfamily, viewEditAlbum ,viewImmediate;
 	LinearLayout linearLayoutOverlay, linearDeceased, linearDeleteUser,linearMobile1, linearDob1, linearGender1,
 			linearRelation1, linearWedDate1, linearLocation1, linearHomeTown1, linearProfession1, linearReligion1,

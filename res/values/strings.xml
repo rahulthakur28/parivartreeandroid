@@ -109,7 +109,7 @@
     <!-- Parivar Tree API -->
     <string name="host">http://115.124.125.53/app_dev.php/</string>
     <string name="hostname">https://www.parivartree.com/app.php/</string>
-   <string name="url_login1">mobilelogin1</string>
+    <string name="url_login1">mobilelogin1</string>
     <!-- <string name="url_signup">addnewuser</string> -->
     <string name="url_mobileverify">mobilesmsverify</string>
     <string name="url_mobileverifyprofileupdate">mobilesmsverifyprofileupdate</string>
@@ -126,7 +126,7 @@
     <string name="url_maybe_event">mobilemaybeevent</string>
     <string name="url_decline_event">mobiledeclineevent</string>
     <!-- <string name="url_edit_profile_url">mobileprofileupdate</string> -->
-    <string name="url_edit_profile1_url">mobileupdateprofile1</string> 
+    <string name="url_edit_profile1_url">mobileupdateprofile1</string>
     <string name="url_religion">religion</string>
     <string name="url_community">mobilecommunity</string>
     <string name="url_gothra">mobilegothra</string>
@@ -153,8 +153,6 @@
     <string name="url_immediate_family">mobileimediaterelations</string>
     <string name="url_field_privacy">mobilesetfieldprivacy</string>
     <string name="url_view_profile2">mobileprofileview</string>
-    
-    
     <string name="login_url">http://115.124.125.53/app_dev.php/mobilelogin</string>
     <string name="signup_url">http://115.124.125.53/app_dev.php/addnewuser</string>
     <string name="view_profile_url">http://115.124.125.53/app_dev.php/mobileprofile</string>
@@ -194,5 +192,6 @@
     <string name="field_privacy_url">http://115.124.125.53/app_dev.php/mobilesetfieldprivacy</string>
     <string name="title_activity_changing_password">ChangingPasswordActivity</string>
     <string name="title_activity_otpcode">OtpcodeActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

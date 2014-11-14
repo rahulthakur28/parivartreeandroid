@@ -51,7 +51,7 @@ public class NotificationFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(R.layout.fragment_notification, container, false);
-
+		activity= getActivity();
 		sharedPreferences = this
 				.getActivity()
 				.getApplicationContext()
@@ -65,7 +65,7 @@ public class NotificationFragment extends Fragment {
 		Log.d("list before", "" + notificationModelList);
 		notificationModelList = new ArrayList<NotificationModel>();
 		Log.d("list after", "" + notificationModelList);
-		notificationCustomAdapter = new CustomNotificationAdapter(getActivity(), this, notificationModelList, userId);
+		notificationCustomAdapter = new CustomNotificationAdapter(activity, this, notificationModelList, userId);
 		notificationList.setAdapter(notificationCustomAdapter);
 		// allNotification = "unread";
 		// viewAll.setOnClickListener(this);
@@ -75,7 +75,6 @@ public class NotificationFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		activity= getActivity();
 	}
 
 	@Override

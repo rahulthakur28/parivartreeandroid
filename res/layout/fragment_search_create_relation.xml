@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pt_grey"
+        android:orientation="horizontal"
+        android:padding="7dp"
+        android:weightSum="1.0" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:gravity="left" >
+
+            <Button
+                android:id="@+id/btnrefinesearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corners_blue"
+                android:gravity="center_vertical"
+                android:minHeight="30dp"
+                android:padding="5dp"
+                android:text="Refine Your Search"
+                android:textColor="@color/pt_white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight=".5"
+            android:gravity="right" >
+
+            <Button
+                android:id="@+id/btncreatenewrelation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corners_ligthorange"
+                android:gravity="center_vertical"
+                android:minHeight="30dp"
+                android:padding="5dp"
+                android:text="Create New Relation"
+                android:textColor="@color/pt_white" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@color/pt_grey"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:padding="7dp"
+        android:weightSum="1.0" >
+
+        <TextView
+            android:id="@+id/textresulttitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="Parivartree has found Results"
+            android:textColor="@color/ll_black"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearsearchlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="7dp" >
+
+        <ListView
+            android:id="@+id/searchlistview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </ListView>
+    </LinearLayout>
+
+</LinearLayout>

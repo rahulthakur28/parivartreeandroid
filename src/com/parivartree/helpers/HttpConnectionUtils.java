@@ -424,7 +424,7 @@ public class HttpConnectionUtils {
 	}
 
 	public static String createNewRelationResponse(String uid, String nodeid, String relationId, String firstName,
-			String lastName, String email, String gender, String sessionname, String url) {
+			String lastName, String email, String gender, String sessionname,String location, String url) {
 		// Building post parameters key and value pair
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(8);
 		nameValuePair.add(new BasicNameValuePair("uid", uid));
@@ -435,6 +435,7 @@ public class HttpConnectionUtils {
 		nameValuePair.add(new BasicNameValuePair("email", email));
 		nameValuePair.add(new BasicNameValuePair("gender", gender));
 		nameValuePair.add(new BasicNameValuePair("sessionname", sessionname));
+		nameValuePair.add(new BasicNameValuePair("locality", location));
 
 
 		return processHTTPPostExecution(url, nameValuePair);
@@ -560,7 +561,7 @@ public class HttpConnectionUtils {
 
 		return processHTTPPostExecution(url, nameValuePair);
 	}
-
+	
 	public static String createOthersRelationResponse(String nodeid, String uid, String relationId, String name,
 			String sessionname, String sessionid, String url) {
 
