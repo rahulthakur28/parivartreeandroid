@@ -65,6 +65,8 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	private Button loginButton;
 	String email, emailtext;
 	LoginTask lT;
+	
+	private ProgressDialog pDialog;
 	/**
 	 * Facebook
 	 */
@@ -215,10 +217,11 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	public void onPause() {
 		super.onPause();
 		uiHelper.onPause();
-
+		
 		if ((pDialog != null) && pDialog.isShowing())
 			pDialog.dismiss();
 		pDialog = null;
+	    
 	}
 
 	@Override
@@ -591,7 +594,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	}
 
 	public class LoginTask extends AsyncTask<String, String, String> {
-
+		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -601,7 +604,6 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
-
 		}
 
 		@Override
@@ -632,9 +634,11 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			if ((pDialog != null) && pDialog.isShowing()) {
+			
+			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
+			//pDialog.dismiss();
 			Log.i("Login Response ", response);
 			try {
 

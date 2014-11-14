@@ -57,6 +57,7 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 	String whichEvent;
 	Activity activity;
 	RelativeLayout txtmyevntLayout, txtupcmgevntLayout, txtrecentevntLayout;
+	private ProgressDialog pDialog;
 
 	public CommunityFragment() {
 	}
@@ -99,6 +100,17 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 		getMyEvent();
 		return rootView;
 	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		if ((pDialog != null) && pDialog.isShowing())
+			pDialog.dismiss();
+		pDialog = null;
+	    
+	}
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -246,10 +258,8 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 		}
 
 	}
-
+	
 	public class GetMyEventsTask extends AsyncTask<String, Void, String> {
-
-		private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -284,7 +294,9 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("event list Response ", response);
 
 			try {
@@ -429,11 +441,14 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 			}
 
 		}
+		
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}

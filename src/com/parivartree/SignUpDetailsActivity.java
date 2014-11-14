@@ -69,6 +69,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	SearchPlacesTask searchPlacesTask;
 	String emailMobileTest, successFlag, mobileCode, successHash, sessionHash, croutonmsg,successemailHash;
 	int mobileUid, mobileAttempt;
+
 	TextView enterCode;
 
 	View alertDialogView,alertDialogViewpassword;
@@ -180,8 +181,18 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	  if ((pDialog != null) && pDialog.isShowing())
 	   pDialog.dismiss();
 	  pDialog = null;
-	     
+	
 	 }
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		if ((pDialog != null) && pDialog.isShowing())
+			pDialog.dismiss();
+		pDialog = null;
+	    
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -260,6 +271,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 
 	public class SignUpDetailsTask extends AsyncTask<String, String, String> {
 
+		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -286,8 +298,8 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 			if ((pDialog != null) && pDialog.isShowing()) { 
-			    pDialog.dismiss();
-			   }
+				pDialog.dismiss();
+			}
 			Log.i("Signup Response ", result);
 			try {
 				String message = "";
@@ -433,8 +445,8 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
 			if ((pDialog != null) && pDialog.isShowing()) { 
-			    pDialog.dismiss();
-			   }
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}

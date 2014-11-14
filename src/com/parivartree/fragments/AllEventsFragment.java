@@ -66,6 +66,9 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 	GoogleMap googleMap;
 	LinearLayout linear;
 	Activity activity;
+	
+	private ProgressDialog pDialog;
+	
 	private ArrayList<Event> joineesArrayList;
 
 	public AllEventsFragment() {
@@ -197,6 +200,8 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		return rootView;
 	}
 
+	
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -249,8 +254,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 	}
 
 	class JoinEventsTask extends AsyncTask<String, Void, String> {
-
-		private ProgressDialog pDialog;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -299,7 +303,9 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Join maybe decline Response ", response);
 
 			try {
@@ -333,14 +339,16 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class GetJoineesTask extends AsyncTask<String, Void, String> {
 
-		private ProgressDialog pDialog;
+		//private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -364,7 +372,9 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("joinees list Response ", response);
 
 			try {
@@ -405,7 +415,9 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
@@ -522,7 +534,11 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		// removeMap();
+		
+		if ((pDialog != null) && pDialog.isShowing())
+			pDialog.dismiss();
+		pDialog = null;
+		
 		Log.d(TAG, "onPause of fragment called");
 	}
 

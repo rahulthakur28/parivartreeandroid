@@ -1031,7 +1031,7 @@ public class CompleteTree implements OnClickListener{
 			connectorCanvas.drawLine(offSpringOffset + startOffset, height / 2,
 					offSpringOffset + userOffSpringConnector - endOffset,
 					height / 2, paint);
-
+			
 			for (int userConnector : offspringsToUserConnectors) {
 				connectorCanvas.drawLine(offSpringOffset + userConnector,
 						height, offSpringOffset + userConnector, height / 2,

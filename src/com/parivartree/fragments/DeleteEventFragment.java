@@ -65,6 +65,8 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 	Fragment fragment;
 	Activity activity;
 	Context context;
+	
+	private ProgressDialog pDialog;
 
 	public DeleteEventFragment() {
 
@@ -174,6 +176,8 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 
 		return rootView;
 	}
+	
+	
 
 	@Override
 	public void onClick(View v) {
@@ -226,7 +230,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 
 	public class DeleteEventsTask extends AsyncTask<String, Void, String> {
 
-		private ProgressDialog pDialog;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -253,7 +257,9 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("delete event Response ", response);
 
 			try {
@@ -290,14 +296,16 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class GetJoineesTask extends AsyncTask<String, Void, String> {
 
-		private ProgressDialog pDialog;
+		//private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -321,7 +329,9 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("joinees list Response ", response);
 
 			try {
@@ -360,11 +370,14 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			}
 
 		}
+		
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
@@ -456,7 +469,11 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		//removeMap();
+			
+			if ((pDialog != null) && pDialog.isShowing())
+				pDialog.dismiss();
+			pDialog = null;
+			
 		Log.d(TAG, "onPause of fragment called");
 	}
 

@@ -42,6 +42,7 @@ public class NotificationFragment extends Fragment {
 	private SharedPreferences sharedPreferences;
 	NotificationModel notifiObject;
 	Activity activity;
+	private ProgressDialog pDialog;
 	//BroadcastReceiver mBroadcastReceiver;
 
 	public NotificationFragment() {
@@ -94,16 +95,24 @@ public class NotificationFragment extends Fragment {
 					}
 				}
 			}, 10000);
-
+			
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
 	}
-
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		if ((pDialog != null) && pDialog.isShowing())
+			pDialog.dismiss();
+		pDialog = null;
+	    
+	}
+	
 	public class GetNotificationTask extends AsyncTask<String, Void, String> {
-
-		private ProgressDialog pDialog;
-
+		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -113,26 +122,29 @@ public class NotificationFragment extends Fragment {
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
-
 		}
-
+		
 		@Override
 		protected String doInBackground(String... params) {
 			Log.d(TAG, "doInBackground : " + params[0]);
 			// ---------change method name
-
+			
 			return HttpConnectionUtils.getNotificationListResponse(
 					params[0],
 					getActivity().getResources().getString(R.string.hostname)
 							+ getActivity().getResources().getString(R.string.url_notification));
-
+			
 		}
-
+		
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
+			
 			Log.i("Notification list Response ", response);
-
+			
 			try {
 				JSONObject eventListResponseObject = new JSONObject(response);
 				String responseResult = eventListResponseObject.getString("Status");
@@ -212,7 +224,9 @@ public class NotificationFragment extends Fragment {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}

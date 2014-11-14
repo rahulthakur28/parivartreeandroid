@@ -95,6 +95,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 	Bitmap userImage = null;
 	private String[] PRIVACY = { "Private", "Family", "Public" };
 	View rootView;
+	
+	private ProgressDialog pDialog;
+	
 	public ProfileFragment(Bitmap userImage) {
 		this.userImage = userImage;
 	}
@@ -362,10 +365,25 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		}
 		return rootView;
 	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		if ((pDialog != null) && pDialog.isShowing())
+			pDialog.dismiss();
+		pDialog = null;
+	    
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+	}
 
 	public class ProfileTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -381,15 +399,17 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			return	HttpConnectionUtils.getProfileViewResponse(params[0],params[1],getResources().getString(R.string.hostname)
-					+ getResources().getString(R.string.url_view_profile2));
+			return	HttpConnectionUtils.getProfileViewResponse(params[0],params[1],activity.getResources().getString(R.string.hostname)
+					+ activity.getResources().getString(R.string.url_view_profile2));
 		}
 
 		@Override
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Profile Fetch Response ", response);
 			try {
 
@@ -757,14 +777,16 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class DeceasedUserTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
+		//private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -793,7 +815,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Deceased Fetch Response ", response);
 			try {
 
@@ -827,14 +851,16 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class DeleteUserTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
+		//private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -858,7 +884,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("delete user Fetch Response ", response);
 			try {
 
@@ -889,14 +917,16 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class MakeAliveTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
+		//private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -920,7 +950,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Deceased Fetch Response ", response);
 			try {
 
@@ -950,7 +982,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
@@ -1096,7 +1130,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 	}
 
 	public class ImageUploadTask extends AsyncTask<String, String, String> {
-		private ProgressDialog pDialog;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -1120,7 +1154,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("image upload Fetch Response ", response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -1141,14 +1177,16 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class ImmediateFamilyTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -1176,7 +1214,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Immediate Family Response ", response);
 			try {
 
@@ -1240,14 +1280,16 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 
 	public class FieldPrivacyTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -1275,7 +1317,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Field Privacy Response ", response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -1296,7 +1340,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}

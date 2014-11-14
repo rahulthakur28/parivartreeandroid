@@ -536,9 +536,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	}
 
 	public class InviteRelationTask extends AsyncTask<String, String, String> {
-
+		
 		private ProgressDialog pDialog;
-
+		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -549,7 +549,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			pDialog.setCancelable(true);
 			pDialog.show();
 		}
-
+		
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub

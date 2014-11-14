@@ -49,6 +49,8 @@ ListView searchList;
 EditText searchNameEdit;
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
+	
+	int searchTaskProcessCalledCount = 0;
 
 	public InviteFragment() {
 	}
@@ -113,7 +115,8 @@ EditText searchNameEdit;
 					}
 					Log.d("Search user", "AsyncTask calling");
 					searchUserTask = new SearchUserTask();
-					searchUserTask.execute(s.toString(), userId);			
+					searchUserTask.execute(s.toString(), userId);
+					/*
 					Handler handler = new Handler();
 					handler.postDelayed(new Runnable() {
 						@Override
@@ -123,17 +126,19 @@ EditText searchNameEdit;
 							}
 						}
 					}, 10000);
+					*/
 				} else {
-					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+					//Toast.makeText(getActivity(), "No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+					Crouton.makeText(activity, "No internet connection found", Style.ALERT).show();
 				}
 			}
-
+			
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 				// TODO Auto-generated method stub
-
+				
 			}
-
+			
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				// TODO Auto-generated method stub
@@ -151,12 +156,19 @@ EditText searchNameEdit;
 
 	public class SearchUserTask extends AsyncTask<String, Void, String> {
 
-//		@Override
-//		protected void onPreExecute() {
-//			if (searchNameEdit.getText().toString().trim().equals("")) {
-//				ObjectItemData.clear();
-//			}
-//		}
+		
+		
+		@Override
+		protected void onPreExecute() {
+			/*
+			if (searchNameEdit.getText().toString().trim().equals("")) {
+				ObjectItemData.clear();
+			}
+			*/
+			searchTaskProcessCalledCount++;
+			
+			Log.e(TAG, "SearchUserTask processCalledCount increased- " + searchTaskProcessCalledCount);
+		}
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -176,71 +188,92 @@ EditText searchNameEdit;
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			Log.i("event list Response ", response);
-			try {
-				JSONArray eventListResponseArray = new JSONArray(response);
-				// ObjectItemData = new
-				// MyObject[eventListResponseArray.length()];
-				ObjectItemData.clear();
-				for (int i = 0; i < eventListResponseArray.length(); i++) {
-					JSONObject c = eventListResponseArray.getJSONObject(i);
-					if (c.has("result")) {
-						String result = c.getString("result");
-						if (result.equals("Success")) {
-							String inviteUserId = c.getString("id");
-							String name = c.getString("firstname") + " " + c.getString("lastname");
-							String status = c.getString("parameter");
-							String fullname = name;
-							if(status.equalsIgnoreCase("Unhide")){
-								ObjectItemData.add(new MyObject(fullname, inviteUserId, status));
-							}else{
-								ObjectItemData.add(new MyObject(fullname, inviteUserId, "NA"));
+			searchTaskProcessCalledCount--;
+			Log.e(TAG, "SearchUserTask processCalledCount decreased- " + searchTaskProcessCalledCount);
+			
+			if(response.equals("timeout")) {
+				if(searchTaskProcessCalledCount == 0) {
+					
+					Crouton.makeText(activity, "Your network connection is very slow", Style.ALERT).show();
+				}
+			} else {
+				Log.i("event list Response ", response);
+				try {
+					JSONArray eventListResponseArray = new JSONArray(response);
+					// ObjectItemData = new
+					// MyObject[eventListResponseArray.length()];
+					ObjectItemData.clear();
+					for (int i = 0; i < eventListResponseArray.length(); i++) {
+						JSONObject c = eventListResponseArray.getJSONObject(i);
+						if (c.has("result")) {
+							String result = c.getString("result");
+							if (result.equals("Success")) {
+								String inviteUserId = c.getString("id");
+								String name = c.getString("firstname") + " " + c.getString("lastname");
+								String status = c.getString("parameter");
+								String fullname = name;
+								if(status.equalsIgnoreCase("Unhide")){
+									ObjectItemData.add(new MyObject(fullname, inviteUserId, status));
+								}else{
+									ObjectItemData.add(new MyObject(fullname, inviteUserId, "NA"));
+								}
 							}
+						} else {
+							ObjectItemData.add(new MyObject("No results found", null, "NA"));
 						}
-					} else {
-						ObjectItemData.add(new MyObject("No results found", null, "NA"));
+
 					}
 
-				}
+					Log.i(TAG, "ObjectItemData size: - " + ObjectItemData.size());
+					if (ObjectItemData.size() > 20) {
+						ObjectItemData.subList(20, ObjectItemData.size() - 1).clear();
+						;
+					}
 
-				Log.i(TAG, "ObjectItemData size: - " + ObjectItemData.size());
-				if (ObjectItemData.size() > 20) {
-					ObjectItemData.subList(20, ObjectItemData.size() - 1).clear();
-					;
-				}
+					// myAdapter.notifyDataSetInvalidated();
+					// myAdapter.notifyDataSetChanged();
+					// searchUserAutoComplete.showDropDown();
+					Log.d(TAG, "dataSetChanged");
+					Log.d(TAG, "dataSetChanged :"+ObjectItemData);
+					
+					//myAdapter = new AutocompleteCustomArrayAdapter(getActivity(), R.layout.list_view_row, ObjectItemData);
+					myAdapter.notifyDataSetChanged();
+					//Log.d(TAG, "event handle : "+searchUserAutoComplete.dispatchWindowFocusChanged(true));
+					//searchUserAutoComplete.dispatchWindowFocusChanged(true);
+//					KeyEvent eventSpace = new KeyEvent(KeyEvent.ACTION_UP, 62);
+//				    KeyEvent delete = new KeyEvent(KeyEvent.ACTION_UP, 67);
+//				    searchUserAutoComplete.dispatchKeyEvent(eventSpace);
+//				    searchUserAutoComplete.dispatchKeyEvent(delete);
 
-				// myAdapter.notifyDataSetInvalidated();
-				// myAdapter.notifyDataSetChanged();
-				// searchUserAutoComplete.showDropDown();
-				Log.d(TAG, "dataSetChanged");
-				Log.d(TAG, "dataSetChanged :"+ObjectItemData);
-				
-				//myAdapter = new AutocompleteCustomArrayAdapter(getActivity(), R.layout.list_view_row, ObjectItemData);
-				myAdapter.notifyDataSetChanged();
-				//Log.d(TAG, "event handle : "+searchUserAutoComplete.dispatchWindowFocusChanged(true));
-				//searchUserAutoComplete.dispatchWindowFocusChanged(true);
-//				KeyEvent eventSpace = new KeyEvent(KeyEvent.ACTION_UP, 62);
-//			    KeyEvent delete = new KeyEvent(KeyEvent.ACTION_UP, 67);
-//			    searchUserAutoComplete.dispatchKeyEvent(eventSpace);
-//			    searchUserAutoComplete.dispatchKeyEvent(delete);
-
-			} catch (Exception e) {
-				for (StackTraceElement tempStack : e.getStackTrace()) {
-					// Log.d("Exception thrown: Treeview Fetch", "" +
-					// tempStack.getLineNumber());
-					Log.d("Exception thrown: ",
-							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
-									+ tempStack.getMethodName());
+				} catch (Exception e) {
+					for (StackTraceElement tempStack : e.getStackTrace()) {
+						// Log.d("Exception thrown: Treeview Fetch", "" +
+						// tempStack.getLineNumber());
+						Log.d("Exception thrown: ",
+								"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+										+ tempStack.getMethodName());
+					}
+					Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+					Log.d(TAG, "Invalid Server content!!");
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
-				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			searchTaskProcessCalledCount--;
+			Log.e(TAG, "SearchUserTask processCalledCount decreased - " + searchTaskProcessCalledCount);
+			
+			if(searchTaskProcessCalledCount == 0) {
+				
+				Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			}
+			
+			
+			
+			//Crouton.
+			
 		}
 	}
 

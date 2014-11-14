@@ -72,6 +72,8 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 	// Saripaar validator
 	Validator validator;
 Activity activity;
+	private ProgressDialog pDialog;
+
 	public EditEventFragment() {
 
 	}
@@ -205,6 +207,17 @@ Activity activity;
 		populateViews();
 		return rootView;
 	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		if ((pDialog != null) && pDialog.isShowing())
+			pDialog.dismiss();
+		pDialog = null;
+	    
+	}
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -261,7 +274,7 @@ Activity activity;
 
 	public class EditEventTask extends AsyncTask<String, Void, String> {
 
-		private ProgressDialog pDialog;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -297,7 +310,9 @@ Activity activity;
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("edit Event Response ", response);
 
 			try {
@@ -350,7 +365,9 @@ Activity activity;
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
