@@ -43,6 +43,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	String relationships[] = new String[] {"relationship", "Father", "Mother", "Wife", "Brother", "Sister", "Son", "Daughter", "Husband"};
 	int position = 0;
 	String userName = "",toWhomName;
+	private ProgressDialog pDialog;
 	
 	public AutoCompleteRelationArrayAdapter(Activity context, int layoutResourceId, ArrayList<MyObject> data) {
 		super(context, layoutResourceId, data);
@@ -164,8 +165,6 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 
 	public class CreateRelationTask extends AsyncTask<String, String, String> {
 
-		private ProgressDialog pDialog;
-
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -204,12 +203,15 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) {
+				pDialog.dismiss();
+			}
 			Log.i("Relation Fetch Response ", response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);
 				int responseResult = loginResponseObject.getInt("AuthenticationStatus");
-				if (responseResult == 1) {
+				String result = loginResponseObject.getString("Status");
+				if ((result.equals("Success")) || (responseResult == 1)) {
 					// TODO store the login response and
 					// JSONArray data =
 					// loginResponseObject.getJSONArray("data");
@@ -251,7 +253,9 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) {
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}

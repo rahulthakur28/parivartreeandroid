@@ -604,6 +604,20 @@ public class HttpConnectionUtils {
 
 		return processHTTPPostExecution(url, nameValuePair);
 	}
+	public static String getCreateNewUserResponse(String nodeid, String relationid, String email, String firstname,String lastname,String locality,String uid, String url) {
+
+		// Building post parameters key and value pair
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(7);
+		nameValuePair.add(new BasicNameValuePair("nodeid", nodeid));
+		nameValuePair.add(new BasicNameValuePair("relationid", relationid));
+		nameValuePair.add(new BasicNameValuePair("email", email));
+		nameValuePair.add(new BasicNameValuePair("firstname", firstname));
+		nameValuePair.add(new BasicNameValuePair("lastname", lastname));
+		nameValuePair.add(new BasicNameValuePair("locality", locality));
+		nameValuePair.add(new BasicNameValuePair("uid", uid));
+
+		return processHTTPPostExecution(url, nameValuePair);
+	}
 
 	public static String InvitationAcceptResponse(String id, String notifid, String uid, String url) {
 		// Building post parameters key and value pair
@@ -819,9 +833,6 @@ public class HttpConnectionUtils {
 //	    .getConnectionTimeout(params)));
 //	    Log.d("socket timeout",
 //	    String.valueOf(HttpConnectionParams.getSoTimeout(params)));
-		BasicHttpParams httpParams = new BasicHttpParams();
-	     HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
-	     ((DefaultHttpClient) httpClient).setParams(httpParams);
 	     
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();

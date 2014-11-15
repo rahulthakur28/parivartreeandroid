@@ -202,10 +202,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					if (searchUserTask != null) {
 						searchUserTask.cancel(true);
 					}
-
 					Log.d(TAG, "-------------------------------------------------------------------------------");
 					Log.d("Search user", "AsyncTask calling");
-					if (flag == 0) {
+					if (flag == 0 && ((s.toString().length()) > 0)) {
 						searchUserTask = new SearchUserTask();
 						searchUserTask.execute(s.toString(), userId);
 						Handler handler = new Handler();
@@ -428,12 +427,6 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					if (loginResponseObject.has("records")) {
 						relationRecordsList = new ArrayList<HashMap<String, String>>();
 						searchRecordsList.clear();
-						if (loginResponseObject.has("nodeid")) {
-
-						}
-						if (loginResponseObject.has("relationid")) {
-
-						}
 						JSONArray records = loginResponseObject.getJSONArray("records");
 						for (int i = 0; i < records.length(); i++) {
 							JSONObject item = records.getJSONObject(i);
@@ -467,9 +460,13 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 						}				
 						Bundle bundle = new Bundle();
 						bundle.putParcelableArrayList("searchrelationList", searchRecordsList);
-						bundle.putString("searchname", ((firstNameEditText.getText().toString().trim())+" "+(lastNameEditText.getText().toString().trim())));
+						bundle.putString("firstname", ((firstNameEditText.getText().toString().trim())));		
+						bundle.putString("lastname", ((lastNameEditText.getText().toString().trim())));
+						bundle.putString("email", autoEmail);
+						bundle.putString("locality", (editLocation.getText().toString().trim()));
+						
 						if (loginResponseObject.has("nodeid")) {
-							bundle.putString("mynodeid", loginResponseObject.getString("nodeid"));
+							bundle.putString("recommendnodeid", loginResponseObject.getString("nodeid"));
 						}
 						if (loginResponseObject.has("relationid")) {
 							bundle.putString("myrelationid", loginResponseObject.getString("relationid"));
@@ -661,8 +658,8 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			Log.d("CreateRelation3", "Values" + userId + ", " + nodeId + ", " + relationId + ", "
 					+ firstNameEditText.getText().toString() + ", " + lastNameEditText.getText().toString() + ", "
 					+ autoEmail + ", " + finalgender + ", " + sessionname);
-			cRT2.execute("new",userId, nodeId, relationId, firstNameEditText.getText().toString(), lastNameEditText
-					.getText().toString(), autoEmail, finalgender, sessionname, (editLocation.getText().toString()
+			cRT2.execute("new",userId, nodeId, relationId, (firstNameEditText.getText().toString().trim()), (lastNameEditText
+					.getText().toString().trim()), autoEmail, finalgender, sessionname, (editLocation.getText().toString()
 					.trim()));
 
 			Handler handler = new Handler();

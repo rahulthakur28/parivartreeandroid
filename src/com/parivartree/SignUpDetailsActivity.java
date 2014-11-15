@@ -175,15 +175,6 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		});
 	}
 	@Override
-	 public void onPause() {
-	  super.onPause();
-	  
-	  if ((pDialog != null) && pDialog.isShowing())
-	   pDialog.dismiss();
-	  pDialog = null;
-	
-	 }
-	@Override
 	public void onPause() {
 		super.onPause();
 		
