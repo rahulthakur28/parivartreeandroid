@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -483,8 +484,8 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		Log.d(TAG, "onDestroyView called");
 		if (googleMap != null) {
 
-			getActivity().getSupportFragmentManager().beginTransaction()
-					.remove(getActivity().getSupportFragmentManager().findFragmentById(R.id.map1)).commit();
+			((FragmentActivity) activity).getSupportFragmentManager().beginTransaction()
+					.remove(((FragmentActivity) activity).getSupportFragmentManager().findFragmentById(R.id.map1)).commit();
 			googleMap = null;
 			Log.d(TAG, "googleMap removed");
 		} else {

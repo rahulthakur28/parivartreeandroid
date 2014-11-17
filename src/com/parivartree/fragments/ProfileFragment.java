@@ -1192,11 +1192,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			//pDialog.dismiss();
 			pDialog = new ProgressDialog(activity);
-			pDialog.setMessage("Fetching Profile details...");
+			pDialog.setMessage("Fetching immediate family details...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
-			pDialog.show();
+			//pDialog.show();
+			Log.d("Immediate Family", "Progress dialog called");
 		}
 
 		@Override
@@ -1217,7 +1219,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Log.i("Immediate Family Response ", response);
+			Log.e("Immediate Family Response ", pDialog.isShowing() + response);
 			try {
 
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -1251,7 +1253,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 
 					Log.d("ImmediateFamilyTask", "Adapter item count: " + ifa.getCount());
 					// horizontialListView.setAdapter(ifa);
-
+					
 					// ifa.notifyDataSetInvalidated();
 					
 					ifa.notifyDataSetChanged();
@@ -1263,9 +1265,6 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						horizontialListView.setVisibility(View.VISIBLE);
 					}
 					Log.d("ImmediateFamilyTask", "immediateFamily size -" + immediateFamily.size());
-
-					//
-
 					// horizontialListView.setAdapter(ifa);
 				}
 			} catch (Exception e) {
@@ -1280,7 +1279,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			if ((pDialog != null) && pDialog.isShowing()) { 
+			if ((pDialog != null)) { 
 				pDialog.dismiss();
 			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();

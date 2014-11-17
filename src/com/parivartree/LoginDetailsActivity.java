@@ -65,8 +65,6 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	private Button loginButton;
 	String email, emailtext;
 	LoginTask lT;
-	
-	private ProgressDialog pDialog;
 	/**
 	 * Facebook
 	 */

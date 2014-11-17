@@ -86,6 +86,8 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	int request_type = 1;
 	// Keys used in Hashmap
 	String[] from = { "txtname" };
+	
+	private ProgressDialog pDialog;
 
 	// Ids of views in listview_layout
 	int[] to = { R.id.txtname };
@@ -108,8 +110,14 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+		Log.d(TAG, "relationId - " + relationId + ", nodeId - " + nodeId);
 		activity = getActivity();
 		context = getActivity().getApplicationContext();
+		
+		if(savedInstanceState != null && savedInstanceState.containsKey("relationId") && savedInstanceState.containsKey("nodeId")) {
+			relationId = savedInstanceState.getString("relationId");
+			nodeId = savedInstanceState.getString("nodeId");
+		}
 
 		sharedPreferences = activity.getSharedPreferences(
 				activity.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
@@ -310,11 +318,30 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		// ssearchUserAutoComplete.setKeyListener(this);
 		return rootView;
 	}
-
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		if ((pDialog != null) && pDialog.isShowing())
+			pDialog.dismiss();
+		pDialog = null;
+	    
+	}
+	
+	@Override
+	public void onSaveInstanceState (Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if(!relationId.equals(null) && !nodeId.equals(null)) {
+			outState.putString("relationId", relationId);
+			outState.putString("nodeId", nodeId);
+		}
+	}
+	
 	public class AutoGenerateEmailTask extends AsyncTask<String, String, String> {
-
-		private ProgressDialog pDialog;
-
+		
+		//private ProgressDialog pDialog;
+		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -325,20 +352,22 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			pDialog.setCancelable(true);
 			pDialog.show();
 		}
-
+		
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			return HttpConnectionUtils.autoGenerateEmailResponse(getResources().getString(R.string.hostname)
 					+ getResources().getString(R.string.url_autogenerate_email));
-
+			
 		}
 
 		@Override
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Profile Fetch Response ", response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -368,15 +397,15 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 
 	}
 
 	public class CreateRelationTask extends AsyncTask<String, String, String> {
-
-		private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
@@ -414,7 +443,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Relation Fetch Response ", response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -471,14 +502,16 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
 	
 	public class InviteRelationTask extends AsyncTask<String, String, String> {
 		
-		private ProgressDialog pDialog;
+		//private ProgressDialog pDialog;
 		
 		@Override
 		protected void onPreExecute() {
@@ -514,7 +547,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Relation Fetch Response ", response);
 			try {
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -558,7 +593,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
 	}
@@ -582,7 +619,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					}
 				final CreateRelationTask cRT2 = new CreateRelationTask();
 				//String sessionname = sharedPreferences.getString("sessionname", "Not Available");
-				Log.d("CreateRelation3", "Values" + nodeId + ", " + userId + ", " + relationId + ", "
+				//Log.d("CreateRelation3", "Values" + nodeId + ", " + userId + ", " + relationId + ", "
 				Log.d("CreateRelation3", "Values" + nodeId + ", " + userId + ", " + relationId + ", "
 						+ firstNameEditText.getText().toString() + ", " + lastNameEditText.getText().toString()
 						+ ", " + autoEmail + ", " + finalgender + ", " + sessionname);

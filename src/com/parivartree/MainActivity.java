@@ -84,21 +84,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
-
+	
 	// Action Bar items
 	ImageView imageView1, imageView2, imageView3, imageView4;
-
+	
 	private Fragment fragment, currentFragment;
-
+	
 	// nav drawer title
 	private CharSequence mDrawerTitle;
-
+	
 	// used to store app title
 	private CharSequence mTitle;
 	// slide menu items
 	private String[] navMenuTitles;
 	private TypedArray navMenuIcons;
-
+	
 	private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter adapter;
 	private Activity activity;

@@ -809,18 +809,6 @@ public class HttpConnectionUtils {
 		BasicHttpParams httpParams = new BasicHttpParams();
 	    HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT);
 	    ((DefaultHttpClient) httpClient).setParams(httpParams);
-		
-//		HttpParams params = new BasicHttpParams();
-//		HttpConnectionParams.setConnectionTimeout(params, 10000);
-//	    HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-//	    httpPost.setParams(params);
-//	    Log.d("connection timeout", String.valueOf(HttpConnectionParams
-//	    .getConnectionTimeout(params)));
-//	    Log.d("socket timeout",
-//	    String.valueOf(HttpConnectionParams.getSoTimeout(params)));
-		BasicHttpParams httpParams = new BasicHttpParams();
-	     HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
-	     ((DefaultHttpClient) httpClient).setParams(httpParams);
 	     
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();

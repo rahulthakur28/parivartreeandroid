@@ -218,7 +218,8 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 					sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
 					sharedPreferencesEditor.commit();
 					String nodeName = userName;
-					if(request_type == 1) {				
+					Log.e(TAG, "request_type - " + request_type);
+					if(request_type == 1) {
 								//AutoCompleteRelationArrayAdapter.this.userName;
 						Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
 					} else if (request_type == 2) {
@@ -234,7 +235,6 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 					Crouton.makeText(activity, "Email ID is already a parivartree account, use search user to invite", Style.INFO).show();
 					//Toast.makeText(mContext, "Email ID already parivartree account use search user", Toast.LENGTH_LONG).show();
 				}
-
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					// Log.d("Exception thrown: Treeview Fetch", "" +

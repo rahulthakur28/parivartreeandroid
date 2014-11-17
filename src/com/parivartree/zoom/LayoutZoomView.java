@@ -156,6 +156,7 @@ public class LayoutZoomView extends FrameLayout implements Observer {
                 mRectSrc.bottom = bitmapHeight;
             }
             
+            /*
             canvas.scale(zoomX, zoomY);
             
             Log.d(VIEW_LOG_TAG, "width:" + this.getWidth() + ", height:" + this.getHeight());
@@ -174,8 +175,9 @@ public class LayoutZoomView extends FrameLayout implements Observer {
             if(prevZoomX != zoomX || prevZoomY != zoomY) {
             	prevZoomX = zoomX;
             	prevZoomY = zoomY;
-            	((View)getParent()).invalidate();
+            	//((View)getParent()).invalidate();
             }
+            */
             //awakenScrollBars(1);
         }
     }
