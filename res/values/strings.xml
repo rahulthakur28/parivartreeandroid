@@ -129,6 +129,7 @@
     <string name="url_edit_profile1_url">mobileupdateprofile1</string>
     <string name="url_religion">religion</string>
     <string name="url_community">mobilecommunity</string>
+    <string name="url_all_community">mobile/getcommunities</string>
     <string name="url_gothra">mobilegothra</string>
     <string name="url_mytree">mobilemytree</string>
     <string name="url_change_password">mobilechangepassword</string>
@@ -154,6 +155,9 @@
     <string name="url_immediate_family">mobileimediaterelations</string>
     <string name="url_field_privacy">mobilesetfieldprivacy</string>
     <string name="url_view_profile2">mobileprofileview</string>
+    <string name="url_refine_search"> mobile/refinedsearch</string>
+   
+    
     <string name="login_url">http://115.124.125.53/app_dev.php/mobilelogin</string>
     <string name="signup_url">http://115.124.125.53/app_dev.php/addnewuser</string>
     <string name="view_profile_url">http://115.124.125.53/app_dev.php/mobileprofile</string>

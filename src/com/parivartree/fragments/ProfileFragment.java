@@ -57,7 +57,8 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 //use optimization of dialog
 public class ProfileFragment extends Fragment implements OnClickListener {
-
+ 
+	private boolean set = false;
 	private int year;
 	private int month;
 	private int day;
@@ -242,10 +243,11 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					year = cal.get(Calendar.YEAR);
 
 					Log.d("profile", "deceased button1111!!" + day + "," + month + "," + year);
-					DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+					final DatePickerDialog dpd = new DatePickerDialog(getActivity(),
 							new DatePickerDialog.OnDateSetListener() {
 								@Override
 								public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+									if (set) {
 									date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
 									boolean bool = new ConDetect(getActivity()).isOnline();
 									if (bool) {
@@ -271,7 +273,24 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 												Toast.LENGTH_LONG).show();
 									}
 								}
+								}
 							}, year, month, day);
+					dpd.setButton(DialogInterface.BUTTON_POSITIVE, "SET", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == DialogInterface.BUTTON_POSITIVE) {
+								set = true;
+							}
+						}
+					});
+
+					dpd.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == DialogInterface.BUTTON_NEGATIVE) {
+								set = false;
+								dpd.hide();
+							}
+						}
+					});
 					dpd.show();
 				}
 
@@ -1370,17 +1389,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				dialog.cancel();
 			}
 		});
-		// builder.setPositiveButton("DONE", new
-		// android.content.DialogInterface.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// });
 		AlertDialog alert = builder.create();
-		// And if the line above didn't bring ur dialog up use this bellow also:
 		alert.show();
 
 	}
