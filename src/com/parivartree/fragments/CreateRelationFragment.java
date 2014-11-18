@@ -812,7 +812,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					myAdapter = new AutoCompleteRelationArrayAdapter(getActivity(), R.layout.list_view_row, ObjectItemData);
 					searchUserAutoComplete.setAdapter(myAdapter);
 					myAdapter.notifyDataSetChanged();
-					// myAdapter.notifyDataSetChanged();
+				// myAdapter.notifyDataSetChanged();
 				} catch (Exception e) {
 					for (StackTraceElement tempStack : e.getStackTrace()) {
 						// Log.d("Exception thrown: Treeview Fetch", "" +
@@ -825,8 +825,6 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					Log.d(TAG, "Invalid Server content!!");
 				}
 			}
-
-			
 
 		}
 

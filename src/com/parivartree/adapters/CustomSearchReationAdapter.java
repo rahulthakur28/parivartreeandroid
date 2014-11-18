@@ -173,12 +173,16 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			holder.searchInviteBtn.setText("Already Connected");
 			holder.searchInviteBtn.setTextColor(activity.getResources().getColor(R.color.ll_black));
 			holder.searchInviteBtn.setBackgroundColor(activity.getResources().getColor(R.color.pt_grey));
+			holder.searchInviteBtn.setClickable(false);
+			
 		}else if(invite == 1){
 			holder.searchInviteBtn.setText("Already Invited");
 			holder.searchInviteBtn.setTextColor(activity.getResources().getColor(R.color.ll_black));
 			holder.searchInviteBtn.setBackgroundColor(activity.getResources().getColor(R.color.pt_grey));
+			holder.searchInviteBtn.setClickable(false);
 		}else if(recommendNodeId.equals(userId)){
 			holder.searchInviteBtn.setText("Invite");
+			holder.searchInviteBtn.setBackgroundResource((R.drawable.rounded_corners_blue));
 			holder.searchInviteBtn.setOnClickListener(new OnClickListener() {
 				
 				@Override
