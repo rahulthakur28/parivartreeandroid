@@ -46,12 +46,12 @@ import com.parivartree.zoom.PinchZoomListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-
 public class HomeFragment extends Fragment implements OnClickListener {
-
+	
 	public HomeFragment() {
+		
 	}
-
+	
 	Activity activity;
 	Context context;
 	SharedPreferences sharedPreferences;
@@ -130,7 +130,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		textViewWall = (RelativeLayout) rootView.findViewById(R.id.viewWall);
 		textViewTree = (RelativeLayout) rootView.findViewById(R.id.viewTree);
 		textViewHide = (RelativeLayout) rootView.findViewById(R.id.viewHide);
-
+		
 		textViewAddRelation.setOnClickListener(this);
 		textViewProfile.setOnClickListener(this);
 		textViewImageGallery.setOnClickListener(this);

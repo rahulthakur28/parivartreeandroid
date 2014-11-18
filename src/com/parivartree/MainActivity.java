@@ -20,18 +20,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -39,12 +34,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Switch;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.TableLayout.LayoutParams;
 
 import com.parivartree.adapters.NavDrawerListAdapter;
 import com.parivartree.crop.Crop;
@@ -63,14 +58,12 @@ import com.parivartree.fragments.InviteFragment;
 import com.parivartree.fragments.MessageFragment;
 import com.parivartree.fragments.NotificationFragment;
 import com.parivartree.fragments.PagesFragment;
-import com.parivartree.fragments.PhotosFragment;
 import com.parivartree.fragments.ProfileFragment;
 import com.parivartree.fragments.RelationFragment;
+import com.parivartree.fragments.SearchCreateRelationFragment;
 import com.parivartree.fragments.SelectRelationFragment;
 import com.parivartree.fragments.SettingsFragment;
 import com.parivartree.fragments.ViewPhotosFragment;
-import com.parivartree.fragments.ViewStudioFragment;
-import com.parivartree.fragments.ViewVideosFragment;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NavDrawerItem;
 import com.splunk.mint.Mint;
@@ -400,7 +393,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							startActivity(signout);
 						}
 					});
-
+			
 			// Setting Negative "NO" Button
 			alertDialog.setNegativeButton("NO",
 					new DialogInterface.OnClickListener() {
@@ -409,16 +402,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							dialog.cancel();
 						}
 					});
-
+			
 			// Showing Alert Message
 			alertDialog.show();
 			break;
-
+			
 		default:
 			break;
-
+			
 		}
-
+		
 		// any section accessed through the sliding bar will show main user's
 		// data
 		sharedPreferencesEditor.putString("node_id",
@@ -444,6 +437,50 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// error in creating fragment
 			Log.e("MainActivity", "Error in creating fragment");
 		}
+		
+		boolean showInfoLayout = false;
+		if(showInfoLayout) {
+			
+			// TODO add info layout for slide menu
+			RelativeLayout slideInfoLayout = new RelativeLayout(this);
+			slideInfoLayout.setBackgroundResource(R.color.pt_dark_overlay);
+			
+			ImageView homeClickImage = new ImageView(this);
+			homeClickImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_click_menus));
+			
+			RelativeLayout.LayoutParams homeClickImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			homeClickImageLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+			homeClickImage.setLayoutParams(homeClickImageLayoutParams);
+			
+			ImageView slideMenuImage = new ImageView(this);
+			slideMenuImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_image));
+			
+			RelativeLayout.LayoutParams slideMenuImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			slideMenuImageLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+			slideMenuImage.setLayoutParams(slideMenuImageLayoutParams);
+			
+			slideInfoLayout.addView(homeClickImage);
+			slideInfoLayout.addView(slideMenuImage);
+			
+			/*
+			// TODO add info layout for node view
+			RelativeLayout infoLayout = new RelativeLayout(this);
+			infoLayout.setBackgroundResource(R.color.pt_dark_overlay);
+			
+			ImageView infoImage = new ImageView(this);
+			infoImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_image));
+			RelativeLayout.LayoutParams infoImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+			infoImageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+			infoImage.setLayoutParams(infoImageLayoutParams);
+			
+			infoLayout.addView(infoImage);
+			*/
+			
+			// TODO add views to the main layout
+			//this.addContentView(infoLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			this.addContentView(slideInfoLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+		}
+		
 	}
 
 	@Override
@@ -501,6 +538,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			fragment = new HomeFragment();
 		} else if (fragmentName.equals("ViewPhotosFragment")) {
 			fragment = new ViewPhotosFragment();
+		}  else if (fragmentName.equals("SearchCreateRelationFragment")) {
+			fragment = new SearchCreateRelationFragment();
 		}
 
 		// change to the new fragment
@@ -545,6 +584,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			fragment.setArguments(bundle);
 		} else if (fragmentName.equals("FullScreenFragment")) {
 			fragment = new FullScreenFragment();
+			fragment.setArguments(bundle);
+		} else if (fragmentName.equals("SearchCreateRelationFragment")) {
+			fragment = new SearchCreateRelationFragment();
 			fragment.setArguments(bundle);
 		}
 

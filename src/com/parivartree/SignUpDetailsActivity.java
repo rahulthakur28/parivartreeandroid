@@ -174,8 +174,6 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			}
 		});
 	}
-	
-	@Override
 	public void onPause() {
 		super.onPause();
 		

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:circular="http://schemas.android.com/apk/res/com.parivartree"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:background="@drawable/layout_border"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:weightSum="1.0" >
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:minWidth="220dp"
+        android:layout_weight=".7"
+        android:orientation="vertical" >
+
+        <com.parivartree.helpers.RectangularImageView
+            android:id="@+id/searchimageview"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            circular:border_width="2dp"
+			circular:border="true"
+			circular:shadow="true"
+			android:layout_centerHorizontal="true"
+        	android:adjustViewBounds="true"
+            android:src="@drawable/male" />
+
+        <Button
+            android:id="@+id/searchinvitebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@id/searchimageview"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rounded_corners_blue"
+            android:gravity="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:text="ontest"
+            android:textColor="@color/pt_white"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".3"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textsearchname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:text=""
+            android:textColor="#046ea0"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textdelete1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:text="Location:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textsearchlocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textsearchrelationtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:text="Relations:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textsearchrelation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:text="" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

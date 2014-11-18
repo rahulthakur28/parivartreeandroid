@@ -114,8 +114,9 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	private EditText editTextPassword;
 	ImageView login;
 	Validator validator;
-	ProgressDialog pDialog;
-
+	
+	private ProgressDialog pDialog;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

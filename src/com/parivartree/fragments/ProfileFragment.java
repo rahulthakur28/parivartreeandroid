@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -57,13 +58,13 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 //use optimization of dialog
 public class ProfileFragment extends Fragment implements OnClickListener {
-
+	
 	private int year;
 	private int month;
 	private int day;
 	int flag = 0;
 	String date,dobprivacy,localityprivacy,pincodeprivacy,hometownprivacy,mobileprivacy,maritalStatusprivacy,weddingDateprivacy,religionprivacy,communityprivacy,gothraprivacy,professionprivacy;
-
+	
 	int relation = 0;
 	ImageView imageViewCamera, imageViewGallery;
 	RectangularImageView imageViewProfilePic;
@@ -75,13 +76,13 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			imageViewWeddate, imageViewReligion, imageViewCommunity, imageViewGothra, imageViewProfession;
 	Activity activity;
 	Context context;
-
+	
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
 	String nodeId;
 	String userId;
 	String sessionname;
-	String view;
+	String view="";
 	View viewEditProfile, viewEditfamily, viewEditAlbum ,viewImmediate;
 	LinearLayout linearLayoutOverlay, linearDeceased, linearDeleteUser,linearMobile1, linearDob1, linearGender1,
 			linearRelation1, linearWedDate1, linearLocation1, linearHomeTown1, linearProfession1, linearReligion1,
@@ -107,7 +108,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+		
 		rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 		
 		activity = getActivity();
@@ -132,7 +133,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		linearPincode1 = (LinearLayout) rootView.findViewById(R.id.linearpincode1);
 		linearCommunity1 = (LinearLayout) rootView.findViewById(R.id.linearcommunity1);
 		linearGothra1 = (LinearLayout) rootView.findViewById(R.id.lineargothra1);
-
+		
 		imageViewProfilePic = (RectangularImageView) rootView.findViewById(R.id.imageView1);
 		imageViewCamera = (ImageView) rootView.findViewById(R.id.camera);
 		imageViewGallery = (ImageView) rootView.findViewById(R.id.gallery);
@@ -370,7 +371,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 	public void onPause() {
 		super.onPause();
 		
-		if ((pDialog != null) && pDialog.isShowing())
+		if ((pDialog != null))
 			pDialog.dismiss();
 		pDialog = null;
 	    
@@ -389,11 +390,15 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null))
+				pDialog.dismiss();
+			
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Fetching profile details...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		}
 
 		@Override
@@ -407,6 +412,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
@@ -511,21 +517,22 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					RectangularImageView holder= new RectangularImageView(context);
 					holder= (RectangularImageView) rootView.findViewById(R.id.imageView1);
 					if (!deceased.equals("NA")) {
-						holder.setBorderColor(getResources().getColor(R.color.pt_gold));
+						holder.setBorderColor(activity.getResources().getColor(R.color.pt_gold));
 						UrlImageViewHelper.setUrlDrawable(holder,
 								"https://www.parivartree.com/profileimages/thumbs/" + nodeId + "PROFILE.jpeg",
-								getResources().getDrawable(R.drawable.male),0);
+								activity.getResources().getDrawable(R.drawable.male),0);
 						
 					}else if (gender.equals("Male")) {
-						holder.setBorderColor(getResources().getColor(R.color.pt_blue));
+						
+						holder.setBorderColor(activity.getResources().getColor(R.color.pt_blue));
 						UrlImageViewHelper.setUrlDrawable(holder,
 								"https://www.parivartree.com/profileimages/thumbs/" + nodeId + "PROFILE.jpeg",
-								getResources().getDrawable(R.drawable.male),0);
+								activity.getResources().getDrawable(R.drawable.male),0);
 					} else {
 						holder.setBorderColor(Color.MAGENTA);
 						UrlImageViewHelper.setUrlDrawable(holder,
 								"https://www.parivartree.com/profileimages/thumbs/" + nodeId + "PROFILE.jpeg",
-								getResources().getDrawable(R.drawable.female), 0);
+								activity.getResources().getDrawable(R.drawable.female), 0);
 					}
 										
 					textViewName1.setText(firstName + " " + lastName);
@@ -769,6 +776,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber() + " " + tempStack.getMethodName());
 				}
+				Log.d("ProfileFragment", " - " + e.getMessage());
 				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
@@ -777,6 +785,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
@@ -1192,13 +1201,16 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
-			//pDialog.dismiss();
+			if ((pDialog != null))
+				pDialog.dismiss();
+			
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Fetching immediate family details...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			//pDialog.show();
 			Log.d("Immediate Family", "Progress dialog called");
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		}
 
 		@Override
@@ -1216,10 +1228,11 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Log.e("Immediate Family Response ", pDialog.isShowing() + response);
+			
 			try {
 
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -1275,10 +1288,12 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				Toast.makeText(context, "Invalid Server content - " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			}
 		}
+		
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			if ((pDialog != null)) { 
 				pDialog.dismiss();
 			}
