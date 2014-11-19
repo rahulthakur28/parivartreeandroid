@@ -34,6 +34,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+//import com.gorillalogic.monkeytalk.server.JsonServer;
 
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
@@ -308,7 +309,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					} else {
 						Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 					}
-
+					
 				} else {
 					emailEditText.setText("");
 					autoEmail = null;
@@ -445,7 +446,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
-			if ((pDialog != null) && pDialog.isShowing()) { 
+			if ((pDialog != null) && pDialog.isShowing()) {
 				pDialog.dismiss();
 			}
 			Log.i("Relation Fetch Response ", response);
@@ -595,7 +596,6 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 						params[4], params[5], params[6], activity.getResources().getString(R.string.hostname)
 								+ activity.getResources().getString(R.string.url_invite_user));
 			}
-
 			return httpResponse;
 		}
 
@@ -644,7 +644,6 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					// "Email ID is wrong Please Try again",
 					// Toast.LENGTH_LONG).show();
 				}
-
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					// Log.d("Exception thrown: Treeview Fetch", "" +
@@ -751,6 +750,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				ObjectItemData.clear();
 			}
 			searchTaskProcessCalledCount++;
+			Log.d(TAG, "searchTaskProcessCalledCount ++ - " + searchTaskProcessCalledCount);
 		}
 
 		@Override
@@ -766,13 +766,14 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					params[1],
 					getResources().getString(R.string.hostname)
 							+ getActivity().getResources().getString(R.string.url_search_users));
-
+			
 		}
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
 			Log.i("event list Response ", response);
-			
+			searchTaskProcessCalledCount--;
+			Log.d(TAG, "searchTaskProcessCalledCount -- - " + searchTaskProcessCalledCount);
 			if(response.equals("timeout")) {
 				if(searchTaskProcessCalledCount == 0) {
 					
@@ -841,10 +842,17 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			searchTaskProcessCalledCount--;
+			Log.d(TAG, "searchTaskProcessCalledCount -- - " + searchTaskProcessCalledCount);
+			if (searchTaskProcessCalledCount == 0) {
+				Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			}
+			
 		}
 	}
 
+	
+	int searchPlacesProcessCalledCount = 0;
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
 		// private ProgressDialog pDialog;
 
@@ -852,6 +860,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onPreExecute() {
 
 			// TODO Auto-generated method stub
+			searchPlacesProcessCalledCount++;
 		}
 
 		@Override
@@ -865,6 +874,8 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			super.onPostExecute(response);
 			// pDialog.dismiss();
 			Log.i("Ceate Event Response ", response);
+			
+			searchPlacesProcessCalledCount--;
 			try {
 				JSONObject createEventObject = new JSONObject(response);
 				JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
@@ -897,7 +908,10 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			searchPlacesProcessCalledCount--;
+			if(searchPlacesProcessCalledCount == 0) {
+				Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			}
 		}
 	}
 

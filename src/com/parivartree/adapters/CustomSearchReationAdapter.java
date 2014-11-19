@@ -130,6 +130,7 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.male), 10000);
+			holder.searchimageview.invalidate();
 
 			
 		} else if ((deceased == 1) && (gender == 2)) {
@@ -256,7 +257,6 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			});
 		}
 		
-
 		return convertView;
 	}
 

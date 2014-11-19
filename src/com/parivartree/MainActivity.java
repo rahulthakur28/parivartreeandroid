@@ -110,7 +110,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		Mint.initAndStartSession(this, "2a8a05f6");
 		
 		ActionBar actionBar = this.getActionBar();
-
+		
 		// add the custom view to the action bar
 		actionBar.setCustomView(R.layout.actionbar_view);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
@@ -185,18 +185,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		navMenuIcons.recycle();
 
 		mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
-
+		
 		// setting the nav drawer list adapter
 		adapter = new NavDrawerListAdapter(getApplicationContext(),
 				navDrawerItems);
 		mDrawerList.setAdapter(adapter);
-
+		
 		// enabling action bar app icon and behaving it as toggle button
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 		getActionBar().setBackgroundDrawable(
 				getResources().getDrawable(R.drawable.action_bar_background));
 
+		Log.d(TAG, "Display Metrics - " + getResources().getDisplayMetrics().density);
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
 				R.drawable.ic_drawer, // nav
 										// menu
@@ -421,7 +422,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (fragment != null) {
 			FragmentManager fragmentManager = getSupportFragmentManager();
 			// fragmentManager.beginTransaction().addToBackStack(null).commit();
-
+			
 			fragmentManager.beginTransaction()
 					// Add this transaction to the back stack
 					.addToBackStack(null)
