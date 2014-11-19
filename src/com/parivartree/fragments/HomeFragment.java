@@ -26,6 +26,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -161,7 +162,28 @@ public class HomeFragment extends Fragment implements OnClickListener {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
 		if (!helpDraw) {
-			helpLayout.setVisibility(View.VISIBLE);
+			
+				// TODO add info layout for slide menu
+				helpLayout.setBackgroundResource(R.color.pt_dark_overlay);
+				
+				ImageView homeClickImage = new ImageView(this.activity);
+				homeClickImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_click_menus));
+				
+				RelativeLayout.LayoutParams homeClickImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				homeClickImageLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+				homeClickImage.setLayoutParams(homeClickImageLayoutParams);
+				
+				ImageView slideMenuImage = new ImageView(this.activity);
+				slideMenuImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_image));
+				
+				RelativeLayout.LayoutParams slideMenuImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				slideMenuImageLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+				slideMenuImage.setLayoutParams(slideMenuImageLayoutParams);
+				
+				helpLayout.addView(homeClickImage);
+				helpLayout.addView(slideMenuImage);
+				helpLayout.setVisibility(View.VISIBLE);
+			
 			sharedPreferencesEditor1.putBoolean("helpdraw", true);
 			sharedPreferencesEditor1.commit();
 		} else {

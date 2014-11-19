@@ -21,7 +21,7 @@
     <color name="pt_header">#162932</color>
     <color name="pt_bright_blue">#036fa0</color>
     <color name="pt_menu_background">#152831</color>
-    <color name="pt_dark_overlay">#E6000000</color>
+    <color name="pt_dark_overlay">#B3000000</color>
 
     <!-- Navigation Slider menu -->
     <color name="bright_orange">#f75f2b</color>
