@@ -43,11 +43,12 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 	String userId, sessionname;
 	int request_type = 1;
 	String relationship_type;
-	String relationships[] = new String[] {"relationship", "Father", "Mother", "Wife", "Brother", "Sister", "Son", "Daughter", "Husband"};
+	String relationships[] = new String[] { "relationship", "Father", "Mother", "Wife", "Brother", "Sister", "Son",
+			"Daughter", "Husband" };
 	int position = 0;
-	String userName = "",toWhomName;
+	String userName = "", toWhomName;
 	private ProgressDialog pDialog;
-	
+
 	public AutoCompleteRelationArrayAdapter(Activity context, int layoutResourceId, ArrayList<MyObject> data) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
@@ -58,16 +59,17 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 				mContext.getPackageName() + mContext.getResources().getString(R.string.USER_PREFERENCES),
 				Context.MODE_PRIVATE);
 		userId = sharedPreferences.getString("user_id", null);
-		toWhomName = (sharedPreferences.getString("node_first_name", "NA")+" "+sharedPreferences.getString("node_last_name", "NA"));
+		toWhomName = (sharedPreferences.getString("node_first_name", "NA") + " " + sharedPreferences.getString(
+				"node_last_name", "NA"));
 		sessionname = sharedPreferences.getString("sessionname", "Not Available");
 		sharedPreferencesEditor = sharedPreferences.edit();
 	}
-	
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-			
+
 		try {
-			
+
 			/*
 			 * The convertView argument is essentially a "ScrapView" as
 			 * described is Lucas post
@@ -77,46 +79,43 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 			 * convertView is not null, you should simply update its contents
 			 * instead of inflating a new row layout.
 			 */
-			
+
 			if (convertView == null) {
 				// inflate the layout
 				LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = inflater.inflate(layoutResourceId, parent, false);
 			}
-			
+
 			// object item based on the position
 			final MyObject objectItem = data.get(position);
-			RectangularImageView invitesearchimageview = (RectangularImageView) convertView.findViewById(R.id.invitesearchimageview);
+			RectangularImageView invitesearchimageview = (RectangularImageView) convertView
+					.findViewById(R.id.invitesearchimageview);
 			if ((objectItem.deceased == 1) && (objectItem.gender == 1)) {
-				
-				invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_gold));
-				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
-						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
-								.getDrawable(R.drawable.male), 10000);
 
-				
-			} else if ((objectItem.deceased == 1) && (objectItem.gender == 2)) {
-				
 				invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_gold));
 				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
-						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
-								.getDrawable(R.drawable.female), 10000);	
-				
-				
-			}else if (objectItem.gender == 1) {
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg",
+						mContext.getResources().getDrawable(R.drawable.male), 10000);
+
+			} else if ((objectItem.deceased == 1) && (objectItem.gender == 2)) {
+
+				invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_gold));
+				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg",
+						mContext.getResources().getDrawable(R.drawable.female), 10000);
+
+			} else if (objectItem.gender == 1) {
 				invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_blue));
 				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
-						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
-								.getDrawable(R.drawable.male), 10000);
-				
-				
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg",
+						mContext.getResources().getDrawable(R.drawable.male), 10000);
+
 			} else if (objectItem.gender == 2) {
 				invitesearchimageview.setBorderColor(Color.MAGENTA);
 				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
-						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
-								.getDrawable(R.drawable.female), 10000);
-				
-				
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg",
+						mContext.getResources().getDrawable(R.drawable.female), 10000);
+
 			}
 			// get the TextView and then set the text (item name) and tag (item
 			// ID) values
@@ -134,23 +133,23 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 				textViewItem.setText(objectItem.objectName);
 				buttonItem.setText(objectItem.objectStatus);
 				invitesearchimageview.setVisibility(View.VISIBLE);
+			} else if (objectItem.objectName.equalsIgnoreCase("No results found")) {
+				buttonItem.setVisibility(View.GONE);
+				textViewItem.setText(objectItem.objectName);
+				invitesearchimageview.setVisibility(View.INVISIBLE);
 			} else if (objectItem.objectStatus.equalsIgnoreCase("NA")
 					|| (objectItem.objectStatus.equalsIgnoreCase("Unhide"))) {
 				buttonItem.setVisibility(View.GONE);
 				textViewItem.setText(objectItem.objectName);
 				invitesearchimageview.setVisibility(View.VISIBLE);
-			}else if (objectItem.objectName.equalsIgnoreCase("No results found")) {
-				buttonItem.setVisibility(View.GONE);
-				textViewItem.setText(objectItem.objectName);
-				invitesearchimageview.setVisibility(View.INVISIBLE);
 			}
-			
+
 			buttonItem.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					userName=objectItem.objectName;
+					userName = objectItem.objectName;
 					if (objectItem.nodeid.equals(userId)) {
 						Log.d(TAG, "You  invited :" + objectItem.objectName);
 						final CreateRelationTask cRT1 = new CreateRelationTask();
@@ -158,19 +157,20 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 						Log.d("CreateRelation1", "Values : " + objectItem.objectId + ", " + userId + ", "
 								+ objectItem.relationid + ", " + objectItem.objectName);
 						TextView userName = (TextView) v.findViewById(R.id.textViewItem);
-						//AutoCompleteRelationArrayAdapter.this.userName = userName.getText().toString() ;
-						
+						// AutoCompleteRelationArrayAdapter.this.userName =
+						// userName.getText().toString() ;
+
 						cRT1.execute("exist", objectItem.objectId, userId, objectItem.relationid, sessionname, userId);
 						Handler handler = new Handler();
 						handler.postDelayed(new Runnable() {
 							@Override
 							public void run() {
-								if (cRT1.getStatus() == AsyncTask.Status.RUNNING){
+								if (cRT1.getStatus() == AsyncTask.Status.RUNNING) {
 									cRT1.cancel(true);
 								}
 							}
 						}, 10000);
-						
+
 					} else {
 						final CreateRelationTask cRT3 = new CreateRelationTask();
 						String sessionname = sharedPreferences.getString("sessionname", "Not Available");
@@ -178,14 +178,15 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 								+ objectItem.relationid + ", " + objectItem.objectName + "," + userId + ","
 								+ sessionname);
 						TextView userName = (TextView) v.findViewById(R.id.textViewItem);
-						//AutoCompleteRelationArrayAdapter.this.userName = userName.getText().toString() ;
+						// AutoCompleteRelationArrayAdapter.this.userName =
+						// userName.getText().toString() ;
 						cRT3.execute("others", objectItem.objectId, objectItem.nodeid, objectItem.relationid,
 								sessionname, objectItem.objectName, userId);
 						Handler handler = new Handler();
 						handler.postDelayed(new Runnable() {
 							@Override
 							public void run() {
-								if (cRT3.getStatus() == AsyncTask.Status.RUNNING){
+								if (cRT3.getStatus() == AsyncTask.Status.RUNNING) {
 									cRT3.cancel(true);
 								}
 							}
@@ -262,21 +263,34 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 					sharedPreferencesEditor.commit();
 					String nodeName = userName;
 					Log.e(TAG, "request_type - " + request_type);
-					if(request_type == 1) {
-								//AutoCompleteRelationArrayAdapter.this.userName;
-						Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
+					if (request_type == 1) {
+						// AutoCompleteRelationArrayAdapter.this.userName;
+						Crouton.makeText(activity,
+								"You have successfully invited " + nodeName + " to your family tree.", Style.INFO)
+								.show();
 					} else if (request_type == 2) {
-						String recommendedUserName = sharedPreferences.getString("node_first_name", " ") + " " + sharedPreferences.getString("node_last_name", " ");
-						Crouton.makeText(activity, "You have successfully recommended " + nodeName + " to " + recommendedUserName + " for " + relationship_type + " relation.", Style.INFO).show();
+						String recommendedUserName = sharedPreferences.getString("node_first_name", " ") + " "
+								+ sharedPreferences.getString("node_last_name", " ");
+						Crouton.makeText(
+								activity,
+								"You have successfully recommended " + nodeName + " to " + recommendedUserName
+										+ " for " + relationship_type + " relation.", Style.INFO).show();
 					}
-					//Toast.makeText(mContext, "You have successfully invited ", Toast.LENGTH_SHORT).show();
+					// Toast.makeText(mContext,
+					// "You have successfully invited ",
+					// Toast.LENGTH_SHORT).show();
 					((MainActivity) mContext).changeFragment("HomeFragment");
 				} else if (responseResult == 2) {
 					Crouton.makeText(activity, "Email id is invalid. Please try again... ", Style.INFO).show();
-					//Toast.makeText(mContext, "Email ID is wrong Please Try again", Toast.LENGTH_LONG).show();
+					// Toast.makeText(mContext,
+					// "Email ID is wrong Please Try again",
+					// Toast.LENGTH_LONG).show();
 				} else if (responseResult == 5) {
-					Crouton.makeText(activity, "Email ID is already a parivartree account, use search user to invite", Style.INFO).show();
-					//Toast.makeText(mContext, "Email ID already parivartree account use search user", Toast.LENGTH_LONG).show();
+					Crouton.makeText(activity, "Email ID is already a parivartree account, use search user to invite",
+							Style.INFO).show();
+					// Toast.makeText(mContext,
+					// "Email ID already parivartree account use search user",
+					// Toast.LENGTH_LONG).show();
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
@@ -290,6 +304,7 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
+
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
