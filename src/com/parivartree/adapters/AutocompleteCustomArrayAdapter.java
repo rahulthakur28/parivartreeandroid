@@ -8,21 +8,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
 import com.parivartree.helpers.HttpConnectionUtils;
+import com.parivartree.helpers.RectangularImageView;
 import com.parivartree.models.MyObject;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -60,6 +65,11 @@ public class AutocompleteCustomArrayAdapter extends ArrayAdapter<MyObject> {
 			if (convertView == null) {
 				convertView = inflater.inflate(layoutResourceId, parent, false);
 				viewHolder = new Holder();
+				viewHolder.invitesearchimageview = (RectangularImageView) convertView.findViewById(R.id.invitesearchimageview);
+				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(mContext.getResources().getDisplayMetrics().density * 70), (int)(mContext.getResources().getDisplayMetrics().density * 70));
+				params.gravity = Gravity.CENTER;
+				viewHolder.invitesearchimageview.setLayoutParams(params);
+				
 				viewHolder.textViewItem = (TextView) convertView.findViewById(R.id.textViewItem);
 				viewHolder.buttonItem = (Button) convertView.findViewById(R.id.buttonItem);
 				convertView.setTag(viewHolder);
@@ -68,13 +78,50 @@ public class AutocompleteCustomArrayAdapter extends ArrayAdapter<MyObject> {
 			}
 			
 			final MyObject objectItem = data.get(position);
-			Log.d("checking....", "------------333333333333---"+objectItem.objectStatus);
+			
+			
+			if ((objectItem.deceased == 1) && (objectItem.gender == 1)) {
+				
+				viewHolder.invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_gold));
+				UrlImageViewHelper.setUrlDrawable(viewHolder.invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
+								.getDrawable(R.drawable.male), 10000);
+
+				
+			} else if ((objectItem.deceased == 1) && (objectItem.gender == 2)) {
+				
+				viewHolder.invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_gold));
+				UrlImageViewHelper.setUrlDrawable(viewHolder.invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
+								.getDrawable(R.drawable.female), 10000);	
+				
+				
+			}else if (objectItem.gender == 1) {
+				viewHolder.invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_blue));
+				UrlImageViewHelper.setUrlDrawable(viewHolder.invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
+								.getDrawable(R.drawable.male), 10000);
+				
+				
+			} else if (objectItem.gender == 2) {
+				viewHolder.invitesearchimageview.setBorderColor(Color.MAGENTA);
+				UrlImageViewHelper.setUrlDrawable(viewHolder.invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
+								.getDrawable(R.drawable.female), 10000);
+				
+				
+			}
+			
 			viewHolder.textViewItem.setText(objectItem.objectName);
 			if ((objectItem.objectStatus).equalsIgnoreCase("Unhide")) {
+				viewHolder.invitesearchimageview.setVisibility(View.VISIBLE);
 				viewHolder.buttonItem.setVisibility(View.VISIBLE);
-				Log.d("checking....", "------------4444444444---"+objectItem.objectStatus);
 				viewHolder.buttonItem.setText(objectItem.objectStatus);
-			}else{
+			}else if(objectItem.objectName.equalsIgnoreCase("No results found")){
+				viewHolder.buttonItem.setVisibility(View.INVISIBLE);
+				viewHolder.invitesearchimageview.setVisibility(View.INVISIBLE);
+			} else{
+				viewHolder.invitesearchimageview.setVisibility(View.VISIBLE);
 				viewHolder.buttonItem.setVisibility(View.INVISIBLE);
 			}
 			viewHolder.buttonItem.setOnClickListener(new OnClickListener() {
@@ -107,6 +154,7 @@ public class AutocompleteCustomArrayAdapter extends ArrayAdapter<MyObject> {
 	private static class Holder {
 		public TextView textViewItem;
 		public Button buttonItem;
+		public RectangularImageView invitesearchimageview;
 	}
 
 	public class UnhideUserTask extends AsyncTask<String, String, String> {

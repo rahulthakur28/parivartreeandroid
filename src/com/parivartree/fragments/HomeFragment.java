@@ -177,6 +177,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 
 		return rootView;
 	}
+	
 	/**
      * Reset zoom state and notify observers
      */
@@ -350,7 +351,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		optionsLayout.setVisibility(View.VISIBLE);
 		selectedNode = nodeId;
 		selectedGender = gender;
-		
+		Log.d(TAG + " find nodeid 1----", ""+selectedNode);
 		if (nodeId.equals(sharedPreferences.getString("user_id", "0"))) {
 			textViewHide.setVisibility(View.GONE);
 		} else {
@@ -361,6 +362,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 	public void hideOptionsLayout() {
 		optionsLayout.setVisibility(View.INVISIBLE);
 		selectedNode = sharedPreferences.getString("user_id", "0");
+		Log.d(TAG + " find nodeid 1----", ""+selectedNode);
 		//selectedName = sharedPreferences.getString("sessionname", "NA");
 		//selectedGender = sharedPreferences.getString("gender", "1");
 	}
@@ -453,9 +455,8 @@ public class HomeFragment extends Fragment implements OnClickListener {
 			String userId = sharedPreferences.getString("user_id", "0");
 			String nodeId = sharedPreferences.getString("node_id", userId);
 			// nodeId = (nodeId.equals("0")) ? userId : nodeId;
-			return HttpConnectionUtils.getMyTreeResponse(
-					userId,
-					nodeId,
+			return HttpConnectionUtils.getMyTreeResponse(	
+					userId,nodeId,
 					getActivity().getResources().getString(R.string.hostname)
 							+ getResources().getString(R.string.url_mytree));
 

@@ -108,28 +108,30 @@ EditText searchNameEdit;
 			@Override
 			public void onTextChanged(CharSequence s, int start, int count, int after) {
 				// TODO Auto-generated method stub
-				boolean bool = new ConDetect(getActivity()).isOnline();
-				if (bool) {
-					if (searchUserTask != null) {
-						searchUserTask.cancel(true);
-					}
-					Log.d("Search user", "AsyncTask calling");
-					searchUserTask = new SearchUserTask();
-					searchUserTask.execute(s.toString(), userId);
-					/*
-					Handler handler = new Handler();
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							if (searchUserTask.getStatus() == AsyncTask.Status.RUNNING){
-								searchUserTask.cancel(true);
-							}
+				if(s.toString().length() > 0){
+					boolean bool = new ConDetect(getActivity()).isOnline();
+					if (bool) {
+						if (searchUserTask != null) {
+							searchUserTask.cancel(true);
 						}
-					}, 10000);
-					*/
-				} else {
-					//Toast.makeText(getActivity(), "No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-					Crouton.makeText(activity, "No internet connection found", Style.ALERT).show();
+						Log.d("Search user", "AsyncTask calling");
+						searchUserTask = new SearchUserTask();
+						searchUserTask.execute(s.toString(), userId);
+						/*
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (searchUserTask.getStatus() == AsyncTask.Status.RUNNING){
+									searchUserTask.cancel(true);
+								}
+							}
+						}, 10000);
+						*/
+					} else {
+						//Toast.makeText(getActivity(), "No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+						Crouton.makeText(activity, "No internet connection found", Style.ALERT).show();
+					}
 				}
 			}
 			
@@ -208,18 +210,25 @@ EditText searchNameEdit;
 						if (c.has("result")) {
 							String result = c.getString("result");
 							if (result.equals("Success")) {
+								int gender=1,deceased=0;
+								if (c.has("gender")) {
+									gender = c.getInt("gender");
+								}
+								if (c.has("deceased")) {
+									deceased = c.getInt("deceased");
+								}
 								String inviteUserId = c.getString("id");
 								String name = c.getString("firstname") + " " + c.getString("lastname");
 								String status = c.getString("parameter");
 								String fullname = name;
 								if(status.equalsIgnoreCase("Unhide")){
-									ObjectItemData.add(new MyObject(fullname, inviteUserId, status));
+									ObjectItemData.add(new MyObject(fullname, inviteUserId, status, gender, deceased));
 								}else{
-									ObjectItemData.add(new MyObject(fullname, inviteUserId, "NA"));
+									ObjectItemData.add(new MyObject(fullname, inviteUserId, "NA", gender, deceased));
 								}
 							}
 						} else {
-							ObjectItemData.add(new MyObject("No results found", null, "NA"));
+							ObjectItemData.add(new MyObject("No results found", null, "NA",0,0));
 						}
 
 					}

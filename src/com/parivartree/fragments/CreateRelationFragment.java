@@ -785,22 +785,30 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					// ObjectItemData = new
 					// MyObject[eventListResponseArray.length()];
 					ObjectItemData.clear();
+					
 					for (int i = 0; i < eventListResponseArray.length(); i++) {
 						JSONObject c = eventListResponseArray.getJSONObject(i);
 						if (c.has("result")) {
 							String result = c.getString("result");
 							if (result.equals("Success")) {
+								int mgender=1,deceased=0;
+								if (c.has("gender")) {
+									mgender = c.getInt("gender");
+								}
+								if (c.has("deceased")) {
+									deceased = c.getInt("deceased");
+								}
 								String inviteUserId = c.getString("id");
 								String name = c.getString("firstname") + " " + c.getString("lastname");
 								String status = c.getString("parameter");
 								if (status.trim().equalsIgnoreCase("Unhide")) {
 									
 								} else {
-									ObjectItemData.add(new MyObject(name, inviteUserId, status, relationId, nodeId));
+									ObjectItemData.add(new MyObject(name, inviteUserId, status, relationId, nodeId, mgender, deceased));
 								}
 							}
 						} else {
-							ObjectItemData.add(new MyObject("No results found", null, "NA", relationId, nodeId));
+							ObjectItemData.add(new MyObject("No results found", null, "NA", relationId, nodeId, 0, 0));
 						}
 					}
 

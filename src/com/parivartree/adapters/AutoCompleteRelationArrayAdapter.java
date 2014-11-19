@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
@@ -21,9 +22,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
 import com.parivartree.helpers.HttpConnectionUtils;
+import com.parivartree.helpers.RectangularImageView;
 import com.parivartree.models.MyObject;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -83,7 +86,38 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 			
 			// object item based on the position
 			final MyObject objectItem = data.get(position);
+			RectangularImageView invitesearchimageview = (RectangularImageView) convertView.findViewById(R.id.invitesearchimageview);
+			if ((objectItem.deceased == 1) && (objectItem.gender == 1)) {
+				
+				invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_gold));
+				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
+								.getDrawable(R.drawable.male), 10000);
 
+				
+			} else if ((objectItem.deceased == 1) && (objectItem.gender == 2)) {
+				
+				invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_gold));
+				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
+								.getDrawable(R.drawable.female), 10000);	
+				
+				
+			}else if (objectItem.gender == 1) {
+				invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_blue));
+				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
+								.getDrawable(R.drawable.male), 10000);
+				
+				
+			} else if (objectItem.gender == 2) {
+				invitesearchimageview.setBorderColor(Color.MAGENTA);
+				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg", mContext.getResources()
+								.getDrawable(R.drawable.female), 10000);
+				
+				
+			}
 			// get the TextView and then set the text (item name) and tag (item
 			// ID) values
 			final TextView textViewItem = (TextView) convertView.findViewById(R.id.textViewItem);
@@ -94,14 +128,21 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 					|| objectItem.objectStatus.equalsIgnoreCase("Already invited")) {
 				buttonItem.setVisibility(View.GONE);
 				textViewItem.setText(objectItem.objectName + "  (" + objectItem.objectStatus + ")");
+				invitesearchimageview.setVisibility(View.VISIBLE);
 			} else if (objectItem.objectStatus.equalsIgnoreCase("invite")) {
 				buttonItem.setVisibility(View.VISIBLE);
 				textViewItem.setText(objectItem.objectName);
 				buttonItem.setText(objectItem.objectStatus);
+				invitesearchimageview.setVisibility(View.VISIBLE);
 			} else if (objectItem.objectStatus.equalsIgnoreCase("NA")
 					|| (objectItem.objectStatus.equalsIgnoreCase("Unhide"))) {
 				buttonItem.setVisibility(View.GONE);
 				textViewItem.setText(objectItem.objectName);
+				invitesearchimageview.setVisibility(View.VISIBLE);
+			}else if (objectItem.objectName.equalsIgnoreCase("No results found")) {
+				buttonItem.setVisibility(View.GONE);
+				textViewItem.setText(objectItem.objectName);
+				invitesearchimageview.setVisibility(View.INVISIBLE);
 			}
 			
 			buttonItem.setOnClickListener(new OnClickListener() {

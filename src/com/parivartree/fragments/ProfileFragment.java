@@ -206,8 +206,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 
 		userId = sharedPreferences.getString("user_id", "0");
 		nodeId = sharedPreferences.getString("node_id", userId);
-		sessionname = sharedPreferences.getString("sessionname", "Unknown");
 		
+		sessionname = sharedPreferences.getString("sessionname", "Unknown");
+		Log.d("user id and node id", ""+userId+" and "+nodeId+" and "+sessionname);
 		
 		horizontialListView = (HorizontalListView) rootView.findViewById(R.id.horizontalScrollViewFamilyMembers);
 		immediateFamily = new ArrayList<HashMap<String, String>>();
@@ -374,6 +375,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			}, 10000);
 			
 			final ProfileTask pT = new ProfileTask();
+			Log.d("user id and node id  2", ""+userId+" and "+nodeId+" and "+sessionname);
 			pT.execute(nodeId,userId);
 			Handler handler1 = new Handler();
 			handler1.postDelayed(new Runnable() {
@@ -450,8 +452,12 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				view = loginResponseObject.getString("view");
 				if (responseResult.equals("Success")) {
 					// TODO store the login response and
-					
-					JSONObject userProfilePrivacy = loginResponseObject.getJSONObject("access");
+					JSONObject userProfilePrivacy = new JSONObject();
+					//JSONObject userProfilePrivacy = loginResponseObject.getJSONObject("access");
+					Object dummyobject = loginResponseObject.get("access");
+					if(dummyobject instanceof JSONObject){
+						userProfilePrivacy = loginResponseObject.getJSONObject("access");
+					}
 					JSONArray data = loginResponseObject.getJSONArray("data");
 					JSONObject userProfileData = (JSONObject) data.get(0);
 
@@ -1055,7 +1061,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		} else if (v.getId() == R.id.imageviewmobile) {
 			showPrivacyDialog("mobile",profilePrivacyDetails.getMobileprivacy());
 		} else if (v.getId() == R.id.imageviewrelation) {
-			showPrivacyDialog("maritalstatus",profilePrivacyDetails.getMaritalStatusprivacy());
+			showPrivacyDialog("marital_status",profilePrivacyDetails.getMaritalStatusprivacy());
 		} else if (v.getId() == R.id.imageviewweddate) {
 			showPrivacyDialog("wedding_date",profilePrivacyDetails.getWeddingDateprivacy());
 		} else if (v.getId() == R.id.imageviewreligion) {

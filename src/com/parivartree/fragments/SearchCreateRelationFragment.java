@@ -72,7 +72,7 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 	private SharedPreferences sharedPreferences;
 	private Editor sharedPreferencesEditor;
 	ArrayList<SpinnerItem> communityList;
-
+	int refinedSearchFailureflag = 0;
 	public SearchCreateRelationFragment() {
 
 	}
@@ -212,6 +212,10 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 					if ((communityList.size() == 0)
 							|| (communityList.get(spinnerCommunity.getSelectedItemPosition()).getValue()
 									.equals("Choose a Community"))) {
+						if((editMobileSearch.getText().toString().trim().length()) < 1){
+							refinedSearchFailureflag = 1;
+						}
+						
 						refineSearchTask.execute(recommendNodeId, myRelationId, email, firstName, lastName, locality,
 								(editMobileSearch.getText().toString().trim()), "");
 					} else {
@@ -520,7 +524,12 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 					SearchReationAdapter.notifyDataSetChanged();
 
 				} else if ((responseResult.equals("Failure")) && (authenticationStatus == 2)) {
-					Crouton.makeText(activity, "Please select atleast one field to get results.", Style.ALERT).show();
+					if(refinedSearchFailureflag == 1){
+						Crouton.makeText(activity, "Please select atleast one field to get results.", Style.ALERT).show();
+					}else{
+						Crouton.makeText(activity, "Please enter a valid mobile number.", Style.ALERT).show();
+					}
+					refinedSearchFailureflag = 0;
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {

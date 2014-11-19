@@ -1,32 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:circular="http://schemas.android.com/apk/res/com.parivartree"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" 
-    android:orientation="vertical">
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" 
-    android:minHeight="60dp"
-    android:orientation="horizontal">
-<TextView
-        android:id="@+id/textViewItem"
-        android:layout_width="0dp"
-        android:gravity="left|center_vertical"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:layout_weight="2"
-        android:text=""
-        android:textSize="15sp" />
-
-<Button
-    android:id="@+id/buttonItem"
-    android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:minHeight="35dp"
-    android:layout_margin="8dp"
-     android:layout_weight="1"
-     android:textColor="@color/pt_white"
-    android:background="@drawable/rounded_corners_blue" 
- android:focusable ="false"/>
+    android:orientation="horizontal" 
+    android:weightSum="1.0">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".3"
+        android:minHeight="60dp"
+        android:orientation="vertical" >
+
+               <com.parivartree.helpers.RectangularImageView
+            android:id="@+id/invitesearchimageview"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            circular:border_width="2dp"
+			circular:border="true"
+			circular:shadow="true"
+			android:layout_gravity="center"
+            android:src="@drawable/male" />
+               
 </LinearLayout>
+<LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".4"
+        android:minHeight="60dp"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/textViewItem"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:gravity="left|center_vertical"
+            android:text="sdsd"
+            android:textSize="15sp" />
+</LinearLayout>
+<LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".4"
+        android:minHeight="60dp"
+        android:orientation="vertical" >
+        <Button
+            android:id="@+id/buttonItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/rounded_corners_blue"
+            android:focusable="false"
+            android:minHeight="35dp"
+            android:textColor="@color/pt_white" />
+        </LinearLayout>
+
 </LinearLayout>
