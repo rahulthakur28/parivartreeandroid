@@ -61,7 +61,7 @@ public class CustomNode extends LinearLayout {
 		
 		// viewUserImage.setMaxWidth(50);
 		// viewUserImage.setMaxHeight(50);
-		viewUserImage.setLayoutParams(new LayoutParams(180, 180));
+		viewUserImage.setLayoutParams(new LayoutParams((int)(getResources().getDisplayMetrics().density * 90), (int)(getResources().getDisplayMetrics().density * 90)));
 		
 		textViewUserName = (TextView) getChildAt(2);
 		textViewRelation = (TextView) getChildAt(3);

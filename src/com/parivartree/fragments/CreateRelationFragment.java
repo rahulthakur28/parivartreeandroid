@@ -308,7 +308,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 					} else {
 						Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 					}
-
+					
 				} else {
 					emailEditText.setText("");
 					autoEmail = null;

@@ -190,8 +190,8 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 				if (bool) {
 					// Create object of AsycTask and execute
 					final RefineSearchTask refineSearchTask = new RefineSearchTask();
-					if ((communityList.get(spinnerCommunity.getSelectedItemPosition()).getValue()
-							.equals("Choose a Community")) && (communityList.size() == 0)) {
+					if ((communityList.size() == 0) && (communityList.get(spinnerCommunity.getSelectedItemPosition()).getValue()
+							.equals("Choose a Community"))) {
 						refineSearchTask.execute(recommendNodeId, myRelationId, email, firstName, lastName, locality,
 								(editMobileSearch.getText().toString().trim()), "");
 					} else {

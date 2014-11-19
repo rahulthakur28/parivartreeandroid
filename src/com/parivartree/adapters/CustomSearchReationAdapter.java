@@ -99,6 +99,7 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			// This must be done for performance reasons
 			holder = new Holder();
 			holder.searchimageview = (RectangularImageView) convertView.findViewById(R.id.searchimageview);
+			holder.searchimageview.setLayoutParams(new LayoutParams((int)(activity.getResources().getDisplayMetrics().density * 90), (int)(activity.getResources().getDisplayMetrics().density * 90)));
 			holder.textSearchName = (TextView) convertView.findViewById(R.id.textsearchname);
 			holder.textsearchlocation = (TextView) convertView.findViewById(R.id.textsearchlocation);
 			holder.textSearchRelationTitle = (TextView) convertView.findViewById(R.id.textsearchrelationtitle);
@@ -123,17 +124,22 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.male), 10000);
+			holder.searchimageview.invalidate();
 
 		} else if (gender == 1) {
 			holder.searchimageview.setBorderColor(activity.getResources().getColor(R.color.pt_blue));
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.male), 10000);
+			holder.searchimageview.invalidate();
+			Log.v("CustomSearchRelation Adapter", "height - " + holder.searchimageview.getHeight());
 		} else if (gender == 2) {
 			holder.searchimageview.setBorderColor(Color.MAGENTA);
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.female), 10000);
+			holder.searchimageview.invalidate();
+			Log.v("CustomSearchRelation Adapter", "height - " + holder.searchimageview.getHeight());
 		}
 		holder.textSearchName
 				.setText((searchRecordsArrayList.get(position).getFirstname() + " " + searchRecordsArrayList.get(
@@ -182,6 +188,7 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			holder.searchInviteBtn.setClickable(false);
 		}else if(recommendNodeId.equals(userId)){
 			holder.searchInviteBtn.setText("Invite");
+			holder.searchInviteBtn.setTextColor(activity.getResources().getColor(R.color.pt_white));
 			holder.searchInviteBtn.setBackgroundResource((R.drawable.rounded_corners_blue));
 			holder.searchInviteBtn.setOnClickListener(new OnClickListener() {
 				
@@ -235,7 +242,6 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			});
 		}
 		
-
 		return convertView;
 	}
 
