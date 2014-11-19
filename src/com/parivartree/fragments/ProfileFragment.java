@@ -52,6 +52,7 @@ import com.parivartree.customviews.HorizontalListView;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.helpers.RectangularImageView;
+import com.parivartree.models.ProfilePrivacyDetails;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -64,7 +65,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 	private int month;
 	private int day;
 	int flag = 0;
-	String date,dobprivacy,localityprivacy,pincodeprivacy,hometownprivacy,mobileprivacy,maritalStatusprivacy,weddingDateprivacy,religionprivacy,communityprivacy,gothraprivacy,professionprivacy;
+	String date = "";
+	ProfilePrivacyDetails profilePrivacyDetails;
+	//dobprivacy,localityprivacy,pincodeprivacy,hometownprivacy,mobileprivacy,maritalStatusprivacy,weddingDateprivacy,religionprivacy,communityprivacy,gothraprivacy,professionprivacy;
 	
 	int relation = 0;
 	ImageView imageViewCamera, imageViewGallery;
@@ -117,6 +120,8 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		sharedPreferences = activity.getSharedPreferences(
 				activity.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
 		sharedPreferencesEditor = sharedPreferences.edit();
+		profilePrivacyDetails = new ProfilePrivacyDetails();
+		
 		Bundle bndle = getArguments();
 		if (bndle != null) {
 			relation = bndle.getInt("relation", 0);
@@ -453,59 +458,59 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					// String genderprivacy =
 					// userProfilePrivacy.getString("Gender");
 					if(userProfilePrivacy.has("dob")){
-						dobprivacy = userProfilePrivacy.getString("dob");
+						profilePrivacyDetails.setDobprivacy(userProfilePrivacy.getString("dob")); 
 					}else{
-						dobprivacy = "1";
+						profilePrivacyDetails.setDobprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("locality")){
-						localityprivacy = userProfilePrivacy.getString("locality");
+						profilePrivacyDetails.setLocalityprivacy(userProfilePrivacy.getString("locality"));
 					}else{
-						localityprivacy = "1";
+						profilePrivacyDetails.setLocalityprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("pin")){
-						pincodeprivacy = userProfilePrivacy.getString("pin");
+						profilePrivacyDetails.setPincodeprivacy(userProfilePrivacy.getString("pin")); 
 					}else{
-						pincodeprivacy = "1";
+						profilePrivacyDetails.setPincodeprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("hometown")){
-						hometownprivacy = userProfilePrivacy.getString("hometown");
+						profilePrivacyDetails.setHometownprivacy(userProfilePrivacy.getString("hometown")); 
 					}else{
-						hometownprivacy = "1";
+						profilePrivacyDetails.setHometownprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("mobile")){
-						mobileprivacy = userProfilePrivacy.getString("mobile");
+						profilePrivacyDetails.setMobileprivacy(userProfilePrivacy.getString("mobile")); 
 					}else{
-						mobileprivacy = "1";
+						profilePrivacyDetails.setMobileprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("marital_status")){
-						maritalStatusprivacy = userProfilePrivacy.getString("marital_status");
+						profilePrivacyDetails.setMaritalStatusprivacy(userProfilePrivacy.getString("marital_status")); 
 					}else{
-						maritalStatusprivacy = "1";
+						profilePrivacyDetails.setMaritalStatusprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("wedding_date")){
-						weddingDateprivacy = userProfilePrivacy.getString("wedding_date");
+						profilePrivacyDetails.setWeddingDateprivacy(userProfilePrivacy.getString("wedding_date"));
 					}else{
-						weddingDateprivacy = "1";
+						profilePrivacyDetails.setWeddingDateprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("religion")){
-						religionprivacy = userProfilePrivacy.getString("religion");
+						profilePrivacyDetails.setReligionprivacy(userProfilePrivacy.getString("religion")); 
 					}else{
-						religionprivacy = "1";
+						profilePrivacyDetails.setReligionprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("community")){
-						communityprivacy = userProfilePrivacy.getString("community");
+						profilePrivacyDetails.setCommunityprivacy(userProfilePrivacy.getString("community")); 
 					}else{
-						communityprivacy = "1";
+						profilePrivacyDetails.setCommunityprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("gothra")){
-						gothraprivacy = userProfilePrivacy.getString("gothra");
+						profilePrivacyDetails.setGothraprivacy(userProfilePrivacy.getString("gothra"));
 					}else{
-						gothraprivacy = "1";
+						profilePrivacyDetails.setGothraprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("profession")){
-						professionprivacy = userProfilePrivacy.getString("profession");
+						profilePrivacyDetails.setProfessionprivacy(userProfilePrivacy.getString("profession"));
 					}else{
-						professionprivacy = "1";
+						profilePrivacyDetails.setProfessionprivacy("1"); 
 					}				
 					String dob = userProfileData.getString("Dob");
 					String email = userProfileData.getString("Email");
@@ -561,9 +566,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearDob1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewDob1.setText(dob);
-					} else if (listFamilyId.contains(userId) && (!dobprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getDobprivacy().equals("1"))) {
 						textViewDob1.setText(dob);
-					} else if(!(listFamilyId.contains(userId)) && dobprivacy.equals("3")){
+					} else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getDobprivacy().equals("3")){
 						textViewDob1.setText(dob);
 					}else if(view.equals("1")){
 						textViewDob1.setText(dob);
@@ -579,9 +584,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearRelation1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewMaritalStatus1.setText(maritalStatus);
-					} else if (listFamilyId.contains(userId) && (!maritalStatusprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getMaritalStatusprivacy().equals("1"))) {
 						textViewMaritalStatus1.setText(maritalStatus);
-					} else if(!(listFamilyId.contains(userId)) && maritalStatusprivacy.equals("3")){
+					} else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getMaritalStatusprivacy().equals("3")){
 						textViewMaritalStatus1.setText(maritalStatus);
 					} else if(view.equals("1")){
 						textViewMaritalStatus1.setText(maritalStatus);
@@ -592,9 +597,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearWedDate1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewWeddingDate1.setText(weddingDate);
-					} else if (listFamilyId.contains(userId) && (!weddingDateprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getWeddingDateprivacy().equals("1"))) {
 						textViewWeddingDate1.setText(weddingDate);
-					} else if(!(listFamilyId.contains(userId)) && weddingDateprivacy.equals("3")){
+					} else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getWeddingDateprivacy().equals("3")){
 						textViewWeddingDate1.setText(weddingDate);
 					}else if(view.equals("1")){
 						textViewWeddingDate1.setText(weddingDate);
@@ -605,9 +610,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearLocation1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewLocality1.setText(locality);
-					} else if (listFamilyId.contains(userId) && (!localityprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getLocalityprivacy().equals("1"))) {
 						textViewLocality1.setText(locality);
-					}  else if(!(listFamilyId.contains(userId)) && localityprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getLocalityprivacy().equals("3")){
 						textViewLocality1.setText(locality);
 					}else if(view.equals("1")){
 						textViewLocality1.setText(locality);
@@ -618,9 +623,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearPincode1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewPincode1.setText(pincode);
-					} else if (listFamilyId.contains(userId) && (!pincodeprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getPincodeprivacy().equals("1"))) {
 						textViewPincode1.setText(pincode);
-					} else if(!(listFamilyId.contains(userId)) && pincodeprivacy.equals("3")){
+					} else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getPincodeprivacy().equals("3")){
 						textViewPincode1.setText(pincode);
 					} else if(view.equals("1")){
 						textViewPincode1.setText(pincode);
@@ -631,9 +636,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearHomeTown1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewHometown1.setText(hometown);
-					} else if (listFamilyId.contains(userId) && (!hometownprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getHometownprivacy().equals("1"))) {
 						textViewHometown1.setText(hometown);
-					}  else if(!(listFamilyId.contains(userId)) && hometownprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getHometownprivacy().equals("3")){
 						textViewHometown1.setText(hometown);
 					} else if(view.equals("1")){
 						textViewHometown1.setText(hometown);
@@ -644,9 +649,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearMobile1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewMobile1.setText(mobile);
-					} else if (listFamilyId.contains(userId) && (!mobileprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getMobileprivacy().equals("1"))) {
 						textViewMobile1.setText(mobile);
-					}  else if(!(listFamilyId.contains(userId)) && mobileprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getMobileprivacy().equals("3")){
 						textViewMobile1.setText(mobile);
 					}else if(view.equals("1")){
 						textViewMobile1.setText(mobile);
@@ -657,9 +662,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearReligion1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewReligion1.setText(religion);
-					} else if (listFamilyId.contains(userId) && (!religionprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getReligionprivacy().equals("1"))) {
 						textViewReligion1.setText(religion);
-					}  else if(!(listFamilyId.contains(userId)) && religionprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getReligionprivacy().equals("3")){
 						textViewReligion1.setText(religion);
 					} else if(view.equals("1")){
 						textViewReligion1.setText(religion);
@@ -670,9 +675,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearCommunity1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewCommunity1.setText(community);
-					} else if (listFamilyId.contains(userId) && (!communityprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getCommunityprivacy().equals("1"))) {
 						textViewCommunity1.setText(community);
-					}  else if(!(listFamilyId.contains(userId)) && communityprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getCommunityprivacy().equals("3")){
 						textViewCommunity1.setText(community);
 					} else if(view.equals("1")){
 						textViewCommunity1.setText(community);
@@ -683,9 +688,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearGothra1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewGothra1.setText(gothra);
-					} else if (listFamilyId.contains(userId) && (!gothraprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getGothraprivacy().equals("1"))) {
 						textViewGothra1.setText(gothra);
-					}  else if(!(listFamilyId.contains(userId)) && gothraprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getGothraprivacy().equals("3")){
 						textViewGothra1.setText(gothra);
 					} else if(view.equals("1")){
 						textViewGothra1.setText(gothra);
@@ -696,9 +701,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearProfession1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewProfession1.setText(profession);
-					} else if (listFamilyId.contains(userId) && (!professionprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getProfessionprivacy().equals("1"))) {
 						textViewProfession1.setText(profession);
-					}  else if(!(listFamilyId.contains(userId)) && professionprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getProfessionprivacy().equals("3")){
 						textViewProfession1.setText(profession);
 					}else if(view.equals("1")){
 						textViewProfession1.setText(profession);
@@ -1040,27 +1045,27 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			}
 		}
 		if (v.getId() == R.id.imageviewdob) {
-			showPrivacyDialog("dob",dobprivacy);
+			showPrivacyDialog("dob",profilePrivacyDetails.getDobprivacy());
 		} else if (v.getId() == R.id.imageviewlocation) {
-			showPrivacyDialog("locality",localityprivacy);
+			showPrivacyDialog("locality",profilePrivacyDetails.getLocalityprivacy());
 		} else if (v.getId() == R.id.imageviewpincode) {
-			showPrivacyDialog("pin",pincodeprivacy);
+			showPrivacyDialog("pin",profilePrivacyDetails.getPincodeprivacy());
 		} else if (v.getId() == R.id.imageviewhometown) {
-			showPrivacyDialog("hometown",hometownprivacy);
+			showPrivacyDialog("hometown",profilePrivacyDetails.getHometownprivacy());
 		} else if (v.getId() == R.id.imageviewmobile) {
-			showPrivacyDialog("mobile",mobileprivacy);
+			showPrivacyDialog("mobile",profilePrivacyDetails.getMobileprivacy());
 		} else if (v.getId() == R.id.imageviewrelation) {
-			showPrivacyDialog("maritalstatus",maritalStatusprivacy);
+			showPrivacyDialog("maritalstatus",profilePrivacyDetails.getMaritalStatusprivacy());
 		} else if (v.getId() == R.id.imageviewweddate) {
-			showPrivacyDialog("wedding_date",weddingDateprivacy);
+			showPrivacyDialog("wedding_date",profilePrivacyDetails.getWeddingDateprivacy());
 		} else if (v.getId() == R.id.imageviewreligion) {
-			showPrivacyDialog("religion",religionprivacy);
+			showPrivacyDialog("religion",profilePrivacyDetails.getReligionprivacy());
 		} else if (v.getId() == R.id.imageviewcommunity) {
-			showPrivacyDialog("community",communityprivacy);
+			showPrivacyDialog("community",profilePrivacyDetails.getCommunityprivacy());
 		} else if (v.getId() == R.id.imageviewgothra) {
-			showPrivacyDialog("gothra",gothraprivacy);
+			showPrivacyDialog("gothra",profilePrivacyDetails.getGothraprivacy());
 		} else if (v.getId() == R.id.imageviewprofession) {
-			showPrivacyDialog("profession",professionprivacy);
+			showPrivacyDialog("profession",profilePrivacyDetails.getProfessionprivacy());
 		}
 	}
 

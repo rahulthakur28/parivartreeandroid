@@ -137,6 +137,24 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 				(firstName + " " + lastName), recommendNodeId, myRelationId, userId);
 		searchListView.setAdapter(SearchReationAdapter);
 		SearchReationAdapter.notifyDataSetChanged();
+		
+		boolean bool = new ConDetect(getActivity()).isOnline();
+		if (bool) {
+			// Create object of AsycTask and execute
+			final CommunityTask communityTask = new CommunityTask();
+			communityTask.execute();
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (communityTask.getStatus() == AsyncTask.Status.RUNNING) {
+						communityTask.cancel(true);
+					}
+				}
+			}, 10000);
+		} else {
+			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+		}
 		return rootView;
 	}
 
@@ -190,8 +208,10 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 				if (bool) {
 					// Create object of AsycTask and execute
 					final RefineSearchTask refineSearchTask = new RefineSearchTask();
-					if ((communityList.size() == 0) && (communityList.get(spinnerCommunity.getSelectedItemPosition()).getValue()
-							.equals("Choose a Community"))) {
+					Log.d("jhjjg", "" + (communityList.size()));
+					if ((communityList.size() == 0)
+							|| (communityList.get(spinnerCommunity.getSelectedItemPosition()).getValue()
+									.equals("Choose a Community"))) {
 						refineSearchTask.execute(recommendNodeId, myRelationId, email, firstName, lastName, locality,
 								(editMobileSearch.getText().toString().trim()), "");
 					} else {
@@ -215,24 +235,26 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 			}
 		});
 
-		boolean bool = new ConDetect(getActivity()).isOnline();
-		if (bool) {
-			// Create object of AsycTask and execute
-			final CommunityTask communityTask = new CommunityTask();
-			communityTask.execute();
-			Handler handler = new Handler();
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					if (communityTask.getStatus() == AsyncTask.Status.RUNNING) {
-						communityTask.cancel(true);
-					}
-				}
-			}, 10000);
-		} else {
-			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-		}
-
+//		boolean bool = new ConDetect(getActivity()).isOnline();
+//		if (bool) {
+//			// Create object of AsycTask and execute
+//			final CommunityTask communityTask = new CommunityTask();
+//			communityTask.execute();
+//			Handler handler = new Handler();
+//			handler.postDelayed(new Runnable() {
+//				@Override
+//				public void run() {
+//					if (communityTask.getStatus() == AsyncTask.Status.RUNNING) {
+//						communityTask.cancel(true);
+//					}
+//				}
+//			}, 10000);
+//		} else {
+//			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+//		}
+		CustomDropDownAdapter communityAdapter = new CustomDropDownAdapter(activity, communityList);
+		spinnerCommunity.setAdapter(communityAdapter);
+		communityAdapter.notifyDataSetChanged();
 		refineDialog.show();
 	}
 
@@ -371,9 +393,9 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 					}
 					Log.d("debuging", "after");
 
-					CustomDropDownAdapter communityAdapter = new CustomDropDownAdapter(activity, communityList);
-					spinnerCommunity.setAdapter(communityAdapter);
-					communityAdapter.notifyDataSetChanged();
+//					CustomDropDownAdapter communityAdapter = new CustomDropDownAdapter(activity, communityList);
+//					spinnerCommunity.setAdapter(communityAdapter);
+//					communityAdapter.notifyDataSetChanged();
 				}
 
 			} catch (Exception e) {
@@ -432,12 +454,20 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 
 			Log.i("refinesearch Fetch Response ", "" + response);
 			try {
-
+				int authenticationStatus = 0;
+				String responseResult ="";
 				JSONObject loginResponseObject = new JSONObject(response);
 
-				int authenticationStatus = loginResponseObject.getInt("Authenticationstatus");
-
-				String responseResult = loginResponseObject.getString("status");
+				if (loginResponseObject.has("Authenticationstatus")) {
+					authenticationStatus = loginResponseObject.getInt("Authenticationstatus");
+				} else if (loginResponseObject.has("AuthenticationStatus")) {
+					authenticationStatus = loginResponseObject.getInt("AuthenticationStatus");
+				}
+				if (loginResponseObject.has("status")) {
+					responseResult = loginResponseObject.getString("status");
+				} else if (loginResponseObject.has("Status")) {
+					responseResult = loginResponseObject.getString("Status");
+				}
 				if ((responseResult.equals("success")) && (authenticationStatus == 1)) {
 					// TODO store the login response and
 					if (loginResponseObject.has("records")) {

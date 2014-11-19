@@ -14,21 +14,21 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-import android.widget.RelativeLayout.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
-import com.parivartree.adapters.AutoCompleteRelationArrayAdapter.CreateRelationTask;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.helpers.RectangularImageView;
 import com.parivartree.models.SearchRecords;
@@ -99,7 +99,10 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			// This must be done for performance reasons
 			holder = new Holder();
 			holder.searchimageview = (RectangularImageView) convertView.findViewById(R.id.searchimageview);
-			holder.searchimageview.setLayoutParams(new LayoutParams((int)(activity.getResources().getDisplayMetrics().density * 90), (int)(activity.getResources().getDisplayMetrics().density * 90)));
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(activity.getResources().getDisplayMetrics().density * 90), (int)(activity.getResources().getDisplayMetrics().density * 90));
+			params.gravity = Gravity.CENTER_HORIZONTAL;
+			holder.searchimageview.setLayoutParams(params);
+			
 			holder.textSearchName = (TextView) convertView.findViewById(R.id.textsearchname);
 			holder.textsearchlocation = (TextView) convertView.findViewById(R.id.textsearchlocation);
 			holder.textSearchRelationTitle = (TextView) convertView.findViewById(R.id.textsearchrelationtitle);
@@ -118,28 +121,40 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 		int deceased = searchRecordsArrayList.get(position).getDeceased();
 		int connected = searchRecordsArrayList.get(position).getConnected();
 		int invite = searchRecordsArrayList.get(position).getInvite();
+		
+			
 		// get image
-		if (deceased == 1) {
+		if ((deceased == 1) && (gender == 1)) {
+			
 			holder.searchimageview.setBorderColor(activity.getResources().getColor(R.color.pt_gold));
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.male), 10000);
 			holder.searchimageview.invalidate();
 
-		} else if (gender == 1) {
+			
+		} else if ((deceased == 1) && (gender == 2)) {
+			
+			holder.searchimageview.setBorderColor(activity.getResources().getColor(R.color.pt_gold));
+			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
+					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
+							.getDrawable(R.drawable.female), 10000);	
+			
+			
+		}else if (gender == 1) {
 			holder.searchimageview.setBorderColor(activity.getResources().getColor(R.color.pt_blue));
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.male), 10000);
-			holder.searchimageview.invalidate();
-			Log.v("CustomSearchRelation Adapter", "height - " + holder.searchimageview.getHeight());
+			
+			
 		} else if (gender == 2) {
 			holder.searchimageview.setBorderColor(Color.MAGENTA);
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.female), 10000);
-			holder.searchimageview.invalidate();
-			Log.v("CustomSearchRelation Adapter", "height - " + holder.searchimageview.getHeight());
+			
+			
 		}
 		holder.textSearchName
 				.setText((searchRecordsArrayList.get(position).getFirstname() + " " + searchRecordsArrayList.get(

@@ -640,9 +640,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			//pDialog.dismiss();
 			Log.i("Login Response ", response);
 			try {
-
+				String responseResult,message="Please check your inputs";
 				JSONObject loginResponseObject = new JSONObject(response);
-				String responseResult = loginResponseObject.getString("result");
+				if(loginResponseObject.has("result")){
+					responseResult = loginResponseObject.getString("result");
+				}
+				if(loginResponseObject.has("msg")){
+					message = loginResponseObject.getString("msg");
+				}
 				int status = loginResponseObject.getInt("AuthenticationStatus");
 				if (status == 1) {
 					// TODO store the login response and
@@ -670,7 +675,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 					 */
 					Crouton.makeText(
 							activity,
-							"Your account has been blocked!.Please click on forgot password to re-generate your password",
+							message,
 							Style.ALERT).show();
 				} else if (status == 3) {
 					// TODO account disable

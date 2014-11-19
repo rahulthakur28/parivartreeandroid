@@ -5,13 +5,13 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="5dp"
     android:background="@drawable/layout_border"
-    android:baselineAligned="false"
     android:orientation="horizontal"
-    android:weightSum="1.0" >
+    android:weightSum="1.0" 
+    android:baselineAligned="false">
 	
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="5dp"
         android:minWidth="220dp"
         android:layout_weight=".3"
@@ -20,14 +20,12 @@
         <!--  
         <com.parivartree.helpers.RectangularImageView
             android:id="@+id/searchimageview"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             circular:border_width="2dp"
 			circular:border="true"
 			circular:shadow="true"
-			android:layout_centerHorizontal="true"
-			android:gravity="center"
-        	android:adjustViewBounds="true" />
+			android:layout_gravity="center"
         -->
         
         <com.parivartree.helpers.RectangularImageView
@@ -49,13 +47,12 @@
         <Button
             android:id="@+id/searchinvitebtn"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_below="@id/searchimageview"
-            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:minHeight="30dp"
+            android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/rounded_corners_blue"
-            android:gravity="center"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="ontest"
@@ -63,7 +60,7 @@
             android:textSize="17sp"
             android:textStyle="bold" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dp"
