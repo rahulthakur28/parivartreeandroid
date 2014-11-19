@@ -129,7 +129,7 @@
     <string name="url_edit_profile1_url">mobileupdateprofile1</string>
     <string name="url_religion">religion</string>
     <string name="url_community">mobilecommunity</string>
-    <string name="url_all_community">mobile/getcommunities</string>
+    <string name="url_all_community">mobilegetcommunities</string>
     <string name="url_gothra">mobilegothra</string>
     <string name="url_mytree">mobilemytree</string>
     <string name="url_change_password">mobilechangepassword</string>

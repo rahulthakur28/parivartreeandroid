@@ -57,6 +57,7 @@
         android:id="@+id/spinner_community_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="30dp"
         android:layout_marginTop="7dp"
         android:background="@drawable/edit_text_background"
         android:padding="10dp" />

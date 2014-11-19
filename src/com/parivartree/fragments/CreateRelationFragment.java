@@ -402,6 +402,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				pDialog.dismiss();
 			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			checkEmail.setChecked(!checkEmail.isChecked());
 		}
 
 	}
