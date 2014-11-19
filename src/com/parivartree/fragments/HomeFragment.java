@@ -84,6 +84,8 @@ public class HomeFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+		//this.setRetainInstance(true);
+		
 		activity = getActivity();
 		context = getActivity().getApplicationContext();
 		sharedPreferences = activity.getSharedPreferences(

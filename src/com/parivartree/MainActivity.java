@@ -422,7 +422,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (fragment != null) {
 			FragmentManager fragmentManager = getSupportFragmentManager();
 			// fragmentManager.beginTransaction().addToBackStack(null).commit();
-
+			
 			fragmentManager.beginTransaction()
 					// Add this transaction to the back stack
 					.addToBackStack(null)
