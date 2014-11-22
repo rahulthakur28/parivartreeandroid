@@ -241,6 +241,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 			// pDialog = new ProgressDialog(activity);
 			if(pDialog != null) {
 				pDialog.dismiss();
@@ -417,6 +420,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 			// pDialog = new ProgressDialog(activity);
 			if(pDialog != null) {
 				pDialog.dismiss();
@@ -504,6 +510,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 			// pDialog = new ProgressDialog(activity);
 			if(pDialog != null) {
 				pDialog.dismiss();
@@ -602,6 +611,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 			// pDialog = new ProgressDialog(activity);
 			if(pDialog != null) {
 				pDialog.dismiss();
@@ -773,6 +785,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				pDialog.dismiss();
 				pDialog = null;
 			}
+			
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("submitting data...");
 			pDialog.setIndeterminate(false);
@@ -831,6 +844,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					}
 				} else if(authenticationStatus == 2){
 					Crouton.makeText(activity, "The mobile number you entered is already registered with us. PLease enter a different mobile number", Style.ALERT).show();
+				}else if(authenticationStatus == 4){
+					Crouton.makeText(activity, croutonmsg, Style.ALERT).show();
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
@@ -861,7 +876,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 		@Override
 		protected void onPreExecute() {
-
+			if ((pDialog != null))
+				pDialog.dismiss();
 			// TODO Auto-generated method stub
 		}
 
@@ -875,6 +891,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 			super.onPostExecute(response);
 			// pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Ceate Event Response ", response);
 			try {
 				JSONObject createEventObject = new JSONObject(response);
@@ -908,11 +927,15 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
 			//Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 		}
 	}
 
 	private void savedSuccessfully() {
 		Log.d(TAG, "Profile edited successfully!");
+		Crouton.makeText(activity, "You successfully edit your profile", Style.INFO).show();
 		((MainActivity) this.getActivity()).changeFragment("ProfileFragment");
 	}
 
@@ -976,30 +999,6 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 	}
 
-	// public void dateDialog(final EditText txtview) {
-	// // TODO Auto-generated method stub
-	// int day, month, year;
-	//
-	// Log.d("profile", "date text click!!");
-	// Calendar cal = Calendar.getInstance();
-	// day = cal.get(Calendar.DAY_OF_MONTH);
-	// month = cal.get(Calendar.MONTH);
-	// year = cal.get(Calendar.YEAR);
-	// DatePickerDialog dpd = new DatePickerDialog(getActivity(), new
-	// DatePickerDialog.OnDateSetListener() {
-	//
-	// @Override
-	// public void onDateSet(DatePicker view, int year, int monthOfYear, int
-	// dayOfMonth) {
-	//
-	// String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
-	// txtview.setText(date);
-	//
-	// }
-	// }, year, month, day);
-	//
-	// dpd.show();
-	// }
 	public void dateDialog(final EditText txtview) {
 		// TODO Auto-generated method stub
 		int day, month, year;

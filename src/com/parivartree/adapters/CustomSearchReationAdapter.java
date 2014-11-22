@@ -220,7 +220,8 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 					// TODO Auto-generated method stub
 					String sessionname = sharedPreferences.getString("sessionname", "Not Available");
 					userName = (searchRecordsArrayList.get(position).getFirstname())+" "+(searchRecordsArrayList.get(position).getLastname());
-
+					Log.d("00034340000",""+(searchRecordsArrayList.get(position).getUserid())+","+ userId+","+ myRelationId+","+
+							sessionname+","+ userId);
 					final CreateRelationTask cRT1 = new CreateRelationTask();
 					cRT1.execute("exist", ""+(searchRecordsArrayList.get(position).getUserid()), userId, myRelationId,
 							sessionname, userId);
@@ -250,6 +251,9 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 					userName = (searchRecordsArrayList.get(position).getFirstname())+" "+(searchRecordsArrayList.get(position).getLastname());
 					
 					final CreateRelationTask cRT2 = new CreateRelationTask();
+					Log.d("0000000000000", ""+(searchRecordsArrayList.get(position).getUserid())+","+ recommendNodeId+","+myRelationId+","+
+							sessionname+","+ ((searchRecordsArrayList.get(position).getFirstname())+" "+(searchRecordsArrayList.get(position).getLastname()))+","+ userId);
+					
 					cRT2.execute("others", ""+(searchRecordsArrayList.get(position).getUserid()), recommendNodeId, myRelationId,
 							sessionname, ((searchRecordsArrayList.get(position).getFirstname())+" "+(searchRecordsArrayList.get(position).getLastname())), userId);
 					Handler handler = new Handler();
