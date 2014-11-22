@@ -293,8 +293,14 @@ public class NotificationFragment extends Fragment {
 		case 16:
 			notification = entityname + " has modified '" + eventname + "' event";
 			break;
+		case 19:
+			notification = entityname +" has invited "+addedby+" as "+relationname;
+			break;
+		case 20:
+			notification = entityname + " has invited you as "+relationname+" of "+addedby;
+			break;
 		default:
-
+			 
 			break;
 		}
 		if (notification.trim().length() > 5) {

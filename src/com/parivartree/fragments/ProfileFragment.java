@@ -748,17 +748,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						imageViewProfession.setVisibility(View.VISIBLE);
 					}
 					
-					if (deceased.equals("NA") && (showdeceased.equals("1"))) {
-						btndeceased.setVisibility(View.VISIBLE);
-						btndeleteuser.setVisibility(View.VISIBLE);
-						textViewDeceasedDate.setVisibility(View.GONE);
-						textViewUpdatedBy.setVisibility(View.GONE);
-						btndeceased.setText("Deceased?");
-
-					} else if (deceased.equals("NA") && (showdeceased.equals("0"))) {
-
-						btndeleteuser.setVisibility(View.GONE);
+					 if ((deceased.equals("NA")) && (userId.equals(nodeId))) {
 						btndeceased.setVisibility(View.GONE);
+						btndeleteuser.setVisibility(View.GONE);
 						textViewDeceasedDate.setVisibility(View.GONE);
 						textViewUpdatedBy.setVisibility(View.GONE);
 
@@ -769,7 +761,21 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						textViewUpdatedBy.setVisibility(View.VISIBLE);
 						btndeceased.setText("Make Me Alive");
 
-					}else if ((!deceased.equals("NA")) && (!userId.equals(nodeId)) && (showdeceased.equals("1")) && (view.equals("1"))) {
+					} else if (deceased.equals("NA") && (showdeceased.equals("1"))) {
+						btndeceased.setVisibility(View.VISIBLE);
+						btndeleteuser.setVisibility(View.VISIBLE);
+						textViewDeceasedDate.setVisibility(View.GONE);
+						textViewUpdatedBy.setVisibility(View.GONE);
+						btndeceased.setText("Deceased?");
+
+					} else if (deceased.equals("NA") && (showdeceased.equals("0"))) {
+
+						btndeleteuser.setVisibility(View.VISIBLE);
+						btndeceased.setVisibility(View.GONE);
+						textViewDeceasedDate.setVisibility(View.GONE);
+						textViewUpdatedBy.setVisibility(View.GONE);
+
+					} else if ((!deceased.equals("NA")) && (!userId.equals(nodeId)) && (showdeceased.equals("1")) && (view.equals("1"))) {
 						btndeceased.setVisibility(View.VISIBLE);
 						btndeleteuser.setVisibility(View.VISIBLE);
 						textViewDeceasedDate.setVisibility(View.VISIBLE);
@@ -928,10 +934,14 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			}
 			Log.i("delete user Fetch Response ", response);
 			try {
-
+				String responseMessage="";
 				JSONObject loginResponseObject = new JSONObject(response);
+				int status = loginResponseObject.getInt("AuthenticationStatus");
 				String responseResult = loginResponseObject.getString("Status");
-				if (responseResult.equals("Success")) {
+				if(loginResponseObject.has("msg")){
+					responseMessage = loginResponseObject.getString("msg");
+				}
+				if ((responseResult.equals("Success")) && (status == 1)) {
 					Log.i("delete user Fetch Response ", "user deleted");
 
 					sharedPreferencesEditor.putString("node_id", userId);
@@ -942,6 +952,8 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				     Crouton.makeText(activity, "You have successfully delete " + nodeName + " from your family tree", Style.INFO).show();
 					((MainActivity) activity).changeFragment("HomeFragment");
 
+				}{
+					Crouton.makeText(activity, responseMessage, Style.ALERT).show();
 				}
 
 			} catch (Exception e) {
