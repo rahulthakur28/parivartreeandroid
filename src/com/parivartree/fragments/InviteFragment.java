@@ -108,7 +108,7 @@ EditText searchNameEdit;
 			@Override
 			public void onTextChanged(CharSequence s, int start, int count, int after) {
 				// TODO Auto-generated method stub
-				if(s.toString().length() > 0){
+				if((searchNameEdit.getText().toString().trim().length()) > 0){
 					boolean bool = new ConDetect(getActivity()).isOnline();
 					if (bool) {
 						if (searchUserTask != null) {

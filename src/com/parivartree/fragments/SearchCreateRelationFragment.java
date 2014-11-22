@@ -32,11 +32,13 @@ import android.widget.Toast;
 import com.google.android.gms.internal.em;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
+import com.parivartree.SignUpDetailsActivity;
 import com.parivartree.adapters.CustomDropDownAdapter;
 import com.parivartree.adapters.CustomSearchReationAdapter;
 import com.parivartree.fragments.EditProfileFragment.CommunityTask;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
+import com.parivartree.models.SearchRecordRelation;
 import com.parivartree.models.SearchRecords;
 import com.parivartree.models.SpinnerItem;
 
@@ -59,7 +61,7 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 	Button refineSearchbtn, createNewBtn;
 	TextView textResultTitle;
 	private ArrayList<SearchRecords> searchRecordsArrayList;
-	private ArrayList<HashMap<String, String>> relationRecordsArrayList;
+	private ArrayList<SearchRecordRelation> relationRecordsArrayList;
 	String recommendNodeId, myRelationId, firstName, lastName, email, locality, userId, recommendedUserName;
 	String relationships[] = new String[] { "relationship", "Father", "Mother", "Wife", "Brother", "Sister", "Son",
 			"Daughter", "Husband" };
@@ -130,14 +132,6 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 		createNewBtn.setOnClickListener(this);
 
 		communityList = new ArrayList<SpinnerItem>();
-
-		textResultTitle.setText("Parivartree has found " + sizeSearchList + " Results for "
-				+ (firstName + " " + lastName));
-		SearchReationAdapter = new CustomSearchReationAdapter(activity, searchRecordsArrayList,
-				(firstName + " " + lastName), recommendNodeId, myRelationId, userId);
-		searchListView.setAdapter(SearchReationAdapter);
-		SearchReationAdapter.notifyDataSetChanged();
-		
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
@@ -155,6 +149,14 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 		} else {
 			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
+		
+		textResultTitle.setText("Parivartree has found " + sizeSearchList + " Results for "
+				+ (firstName + " " + lastName));
+		SearchReationAdapter = new CustomSearchReationAdapter(activity, searchRecordsArrayList,
+				(firstName + " " + lastName), recommendNodeId, myRelationId, userId);
+		searchListView.setAdapter(SearchReationAdapter);
+		SearchReationAdapter.notifyDataSetChanged();
+		
 		return rootView;
 	}
 
@@ -307,11 +309,13 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 								"You have successfully added " + (firstName + " " + lastName) + " to your family tree.",
 								Style.INFO).show();
 					} else {
-						Crouton.makeText(
-								activity,
+						String croutonmsg = 
 								"You have successfully added " + (firstName + " " + lastName) + " to "
-										+ recommendedUserName + " for " + relationship_type + " relation.", Style.INFO)
-								.show();
+										+ recommendedUserName + " for " + relationship_type + " relation.";
+						Crouton crouton;
+						crouton = Crouton.makeText(activity, croutonmsg, Style.ALERT);
+						crouton.setOnClickListener(SearchCreateRelationFragment.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(10000).build()).show();			
+					
 					}
 					((MainActivity) activity).changeFragment("HomeFragment");
 				}
@@ -475,7 +479,7 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 				if ((responseResult.equals("success")) && (authenticationStatus == 1)) {
 					// TODO store the login response and
 					if (loginResponseObject.has("records")) {
-						relationRecordsArrayList = new ArrayList<HashMap<String, String>>();
+						relationRecordsArrayList = new ArrayList<SearchRecordRelation>();
 						searchRecordsArrayList.clear();
 						JSONArray records = loginResponseObject.getJSONArray("records");
 						for (int i = 0; i < records.length(); i++) {
@@ -497,12 +501,20 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 								JSONArray relation = item.getJSONArray("relation");
 								for (int j = 0; j < relation.length(); j++) {
 									JSONObject itemrelation = relation.getJSONObject(j);
-									HashMap<String, String> relationhash = new HashMap<String, String>();
-									relationhash.put("relationname", "" + itemrelation.getString("relationname"));
-									relationhash.put("name", "" + itemrelation.getString("name"));
-									relationhash.put("id", "" + itemrelation.getInt("id"));
-									relationhash.put("imageexists", "" + itemrelation.getInt("imageexists"));
-									relationRecordsArrayList.add(relationhash);
+									SearchRecordRelation searchRecordRelation = new SearchRecordRelation();
+									searchRecordRelation.setRelationname(itemrelation.getString("relationname"));
+									searchRecordRelation.setName(itemrelation.getString("name"));
+									searchRecordRelation.setId(itemrelation.getInt("id"));
+									searchRecordRelation.setImageexists(itemrelation.getInt("imageexists"));
+				
+									relationRecordsArrayList.add(searchRecordRelation);
+									
+//									HashMap<String, String> relationhash = new HashMap<String, String>();
+//									relationhash.put("relationname", "" + itemrelation.getString("relationname"));
+//									relationhash.put("name", "" + itemrelation.getString("name"));
+//									relationhash.put("id", "" + itemrelation.getInt("id"));
+//									relationhash.put("imageexists", "" + itemrelation.getInt("imageexists"));
+//									relationRecordsArrayList.add(relationhash);
 								}
 								searchRecordObject.setRelationRecords(relationRecordsArrayList);
 							}

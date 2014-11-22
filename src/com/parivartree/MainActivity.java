@@ -58,6 +58,7 @@ import com.parivartree.fragments.InviteFragment;
 import com.parivartree.fragments.MessageFragment;
 import com.parivartree.fragments.NotificationFragment;
 import com.parivartree.fragments.PagesFragment;
+import com.parivartree.fragments.PhotosFragment;
 import com.parivartree.fragments.ProfileFragment;
 import com.parivartree.fragments.RelationFragment;
 import com.parivartree.fragments.SearchCreateRelationFragment;
@@ -338,11 +339,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			fragment = new FindPeopleFragment();
 			break;
 		case 3:
+//			sharedPreferencesEditor = sharedPreferences.edit();
+//			sharedPreferencesEditor.putString("node_id",
+//					sharedPreferences.getString("user_id", "0"));
+//			sharedPreferencesEditor.commit();
+//			fragment = new ViewPhotosFragment();
+//			break;
+			
 			sharedPreferencesEditor = sharedPreferences.edit();
 			sharedPreferencesEditor.putString("node_id",
 					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
-			fragment = new ViewPhotosFragment();
+			fragment = new PhotosFragment();
 			break;
 		case 4:
 			sharedPreferencesEditor = sharedPreferences.edit();

@@ -3,8 +3,10 @@ package com.parivartree.fragments;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -36,6 +38,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 //import com.gorillalogic.monkeytalk.server.JsonServer;
 
+
+
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
@@ -48,13 +52,14 @@ import com.parivartree.customviews.CustomAutoCompleteTextView;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.MyObject;
+import com.parivartree.models.SearchRecordRelation;
 import com.parivartree.models.SearchRecords;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class CreateRelationFragment extends Fragment implements OnClickListener, ValidationListener {
-
+	long startTime,elapsedTime ;
 	private String TAG = "CreateRelationFragment";
 	ArrayAdapter<MyObject> myAdapter;
 	ArrayList<MyObject> ObjectItemData = new ArrayList<MyObject>();
@@ -81,7 +86,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	private LocationHintAdapter locationHintAdpter;
 	private ArrayList<String> locationHints;
 	private ArrayList<SearchRecords> searchRecordsList;
-	private ArrayList<HashMap<String, String>> relationRecordsList;
+	private ArrayList<SearchRecordRelation> relationRecordsList;
 	SearchPlacesTask searchPlacesTask;
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
@@ -134,6 +139,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 
 		View rootView = inflater.inflate(R.layout.fragment_create_relation, container, false);
 		searchRecordsList = new ArrayList<SearchRecords>();
+		relationRecordsList = new ArrayList<SearchRecordRelation>();
 		if (relationId.equals("1")) {
 			finalgender = "1";
 			relationName = "Father";
@@ -191,10 +197,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int spos, long dpos) {
 				// TODO Auto-generated method stub
-				flag = 1;
-
+				
 				searchUserAutoComplete.setText("");
-				flag = 0;
+			
 
 			}
 		});
@@ -203,15 +208,17 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			@Override
 			public void onTextChanged(CharSequence s, int start, int count, int after) {
 				// TODO Auto-generated method stub
-
+				if(s.toString().startsWith("com.parivartree.models")){
+					
+				}else if(s.toString().length() > 0){
+					Log.d(TAG, "--length--"+s.toString().length());
+					Log.d(TAG, "--log--"+s+","+start+","+count+","+after);
 				boolean bool = new ConDetect(getActivity()).isOnline();
 				if (bool) {
 					if (searchUserTask != null) {
 						searchUserTask.cancel(true);
 					}
-					Log.d(TAG, "-------------------------------------------------------------------------------");
 					Log.d("Search user", "AsyncTask calling");
-					if (flag == 0 && ((s.toString().length()) > 0)) {
 						searchUserTask = new SearchUserTask();
 						searchUserTask.execute(s.toString(), userId);
 						Handler handler = new Handler();
@@ -223,11 +230,11 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 								}
 							}
 						}, 10000);
-					}
+					
 				} else {
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
-
+				}
 			}
 
 			@Override
@@ -456,11 +463,11 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				if (responseResult == 1) {
 					Log.d(TAG, " success...........!!");
 					if (loginResponseObject.has("records")) {
-						relationRecordsList = new ArrayList<HashMap<String, String>>();
 						searchRecordsList.clear();
 						JSONArray records = loginResponseObject.getJSONArray("records");
 						for (int i = 0; i < records.length(); i++) {
 							JSONObject item = records.getJSONObject(i);
+
 							SearchRecords searchRecordObject = new SearchRecords();
 							searchRecordObject.setUserid(item.getInt("userid"));
 							searchRecordObject.setGender(item.getInt("gender"));
@@ -473,22 +480,42 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 							searchRecordObject.setState(item.getString("state"));
 							searchRecordObject.setFirstname(item.getString("firstname"));
 							searchRecordObject.setLastname(item.getString("lastname"));
+							relationRecordsList = new ArrayList<SearchRecordRelation>();
 							if (item.has("relation")) {
 								relationRecordsList.clear();
+								
 								JSONArray relation = item.getJSONArray("relation");
 								for (int j = 0; j < relation.length(); j++) {
 									JSONObject itemrelation = relation.getJSONObject(j);
-									HashMap<String, String> relationhash = new HashMap<String, String>();
-									relationhash.put("relationname", "" + itemrelation.getString("relationname"));
-									relationhash.put("name", "" + itemrelation.getString("name"));
-									relationhash.put("id", "" + itemrelation.getInt("id"));
-									relationhash.put("imageexists", "" + itemrelation.getInt("imageexists"));
-									relationRecordsList.add(relationhash);
+									SearchRecordRelation searchRecordRelation = new SearchRecordRelation();
+									searchRecordRelation.setRelationname(itemrelation.getString("relationname"));
+									searchRecordRelation.setName(itemrelation.getString("name"));
+									searchRecordRelation.setId(itemrelation.getInt("id"));
+									searchRecordRelation.setImageexists(itemrelation.getInt("imageexists"));
+				
+									relationRecordsList.add(searchRecordRelation);
 								}
-								searchRecordObject.setRelationRecords(relationRecordsList);
+//								String relation1 ;
+//								StringBuilder relationString = new StringBuilder();
+//								for(HashMap<String, String> hash : relationRecordsList){
+//									relation1 = hash.get("name")+" ("+hash.get("relationname")+") ";
+//									relationString.append(relation1);
+//								}
+//								Log.d("  #####  ","relation List"+relationString);
+								Log.d("ooooooListoooo ", " "+relationRecordsList);
+								//searchRecordObject.setRelationRecords(relationRecordsList);
+								//Log.d("ooooooList hashoooo ", " "+searchRecordObject.getRelationRecords());
 							}
+							searchRecordObject.setRelationRecords(relationRecordsList);
+							Log.d("ooooooList hashoooo ", " "+searchRecordObject.getRelationRecords());
 							searchRecordsList.add(searchRecordObject);
-						}				
+						}	
+						for(int z=0;z<searchRecordsList.size();z++){
+							
+							//searchRecordsList.get(z).getRelationRecords();
+							Log.d("oooooooooo", ""+searchRecordsList.get(z).getFirstname());
+							Log.d("oooooooooo", ""+searchRecordsList.get(z).getRelationRecords());
+						}
 						Bundle bundle = new Bundle();
 						bundle.putParcelableArrayList("searchrelationList", searchRecordsList);
 						bundle.putString("firstname", ((firstNameEditText.getText().toString().trim())));		
@@ -536,8 +563,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 						userDialog(fullname, otheruserid, "unhide");
 
 					} else if (invite.equals("0") && negate.equals("0")) {
-
-						Toast.makeText(context, fullname + " is already connected", Toast.LENGTH_LONG).show();
+						Crouton.makeText(activity, fullname + " is already connected", Style.INFO).show();
 					}
 				}
 
@@ -751,6 +777,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			}
 			searchTaskProcessCalledCount++;
 			Log.d(TAG, "searchTaskProcessCalledCount ++ - " + searchTaskProcessCalledCount);
+			startTime = System.currentTimeMillis();
 		}
 
 		@Override
@@ -771,7 +798,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 
 		protected void onPostExecute(String response) {
 			super.onPostExecute(response);
-			Log.i("event list Response ", response);
+			elapsedTime = System.currentTimeMillis() - startTime;
+			Log.i("relation response time ", ""+((elapsedTime/1000)));
+			Log.i("relation list Response ", response);
 			searchTaskProcessCalledCount--;
 			Log.d(TAG, "searchTaskProcessCalledCount -- - " + searchTaskProcessCalledCount);
 			if(response.equals("timeout")) {
@@ -924,8 +953,8 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			msg = "The User " + name + " is already available in another Family Tree would you like to invite.";
 			btnmsg = "Invite";
 		} else if (type.equals("recommend")) {
-			msg = "The User " + name + " is already available in another Family Tree would you like to recommend.";
-			btnmsg = "recommend";
+			msg = "The User " + name + " is already available in another Family Tree would you like to invite.";
+			btnmsg = "invite";
 		} else {
 			msg = "The User " + name + " is hidden by you";
 			btnmsg = "Unhide";
@@ -951,8 +980,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 							}
 						}
 					}, 10000);
-				}
-				if (type.equals("recommend")) {
+				}else if (type.equals("recommend")) {
 					final InviteRelationTask inviteRelationTask1 = new InviteRelationTask();
 					inviteRelationTask1.execute("recommend", otherid, nodeId, relationId, sessionname, name, userId);
 					Handler handler = new Handler();

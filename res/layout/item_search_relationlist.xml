@@ -55,7 +55,7 @@
             android:background="@drawable/rounded_corners_blue"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="ontest"
+            android:text="invite"
             android:textColor="@color/pt_white"
             android:textSize="17sp"
             android:textStyle="bold" />

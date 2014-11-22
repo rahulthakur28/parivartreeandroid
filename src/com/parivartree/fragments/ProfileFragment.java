@@ -1399,9 +1399,10 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onClick(DialogInterface dialog, int item) {
 				// TODO Auto-generated method stub
-				Log.d("Field Privacy", "" + fieldname + "--------" + (item + 1) + "---------" + userId);
+				String privacystr = String.valueOf((item + 1));
+				Log.d("-----check-------", privacystr);
 				final FieldPrivacyTask fieldPrivacyTask = new FieldPrivacyTask();
-				fieldPrivacyTask.execute(nodeId, fieldname, "" + (item + 1));
+				fieldPrivacyTask.execute(nodeId, fieldname, privacystr);
 				Handler handler = new Handler();
 				handler.postDelayed(new Runnable() {
 					@Override

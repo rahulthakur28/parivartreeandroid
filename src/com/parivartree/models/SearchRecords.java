@@ -9,7 +9,7 @@ import android.os.Parcelable;
 public class SearchRecords implements Parcelable {
 int userid,gender,status,deceased,connected,imageexists,invite;
 String city,state,firstname,lastname;
-ArrayList<HashMap<String, String>> relationRecords;
+ArrayList<SearchRecordRelation> relationRecords;
 
 public int getUserid() {
 	return userid;
@@ -77,10 +77,10 @@ public String getLastname() {
 public void setLastname(String lastname) {
 	this.lastname = lastname;
 }
-public ArrayList<HashMap<String, String>> getRelationRecords() {
+public ArrayList<SearchRecordRelation> getRelationRecords() {
 	return relationRecords;
 }
-public void setRelationRecords(ArrayList<HashMap<String, String>> relationRecords) {
+public void setRelationRecords(ArrayList<SearchRecordRelation> relationRecords) {
 	this.relationRecords = relationRecords;
 }
 public static final Parcelable.Creator<SearchRecords> CREATOR = new Creator<SearchRecords>() {  

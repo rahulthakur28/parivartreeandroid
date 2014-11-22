@@ -16,7 +16,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,8 +36,6 @@ import android.widget.Toast;
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
-import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
-import com.mobsandgeeks.saripaar.annotation.Password;
 import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.adapters.LocationHintAdapter;
 import com.parivartree.helpers.ConDetect;
@@ -100,7 +97,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		sharedPreferences = this.getApplicationContext().getSharedPreferences(
 				this.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
 		sharedPreferencesEditor = sharedPreferences.edit();
-		sharedPreferencesEditor.commit();
+		sharedPreferencesEditor.commit();	
 		activity = this;
 		validator = new Validator(this);
 		validator.setValidationListener(this);
@@ -315,7 +312,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 				}
 				if (status == 1) {
 					if (successFlag.equals("mobile")) {
-						Crouton.makeText(activity, message, Style.INFO).show();
+						Crouton crouton;
+						crouton = Crouton.makeText(activity, message, Style.INFO);
+						crouton.setOnClickListener(SignUpDetailsActivity.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(7000).build()).show();
 					} else if (successFlag.equals("email")) {
 						croutonmsg =  "Please check your Mail and Click the Link";
 						Intent intentsuccess = new Intent(SignUpDetailsActivity.this, LoginMainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -328,15 +327,23 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 				} else if (status == 2) {
 					// TODO redirect to home page
 					Crouton.makeText(activity, message, Style.ALERT).show();
+				}else if (status == 4) {
+					// TODO redirect to home page
+					Crouton crouton;
+					crouton = Crouton.makeText(activity, message, Style.ALERT);
+					crouton.setOnClickListener(SignUpDetailsActivity.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(7000).build()).show();			
 				} else if (status == 5) {
 					// TODO redirect to home page
 					croutonmsg = 
 							"This "
 									+ emailMobileTest
-									+ " is registered with us. Please login to access the Parivartree, or click below link, if you have forgotten your password.";
-					Intent intentfail = new Intent(SignUpDetailsActivity.this, LoginMainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-					intentfail.putExtra("croutonmsg", croutonmsg);
-					startActivity(intentfail);
+									+ " is registered with us. Please login to access the Parivartree, or click forgot password link, if you have forgotten your password.";
+					Crouton crouton;
+					crouton = Crouton.makeText(activity, croutonmsg, Style.ALERT);
+					crouton.setOnClickListener(SignUpDetailsActivity.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(8000).build()).show();
+					//Intent intentfail = new Intent(SignUpDetailsActivity.this, LoginMainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+					//intentfail.putExtra("croutonmsg", croutonmsg);
+					//startActivity(intentfail);
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
@@ -417,8 +424,10 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 					startActivity(intentsuccess);
 				} else if (status == 2) {
 					// TODO redirect to home page
-					Crouton.makeText(activity, message, Style.ALERT).show();
-				} 
+					Crouton crouton;
+					crouton = Crouton.makeText(activity, message, Style.ALERT);
+					crouton.setOnClickListener(SignUpDetailsActivity.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(7000).build()).show();			
+				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ",

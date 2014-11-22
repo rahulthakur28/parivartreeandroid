@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
+import com.parivartree.SignUpDetailsActivity;
+import com.parivartree.fragments.SearchCreateRelationFragment;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.helpers.RectangularImageView;
 import com.parivartree.models.MyObject;
@@ -32,7 +34,7 @@ import com.parivartree.models.MyObject;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
+public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> implements OnClickListener{
 	private static final String TAG = "AutoCompleteRelationArrayAdapter";
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
@@ -265,29 +267,35 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 					Log.e(TAG, "request_type - " + request_type);
 					if (request_type == 1) {
 						// AutoCompleteRelationArrayAdapter.this.userName;
-						Crouton.makeText(activity,
-								"You have successfully invited " + nodeName + " to your family tree.", Style.INFO)
-								.show();
+						String croutonmsg = "You have successfully invited " + nodeName + " to your family tree.You will have a complete access to further connections once " + nodeName + " accepts your invitation";
+						Crouton crouton;
+						crouton = Crouton.makeText(activity, croutonmsg, Style.INFO);
+						crouton.setOnClickListener(AutoCompleteRelationArrayAdapter.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(10000).build()).show();			
+			
 					} else if (request_type == 2) {
 						String recommendedUserName = sharedPreferences.getString("node_first_name", " ") + " "
 								+ sharedPreferences.getString("node_last_name", " ");
-						Crouton.makeText(
-								activity,
+						String croutonmsg =
 								"You have successfully recommended " + nodeName + " to " + recommendedUserName
-										+ " for " + relationship_type + " relation.", Style.INFO).show();
+										+ " for " + relationship_type + " relation.";
+					
+						Crouton crouton;
+						crouton = Crouton.makeText(activity, croutonmsg, Style.INFO);
+						crouton.setOnClickListener(AutoCompleteRelationArrayAdapter.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(10000).build()).show();			
+					
 					}
 					// Toast.makeText(mContext,
 					// "You have successfully invited ",
 					// Toast.LENGTH_SHORT).show();
 					((MainActivity) mContext).changeFragment("HomeFragment");
 				} else if (responseResult == 2) {
-					Crouton.makeText(activity, "Email id is invalid. Please try again... ", Style.INFO).show();
+					Crouton.makeText(activity, "Email id is invalid. Please try again... ", Style.ALERT).show();
 					// Toast.makeText(mContext,
 					// "Email ID is wrong Please Try again",
 					// Toast.LENGTH_LONG).show();
 				} else if (responseResult == 5) {
 					Crouton.makeText(activity, "Email ID is already a parivartree account, use search user to invite",
-							Style.INFO).show();
+							Style.ALERT).show();
 					// Toast.makeText(mContext,
 					// "Email ID already parivartree account use search user",
 					// Toast.LENGTH_LONG).show();
@@ -304,7 +312,6 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
-
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
@@ -314,5 +321,11 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> {
 			}
 			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
 	}
 }
