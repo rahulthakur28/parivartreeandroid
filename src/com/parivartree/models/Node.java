@@ -21,16 +21,16 @@ public class Node implements Serializable {
 	private static final long serialVersionUID = 7766580249570218877L;
 	JSONObject data;
 	final String TAG = "Node";
-
+	
 	int id, loginStatus, invited, gender, deceased, relationCount;
 	int relationId = 0;
-
+	
 	String name, firstName, lastName, city, image;
-
+	
 	Context context;
-
+	
 	Bitmap userImage;
-
+	
 	ArrayList<Node> fathers = new ArrayList<Node>();
 	ArrayList<Node> mothers = new ArrayList<Node>();
 	ArrayList<Node> wives = new ArrayList<Node>();
@@ -60,7 +60,7 @@ public class Node implements Serializable {
 					JSONArray fatherParams = item0.getJSONArray("params");
 					JSONObject fatherTempObject = new JSONObject();
 					for (int i = 0; i < fatherParams.length(); i++) {
-
+						
 						fatherTempObject = (JSONObject) fatherParams.get(i);
 						if (fatherTempObject.getInt("relationid") == 1) {
 							fathers.add(setNode(fatherTempObject,1));
@@ -75,13 +75,13 @@ public class Node implements Serializable {
 						 */
 					}
 				}
-
+				
 				if (parallelData.length() > 1) {
 					JSONObject item1 = (JSONObject) parallelData.get(1);
 					JSONArray motherParams = item1.getJSONArray("params");
 					JSONObject motherTempObject = new JSONObject();
 					for (int i = 0; i < motherParams.length(); i++) {
-
+						
 						motherTempObject = (JSONObject) motherParams.get(i);
 						if (motherTempObject.getInt("relationid") == 2) {
 							Log.d(TAG, "in mother");
@@ -90,7 +90,7 @@ public class Node implements Serializable {
 						}
 					}
 				}
-
+				
 			} catch (JSONException e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: Treeview Fetch Parallel", "" + tempStack.getLineNumber() + " methodName: "
@@ -242,8 +242,9 @@ public class Node implements Serializable {
 									}
 								}
 							}
-							if (tempObject.has("husband")) {
-								JSONArray husbands = tempObject.getJSONArray("husband");
+							// the below line should be "husband" but was changed due to the response from the server
+							if (tempObject.has("wife")) {
+								JSONArray husbands = tempObject.getJSONArray("wife");
 								for (int j = 0; j < husbands.length(); j++) {
 									JSONObject tempHusband = husbands.getJSONObject(j);
 									tempSisterNode.addHusbands(setNode(tempHusband));

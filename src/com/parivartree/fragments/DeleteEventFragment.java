@@ -115,7 +115,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		time = bndle.getString("time");
 		eventReachPos = bndle.getInt("eventreach", 0);
 		eventDescritionbd = bndle.getString("eventdescription");
-
+		
 		UrlImageViewHelper.setUrlDrawable(imageViewDelete, "https://www.parivartree.com/profileimages/thumbs/" + userId
 				+ "PROFILE.jpeg", getResources().getDrawable(R.drawable.dummyphoto1), 60000);
 		txtEevntName.setText(eventNamebd);
@@ -162,9 +162,19 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		Geocoder gc = new Geocoder(activity);
 		try {
 			List<Address> li = gc.getFromLocationName(locationbd, 5);
-			Address ad = li.get(0);
-			Double lat = ad.getLatitude();
-			Double lon = ad.getLongitude();
+			Double lat;
+			Double lon;
+			if(li.size() > 0) {
+				//Address ad = li.get(0);
+				lat = 0.0;//ad.getLatitude();
+				lon = 0.0;//ad.getLongitude();
+			}
+			else {
+				Address ad = li.get(0);
+				lat = ad.getLatitude();
+				lon = ad.getLongitude();
+			}
+			
 			LatLng gizmeon = new LatLng(lat, lon);
 			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gizmeon, 15));
 			googleMap.addMarker(new MarkerOptions().title(locationbd).snippet(locationbd).position(gizmeon));
@@ -300,7 +310,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -379,7 +389,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 

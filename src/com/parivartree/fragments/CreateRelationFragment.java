@@ -409,7 +409,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 			checkEmail.setChecked(!checkEmail.isChecked());
 		}
 
@@ -587,7 +587,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -690,7 +690,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -776,7 +776,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				ObjectItemData.clear();
 			}
 			searchTaskProcessCalledCount++;
-			Log.d(TAG, "searchTaskProcessCalledCount ++ - " + searchTaskProcessCalledCount);
+			Log.d(TAG, "searchTaskProcessCalledCount ++ : " + searchTaskProcessCalledCount);
 			startTime = System.currentTimeMillis();
 		}
 
@@ -802,11 +802,11 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			Log.i("relation response time ", ""+((elapsedTime/1000)));
 			Log.i("relation list Response ", response);
 			searchTaskProcessCalledCount--;
-			Log.d(TAG, "searchTaskProcessCalledCount -- - " + searchTaskProcessCalledCount);
+			Log.d(TAG, "searchTaskProcessCalledCount -- : " + searchTaskProcessCalledCount);
 			if(response.equals("timeout")) {
 				if(searchTaskProcessCalledCount == 0) {
 					
-					Crouton.makeText(activity, "Your network connection is very slow", Style.ALERT).show();
+					Crouton.makeText(activity, "Network connection is slow", Style.ALERT).show();
 				}
 			} else { 
 				try {
@@ -872,9 +872,9 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
 			searchTaskProcessCalledCount--;
-			Log.d(TAG, "searchTaskProcessCalledCount -- - " + searchTaskProcessCalledCount);
+			Log.d(TAG, "searchTaskProcessCalledCount -- : " + searchTaskProcessCalledCount);
 			if (searchTaskProcessCalledCount == 0) {
-				Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+				//Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 			}
 			
 		}
@@ -939,7 +939,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			super.onCancelled(result);
 			searchPlacesProcessCalledCount--;
 			if(searchPlacesProcessCalledCount == 0) {
-				Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+				//Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 			}
 		}
 	}
@@ -1062,7 +1062,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 }

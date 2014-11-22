@@ -232,7 +232,7 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 			if ((pDialog != null) && pDialog.isShowing()) { 
 			    pDialog.dismiss();
 			   }
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 	@Override
@@ -352,7 +352,7 @@ public class ForgotPasswordActivity extends Activity implements OnClickListener,
 			if ((pDialog != null) && pDialog.isShowing()) { 
 			    pDialog.dismiss();
 			   }
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 }

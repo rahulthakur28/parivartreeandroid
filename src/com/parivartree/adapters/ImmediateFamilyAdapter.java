@@ -30,7 +30,7 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 		inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		Log.d("ImmediateFamilyAdapter", "initialized");
 	}
-
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub

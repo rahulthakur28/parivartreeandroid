@@ -196,7 +196,7 @@ EditText searchNameEdit;
 			if(response.equals("timeout")) {
 				if(searchTaskProcessCalledCount == 0) {
 					
-					Crouton.makeText(activity, "Your network connection is very slow", Style.ALERT).show();
+					Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 				}
 			} else {
 				Log.i("event list Response ", response);
@@ -276,7 +276,7 @@ EditText searchNameEdit;
 			
 			if(searchTaskProcessCalledCount == 0) {
 				
-				Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+				Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 			}
 			
 			

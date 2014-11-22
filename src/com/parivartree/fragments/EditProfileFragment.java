@@ -212,7 +212,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
 			}
-
+			
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 				// TODO Auto-generated method stub
@@ -231,7 +231,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 	 public void onPause() {
 	  super.onPause();
 	  
-	  if ((pDialog != null) && pDialog.isShowing())
+	  if ((pDialog != null))
 	   pDialog.dismiss();
 	  pDialog = null;
 	     
@@ -242,6 +242,10 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			// pDialog = new ProgressDialog(activity);
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
@@ -403,7 +407,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -414,6 +418,10 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			// pDialog = new ProgressDialog(activity);
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
@@ -486,7 +494,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -497,6 +505,10 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			// pDialog = new ProgressDialog(activity);
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
@@ -514,7 +526,6 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 		@Override
 		protected void onPostExecute(String response) {
-			// TODO Auto-generated method stub
 			super.onPostExecute(response);
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
@@ -543,7 +554,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 						// community.equals(tempObject.getString("name")) ){
 						// communityPos=i;
 						// }
-
+						
 						communityList.add(tempItem);
 					}
 					if (data.length() == 0) {
@@ -581,7 +592,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -592,6 +603,10 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			// pDialog = new ProgressDialog(activity);
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
@@ -670,7 +685,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -754,6 +769,10 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("submitting data...");
 			pDialog.setIndeterminate(false);
@@ -808,12 +827,11 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 						intentMobile.putExtra("mobileNumber", mobileNumber);
 						startActivity(intentMobile);
 					}else{	
-					savedSuccessfully();
+						savedSuccessfully();
 					}
 				} else if(authenticationStatus == 2){
 					Crouton.makeText(activity, "The mobile number you entered is already registered with us. PLease enter a different mobile number", Style.ALERT).show();
 				}
-
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					// Log.d("Exception thrown: Treeview Fetch", "" +
@@ -833,7 +851,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 
 	}
@@ -889,7 +907,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			//Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
