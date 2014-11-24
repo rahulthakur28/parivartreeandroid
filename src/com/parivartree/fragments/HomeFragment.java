@@ -474,7 +474,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 
 		@Override
 		protected String doInBackground(Node... params) {
-
+			
 			// TODO generate node
 			String userId = sharedPreferences.getString("user_id", "0");
 			String nodeId = sharedPreferences.getString("node_id", userId);

@@ -11,7 +11,8 @@
     <string name="title_activity_main">parivartree</string>
     <string name="title_activity_login_details">parivartree</string>
     <string name="title_activity_sign_up">parivartree</string>
-    <string name="facebook_app_id">344736635684076</string>
+    <!-- <string name="facebook_app_id">344736635684076</string> -->
+    <string name="facebook_app_id">210462185806713</string>
     <string name="title_activity_sign_up_details">SignUpDetailsActivity</string>
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
     <string name="title_activity_terms">TermsActivity</string>

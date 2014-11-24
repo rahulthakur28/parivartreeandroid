@@ -71,14 +71,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	private LoginButton facebookButton;
 
 	// Your Facebook APP ID
-	private static String FACEBOOK_APP_ID = "344736635684076"; // Replace your
-																// App ID here
+	//private static String FACEBOOK_APP_ID = "344736635684076"; // Replace your App ID here
+	
 	private UiLifecycleHelper uiHelper;
 
 	private static final List<String> PERMISSIONS = Arrays.asList("publish_stream");
 	// private static final List<String> PERMISSIONS =
 	// Arrays.asList("publish_actions","email");
-
+	
 	// List<String> PERMISSIONS;
 
 	// Instance of Facebook Class
