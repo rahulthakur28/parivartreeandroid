@@ -747,14 +747,26 @@ public class HttpConnectionUtils {
 	}public static String getMobileVerifyProfileUpdateResponse(String userhash, String smscode,String mobileno, String userid, String url) {
 
 		// Building post parameters key and value pair
-		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(4);
 		nameValuePair.add(new BasicNameValuePair("userhash", userhash));
 		nameValuePair.add(new BasicNameValuePair("smscode", smscode));
 		nameValuePair.add(new BasicNameValuePair("mobile", mobileno));
 		nameValuePair.add(new BasicNameValuePair("userid", userid));
 		return processHTTPPostExecution(url, nameValuePair);
-	}
-	
+	}public static String getRefineSearchResponse(String nodeid, String relationid,String email, String firstname,String lastname,String locality,String mobile,String community, String url) {
+
+		// Building post parameters key and value pair
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(8);
+		nameValuePair.add(new BasicNameValuePair("nodeid", nodeid));
+		nameValuePair.add(new BasicNameValuePair("relationid", relationid));
+		nameValuePair.add(new BasicNameValuePair("email", email));
+		nameValuePair.add(new BasicNameValuePair("firstname", firstname));
+		nameValuePair.add(new BasicNameValuePair("lastname", lastname));
+		nameValuePair.add(new BasicNameValuePair("locality", locality));
+		nameValuePair.add(new BasicNameValuePair("mobile", mobile));
+		nameValuePair.add(new BasicNameValuePair("community", community));
+		return processHTTPPostExecution(url, nameValuePair);
+	}	
 	// not calling
 	public static String getPlacesResponse(String inputText, String key) {	 
 		String responseBody = "";
@@ -824,15 +836,6 @@ public class HttpConnectionUtils {
 		BasicHttpParams httpParams = new BasicHttpParams();
 	    HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT);
 	    ((DefaultHttpClient) httpClient).setParams(httpParams);
-		
-//		HttpParams params = new BasicHttpParams();
-//		HttpConnectionParams.setConnectionTimeout(params, 10000);
-//	    HttpConnectionParams.setSoTimeout(params, 10000); // 1 minute
-//	    httpPost.setParams(params);
-//	    Log.d("connection timeout", String.valueOf(HttpConnectionParams
-//	    .getConnectionTimeout(params)));
-//	    Log.d("socket timeout",
-//	    String.valueOf(HttpConnectionParams.getSoTimeout(params)));
 	     
 		CookieStore cookieStore = new BasicCookieStore();
 		HttpContext httpContext = new BasicHttpContext();
@@ -883,6 +886,55 @@ public class HttpConnectionUtils {
 
 	
 	// get call
+	public static String getAllCommunityResponse(String url) {
+		String responseBody = "";
+		HttpClient httpClient = HttpClientSingleTon.getInstance();
+		// HttpPost httpPost = new HttpPost(url);
+		// HttpGet httpGet = new HttpGet(url);
+
+		CookieStore cookieStore = new BasicCookieStore();
+		HttpContext httpContext = new BasicHttpContext();
+		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+
+		HttpGet httpGet = new HttpGet(url);
+		Log.d(TAG, "relation auto email - " + url);
+
+		HttpResponse response = null;
+
+		try {
+			response = httpClient.execute(httpGet);
+		}catch (ConnectTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			responseBody = "timeout";
+			e.printStackTrace();
+		}
+		catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			if (response != null && response.getEntity() != null) {
+				responseBody = EntityUtils.toString(response.getEntity());
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return responseBody;
+	}
 	public static String autoGenerateEmailResponse(String url) {
 		String responseBody = "";
 		HttpClient httpClient = HttpClientSingleTon.getInstance();
@@ -931,5 +983,61 @@ public class HttpConnectionUtils {
 		}
 
 		return responseBody;
+	}
+	public static String getAlbumListResponse(String uid, String nodeid,
+			String url) {
+		
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("uid", uid));
+		nameValuePair.add(new BasicNameValuePair("nodeid", nodeid));
+
+		return processHTTPPostExecution(url, nameValuePair);		
+	}
+
+	public static String getPhotoListResponse(String albumhash, String loggeduid, String url){
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("albumhash", albumhash));
+		nameValuePair.add(new BasicNameValuePair("uid", loggeduid));
+
+		return processHTTPPostExecution(url, nameValuePair);
+	}
+	
+	public static String deleteAlbum(String loggeduid, String albumhash, String url){
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("albumhash", albumhash));
+		nameValuePair.add(new BasicNameValuePair("uid", loggeduid));
+
+		return processHTTPPostExecution(url, nameValuePair);
+	}
+	
+	public static String editAlbumDescription(String name, String description, String albumhash, String url){
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("albumhash", albumhash));
+		nameValuePair.add(new BasicNameValuePair("name", name));
+		nameValuePair.add(new BasicNameValuePair("description", description));
+
+		return processHTTPPostExecution(url, nameValuePair);
+	}
+	
+	public static String createAlbumResponse(String uid, String name, String description, String access,
+			String[] photos,  String url){
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("uid", uid));
+		nameValuePair.add(new BasicNameValuePair("name", name));
+		nameValuePair.add(new BasicNameValuePair("description", description));
+		nameValuePair.add(new BasicNameValuePair("access", access));
+		for(int j=0;j<photos.length;j++){
+			nameValuePair.add(new BasicNameValuePair("photos["+j+"]", photos[j]));
+		}
+
+		return processHTTPPostExecution(url, nameValuePair);
+	}
+	
+	public static String getVideoListResponse(String albumhash, String loggeduid, String url){
+		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+		nameValuePair.add(new BasicNameValuePair("albumhash", albumhash));
+		nameValuePair.add(new BasicNameValuePair("uid", loggeduid));
+
+		return processHTTPPostExecution(url, nameValuePair);
 	}
 }

@@ -75,7 +75,9 @@
                 android:hint="event date"
                  android:padding="5dp"
                 android:background="@drawable/edit_text_background"
-                android:editable="false"/>
+                android:editable="false"
+                android:clickable="true"
+                />
             <!-- <DatePicker
                 android:id="@+id/datePickercreate"
                 android:layout_width="0dp"

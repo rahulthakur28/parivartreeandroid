@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -81,14 +80,12 @@ EditText searchNameEdit;
 		searchNameEdit.clearFocus();
 
 		searchList.setOnItemClickListener(new OnItemClickListener() {
-
+			
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int spos, long dpos) {
 				// TODO Auto-generated method stub
-				
-				MyObject objectItem = ObjectItemData.get(spos);
-
 				searchNameEdit.setText("");
+				MyObject objectItem = ObjectItemData.get(spos);
 				if (!(objectItem.objectName.trim()).equals("No results found")) {
 					sharedPreferencesEditor.putString("node_id", objectItem.objectId);
 					sharedPreferencesEditor.commit();
@@ -108,28 +105,31 @@ EditText searchNameEdit;
 			@Override
 			public void onTextChanged(CharSequence s, int start, int count, int after) {
 				// TODO Auto-generated method stub
-				boolean bool = new ConDetect(getActivity()).isOnline();
-				if (bool) {
-					if (searchUserTask != null) {
-						searchUserTask.cancel(true);
-					}
-					Log.d("Search user", "AsyncTask calling");
-					searchUserTask = new SearchUserTask();
-					searchUserTask.execute(s.toString(), userId);
-					/*
-					Handler handler = new Handler();
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							if (searchUserTask.getStatus() == AsyncTask.Status.RUNNING){
-								searchUserTask.cancel(true);
-							}
+				if((searchNameEdit.getText().toString().trim().length()) > 0){
+					boolean bool = new ConDetect(getActivity()).isOnline();
+					if (bool) {
+						if (searchUserTask != null) {
+							searchUserTask.cancel(true);
 						}
-					}, 10000);
-					*/
-				} else {
-					//Toast.makeText(getActivity(), "No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-					Crouton.makeText(activity, "No internet connection found", Style.ALERT).show();
+						Log.d("Search user", "AsyncTask calling");
+						searchUserTask = new SearchUserTask();
+						searchUserTask.execute(s.toString(), userId);
+						/*
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (searchUserTask.getStatus() == AsyncTask.Status.RUNNING){
+									searchUserTask.cancel(true);
+								}
+							}
+						}, 10000);
+						*/
+					} else {
+						//Toast.makeText(getActivity(), "No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+						Crouton.makeText(activity, "No internet connection found", Style.ALERT).show();
+					}
+					
 				}
 			}
 			
@@ -194,7 +194,7 @@ EditText searchNameEdit;
 			if(response.equals("timeout")) {
 				if(searchTaskProcessCalledCount == 0) {
 					
-					Crouton.makeText(activity, "Your network connection is very slow", Style.ALERT).show();
+					Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 				}
 			} else {
 				Log.i("event list Response ", response);
@@ -208,18 +208,25 @@ EditText searchNameEdit;
 						if (c.has("result")) {
 							String result = c.getString("result");
 							if (result.equals("Success")) {
+								int gender=1,deceased=0;
+								if (c.has("gender")) {
+									gender = c.getInt("gender");
+								}
+								if (c.has("deceased")) {
+									deceased = c.getInt("deceased");
+								}
 								String inviteUserId = c.getString("id");
 								String name = c.getString("firstname") + " " + c.getString("lastname");
 								String status = c.getString("parameter");
 								String fullname = name;
 								if(status.equalsIgnoreCase("Unhide")){
-									ObjectItemData.add(new MyObject(fullname, inviteUserId, status));
+									ObjectItemData.add(new MyObject(fullname, inviteUserId, status, gender, deceased));
 								}else{
-									ObjectItemData.add(new MyObject(fullname, inviteUserId, "NA"));
+									ObjectItemData.add(new MyObject(fullname, inviteUserId, "NA", gender, deceased));
 								}
 							}
 						} else {
-							ObjectItemData.add(new MyObject("No results found", null, "NA"));
+							ObjectItemData.add(new MyObject("No results found", null, "NA",0,0));
 						}
 
 					}
@@ -253,7 +260,7 @@ EditText searchNameEdit;
 								"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 										+ tempStack.getMethodName());
 					}
-					Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+					Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 					Log.d(TAG, "Invalid Server content!!");
 				}
 			}
@@ -264,16 +271,10 @@ EditText searchNameEdit;
 			super.onCancelled(result);
 			searchTaskProcessCalledCount--;
 			Log.e(TAG, "SearchUserTask processCalledCount decreased - " + searchTaskProcessCalledCount);
-			
 			if(searchTaskProcessCalledCount == 0) {
-				
-				Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
-			}
-			
-			
-			
-			//Crouton.
-			
+				Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
+			}			
+			//Crouton.			
 		}
 	}
 

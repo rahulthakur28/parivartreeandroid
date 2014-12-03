@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,8 +35,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.parivartree.adapters.NavDrawerListAdapter;
@@ -55,6 +58,7 @@ import com.parivartree.fragments.InviteFragment;
 import com.parivartree.fragments.MessageFragment;
 import com.parivartree.fragments.NotificationFragment;
 import com.parivartree.fragments.PagesFragment;
+import com.parivartree.fragments.PhotosFragment;
 import com.parivartree.fragments.ProfileFragment;
 import com.parivartree.fragments.RelationFragment;
 import com.parivartree.fragments.SearchCreateRelationFragment;
@@ -74,21 +78,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
-
+	
 	// Action Bar items
 	ImageView imageView1, imageView2, imageView3, imageView4;
-
+	
 	private Fragment fragment, currentFragment;
-
+	
 	// nav drawer title
 	private CharSequence mDrawerTitle;
-
+	
 	// used to store app title
 	private CharSequence mTitle;
 	// slide menu items
 	private String[] navMenuTitles;
 	private TypedArray navMenuIcons;
-
+	
 	private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter adapter;
 	private Activity activity;
@@ -99,6 +103,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	public File cameraImagePath = null;
 	FragmentManager fragmentManager;
 	ProgressDialog pDialog;
+	FrameLayout notificationframelayout;
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -107,11 +113,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		Mint.initAndStartSession(this, "2a8a05f6");
 		
 		ActionBar actionBar = this.getActionBar();
-
+		
 		// add the custom view to the action bar
 		actionBar.setCustomView(R.layout.actionbar_view);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
 				| ActionBar.DISPLAY_SHOW_HOME);
+		notificationframelayout = (FrameLayout) actionBar.getCustomView().findViewById(
+				R.id.notificationframe);
 		imageView1 = (ImageView) actionBar.getCustomView().findViewById(
 				R.id.imageView1);
 		imageView2 = (ImageView) actionBar.getCustomView().findViewById(
@@ -120,8 +128,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				R.id.imageView3);
 		imageView4 = (ImageView) actionBar.getCustomView().findViewById(
 				R.id.imageView4);
-		
-		imageView1.setOnClickListener(this);
+		notificationframelayout.setOnClickListener(this);
+		//imageView1.setOnClickListener(this);
 		imageView2.setOnClickListener(this);
 		imageView3.setOnClickListener(this);
 		imageView4.setOnClickListener(this);
@@ -182,18 +190,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		navMenuIcons.recycle();
 
 		mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
-
+		
 		// setting the nav drawer list adapter
 		adapter = new NavDrawerListAdapter(getApplicationContext(),
 				navDrawerItems);
 		mDrawerList.setAdapter(adapter);
-
+		
 		// enabling action bar app icon and behaving it as toggle button
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 		getActionBar().setBackgroundDrawable(
 				getResources().getDrawable(R.drawable.action_bar_background));
 
+		Log.d(TAG, "Display Metrics - " + getResources().getDisplayMetrics().density);
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
 				R.drawable.ic_drawer, // nav
 										// menu
@@ -340,6 +349,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			sharedPreferencesEditor.commit();
 			fragment = new ViewPhotosFragment();
 			break;
+			
+//			sharedPreferencesEditor = sharedPreferences.edit();
+//			sharedPreferencesEditor.putString("node_id",
+//					sharedPreferences.getString("user_id", "0"));
+//			sharedPreferencesEditor.commit();
+//			fragment = new PhotosFragment();
+//			break;
 		case 4:
 			sharedPreferencesEditor = sharedPreferences.edit();
 			sharedPreferencesEditor.putString("node_id",
@@ -387,10 +403,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							sharedPreferencesEditor = sharedPreferences.edit();
 							sharedPreferencesEditor.clear();
 							sharedPreferencesEditor.commit();
+							com.facebook.Session session = com.facebook.Session.getActiveSession();
+					        if(session != null) 
+					        	session.closeAndClearTokenInformation();
+					        
 							startActivity(signout);
 						}
 					});
-
+			
 			// Setting Negative "NO" Button
 			alertDialog.setNegativeButton("NO",
 					new DialogInterface.OnClickListener() {
@@ -399,16 +419,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							dialog.cancel();
 						}
 					});
-
+			
 			// Showing Alert Message
 			alertDialog.show();
 			break;
-
+			
 		default:
 			break;
-
+			
 		}
-
+		
 		// any section accessed through the sliding bar will show main user's
 		// data
 		sharedPreferencesEditor.putString("node_id",
@@ -418,7 +438,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (fragment != null) {
 			FragmentManager fragmentManager = getSupportFragmentManager();
 			// fragmentManager.beginTransaction().addToBackStack(null).commit();
-
+			
 			fragmentManager.beginTransaction()
 					// Add this transaction to the back stack
 					.addToBackStack(null)
@@ -434,6 +454,50 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// error in creating fragment
 			Log.e("MainActivity", "Error in creating fragment");
 		}
+		
+		boolean showInfoLayout = false;
+		if(showInfoLayout) {
+			
+			// TODO add info layout for slide menu
+			RelativeLayout slideInfoLayout = new RelativeLayout(this);
+			slideInfoLayout.setBackgroundResource(R.color.pt_dark_overlay);
+			
+			ImageView homeClickImage = new ImageView(this);
+			homeClickImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_click_menus));
+			
+			RelativeLayout.LayoutParams homeClickImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			homeClickImageLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+			homeClickImage.setLayoutParams(homeClickImageLayoutParams);
+			
+			ImageView slideMenuImage = new ImageView(this);
+			slideMenuImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_image));
+			
+			RelativeLayout.LayoutParams slideMenuImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			slideMenuImageLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+			slideMenuImage.setLayoutParams(slideMenuImageLayoutParams);
+			
+			slideInfoLayout.addView(homeClickImage);
+			slideInfoLayout.addView(slideMenuImage);
+			
+			/*
+			// TODO add info layout for node view
+			RelativeLayout infoLayout = new RelativeLayout(this);
+			infoLayout.setBackgroundResource(R.color.pt_dark_overlay);
+			
+			ImageView infoImage = new ImageView(this);
+			infoImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_image));
+			RelativeLayout.LayoutParams infoImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+			infoImageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+			infoImage.setLayoutParams(infoImageLayoutParams);
+			
+			infoLayout.addView(infoImage);
+			*/
+			
+			// TODO add views to the main layout
+			//this.addContentView(infoLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			this.addContentView(slideInfoLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+		}
+		
 	}
 
 	@Override
@@ -493,8 +557,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			fragment = new ViewPhotosFragment();
 		}  else if (fragmentName.equals("SearchCreateRelationFragment")) {
 			fragment = new SearchCreateRelationFragment();
+		}  else if (fragmentName.equals("CommunityFragment")) {
+			fragment = new CommunityFragment();
 		}
-
 		// change to the new fragment
 		if (fragment != null) {
 			FragmentManager fragmentManager = getSupportFragmentManager();
@@ -563,7 +628,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if (v.getId() == R.id.imageView1) {
+		if (v.getId() == R.id.notificationframe) {
 			Log.d("ActionBar", "Image View 1 clicked");
 			(MainActivity.this).changeFragment("NotificationsFragment");
 			// TODO notifications

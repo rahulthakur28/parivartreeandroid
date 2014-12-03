@@ -1,7 +1,5 @@
 package com.parivartree;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class LoginMainActivity extends Activity implements OnClickListener {
 

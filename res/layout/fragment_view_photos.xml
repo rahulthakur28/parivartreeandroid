@@ -61,9 +61,12 @@
     android:id="@+id/grid_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:numColumns="auto_fit"
+    android:numColumns="3"
     android:gravity="center"
+    android:horizontalSpacing="1dip"
+    android:verticalSpacing="1dip"
+    android:padding="2dip"
     android:stretchMode="columnWidth"
-    android:background="#000000"> 
+    android:background="@drawable/parivar_mobile_bg_3_0"> 
 </GridView>
 </LinearLayout>

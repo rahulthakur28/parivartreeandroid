@@ -13,15 +13,16 @@
     <color name="pt_user">#ffdbc9</color>
     <color name="ll_black">#000000</color>
     <color name="pt_gold">#ffc200</color>
-     <color name="pt_lightblue">#CC66FF</color>
-     <color name="pt_ashgrey">#726b68</color>
-     <color name="pt_ligthorange">#ed7202</color>
-     <color name="pt_lavender">#E6E6FA</color>
-     <color name="pt_maroon">#800000</color>
+    <color name="pt_lightblue">#CC66FF</color>
+    <color name="pt_ashgrey">#726b68</color>
+    <color name="pt_ligthorange">#ed7202</color>
+    <color name="pt_lavender">#E6E6FA</color>
+    <color name="pt_maroon">#800000</color>
     <color name="pt_header">#162932</color>
-        <color name="pt_bright_blue">#036fa0</color>
+    <color name="pt_bright_blue">#036fa0</color>
     <color name="pt_menu_background">#152831</color>
-    
+    <color name="pt_dark_overlay">#B3000000</color>
+     <color name="pt_highdark_overlay">#DD000000</color>
 
     <!-- Navigation Slider menu -->
     <color name="bright_orange">#f75f2b</color>

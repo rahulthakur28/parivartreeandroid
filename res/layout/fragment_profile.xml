@@ -568,29 +568,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <!--
-		           <RelativeLayout
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:background="@color/pt_grey"
-		            android:padding="5dp" >
-		
-		            <TextView
-		                android:id="@+id/textView17"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-		                android:textSize="12sp"
-		                android:textColor="@color/pt_blue"
-		                android:textStyle="bold"
-		                android:text="Basic Info" />
-		
-		        </RelativeLayout>
-                -->
-
                 <com.parivartree.customviews.HorizontalListView
                     android:id="@+id/horizontalScrollViewFamilyMembers"
                     android:layout_width="wrap_content"
-                    android:layout_height="150dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="200dp"
                     android:adjustViewBounds="true"
                     android:divider="#878787" />
             </LinearLayout>
@@ -604,14 +586,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:background="@drawable/album" />
-                <!--
-      <ImageView
-                    android:id="@+id/imageView25"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/parivar_mobile_profile_edit_small" />
-                -->
 
             </RelativeLayout>
 
@@ -639,7 +613,7 @@
 		        </RelativeLayout>
                 -->
 
-                <HorizontalScrollView
+               <!-- <HorizontalScrollView
                     android:id="@+id/horizontalScrollView1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
@@ -685,7 +659,14 @@
                             android:layout_marginRight="10dp"
                             android:src="@drawable/sample_post_image_150" />
                     </LinearLayout>
-                </HorizontalScrollView>
+                </HorizontalScrollView>-->
+                                <com.parivartree.customviews.HorizontalListView
+                    android:id="@+id/horizontalScrollViewAlbums"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="150dp"
+                    android:adjustViewBounds="true"
+                    android:divider="#878787" />
             </LinearLayout>
 
             <Button

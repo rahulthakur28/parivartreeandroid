@@ -11,26 +11,29 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-import android.widget.RelativeLayout.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.MainActivity;
 import com.parivartree.R;
-import com.parivartree.adapters.AutoCompleteRelationArrayAdapter.CreateRelationTask;
+import com.parivartree.helpers.CroutonMessage;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.helpers.RectangularImageView;
+import com.parivartree.models.SearchRecordRelation;
 import com.parivartree.models.SearchRecords;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -40,7 +43,7 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 	Activity activity;
 	String searchName, recommendNodeId, myRelationId,userId;
 	ArrayList<SearchRecords> searchRecordsArrayList;
-	private ArrayList<HashMap<String, String>> relationRecordsArrayList;
+	private ArrayList<SearchRecordRelation> relationRecordsArrayList;
 	LayoutInflater inflater;
 	int inviteType = 0;
 	private SharedPreferences sharedPreferences;
@@ -99,6 +102,10 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			// This must be done for performance reasons
 			holder = new Holder();
 			holder.searchimageview = (RectangularImageView) convertView.findViewById(R.id.searchimageview);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)(activity.getResources().getDisplayMetrics().density * 90), (int)(activity.getResources().getDisplayMetrics().density * 90));
+			params.gravity = Gravity.CENTER_HORIZONTAL;
+			holder.searchimageview.setLayoutParams(params);
+			
 			holder.textSearchName = (TextView) convertView.findViewById(R.id.textsearchname);
 			holder.textsearchlocation = (TextView) convertView.findViewById(R.id.textsearchlocation);
 			holder.textSearchRelationTitle = (TextView) convertView.findViewById(R.id.textsearchrelationtitle);
@@ -117,23 +124,40 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 		int deceased = searchRecordsArrayList.get(position).getDeceased();
 		int connected = searchRecordsArrayList.get(position).getConnected();
 		int invite = searchRecordsArrayList.get(position).getInvite();
+		
+			
 		// get image
-		if (deceased == 1) {
+		if ((deceased == 1) && (gender == 1)) {
+			
 			holder.searchimageview.setBorderColor(activity.getResources().getColor(R.color.pt_gold));
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.male), 10000);
+			holder.searchimageview.invalidate();
 
-		} else if (gender == 1) {
+			
+		} else if ((deceased == 1) && (gender == 2)) {
+			
+			holder.searchimageview.setBorderColor(activity.getResources().getColor(R.color.pt_gold));
+			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
+					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
+							.getDrawable(R.drawable.female), 10000);	
+			
+			
+		}else if (gender == 1) {
 			holder.searchimageview.setBorderColor(activity.getResources().getColor(R.color.pt_blue));
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.male), 10000);
+			
+			
 		} else if (gender == 2) {
 			holder.searchimageview.setBorderColor(Color.MAGENTA);
 			UrlImageViewHelper.setUrlDrawable(holder.searchimageview,
 					"https://www.parivartree.com/profileimages/thumbs/" + id + "PROFILE.jpeg", activity.getResources()
 							.getDrawable(R.drawable.female), 10000);
+			
+			
 		}
 		holder.textSearchName
 				.setText((searchRecordsArrayList.get(position).getFirstname() + " " + searchRecordsArrayList.get(
@@ -153,15 +177,21 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 		}
 		holder.textsearchlocation.setText(location);
 		
+		
+		Log.d("  ##3422222223#  ","Position  : "+position);
+		relationRecordsArrayList = new ArrayList<SearchRecordRelation>();
 		relationRecordsArrayList = searchRecordsArrayList.get(position).getRelationRecords();
+		//Log.d("  ##------#  ","list size  : "+relationRecordsArrayList.size());
 		if((relationRecordsArrayList !=null) && (relationRecordsArrayList.size() > 0)){
+			Log.d("  ###345#  ","Position  : "+position);
 			holder.textSearchRelationTitle.setVisibility(View.VISIBLE);
 			holder.textsearchrelation.setVisibility(View.VISIBLE);
-			for(HashMap<String, String> hash : relationRecordsArrayList){
-				relation = hash.get("name")+" ("+hash.get("relationname")+") ";
+			//StringBuilder relationString = new StringBuilder();
+			for(SearchRecordRelation hash : relationRecordsArrayList){
+				relation = hash.getName()+" ("+hash.getRelationname()+") ";
 				relationString.append(relation);
 			}
-			
+			Log.d("  #####  ","relation List"+relationString);
 			holder.textsearchrelation.setText(relationString.toString());
 			
 		}else{
@@ -172,23 +202,30 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 		if(connected == 1){
 			holder.searchInviteBtn.setText("Already Connected");
 			holder.searchInviteBtn.setTextColor(activity.getResources().getColor(R.color.ll_black));
+			holder.searchInviteBtn.setTypeface(null, Typeface.NORMAL);
 			holder.searchInviteBtn.setBackgroundColor(activity.getResources().getColor(R.color.pt_grey));
+			holder.searchInviteBtn.setClickable(false);			
 		}else if(invite == 1){
 			holder.searchInviteBtn.setText("Already Invited");
 			holder.searchInviteBtn.setTextColor(activity.getResources().getColor(R.color.ll_black));
+			holder.searchInviteBtn.setTypeface(null, Typeface.NORMAL);
 			holder.searchInviteBtn.setBackgroundColor(activity.getResources().getColor(R.color.pt_grey));
+			holder.searchInviteBtn.setClickable(false);
 		}else if(recommendNodeId.equals(userId)){
 			holder.searchInviteBtn.setText("Invite");
+			holder.searchInviteBtn.setTextColor(activity.getResources().getColor(R.color.pt_white));
+			holder.searchInviteBtn.setTypeface(null, Typeface.BOLD);
+			holder.searchInviteBtn.setBackgroundResource((R.drawable.rounded_corners_blue));
+			holder.searchInviteBtn.setClickable(true);
 			holder.searchInviteBtn.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
-					Crouton.makeText(activity, "You click  for invite", Style.ALERT).show();
-
 					String sessionname = sharedPreferences.getString("sessionname", "Not Available");
 					userName = (searchRecordsArrayList.get(position).getFirstname())+" "+(searchRecordsArrayList.get(position).getLastname());
-
+					Log.d("00034340000",""+(searchRecordsArrayList.get(position).getUserid())+","+ userId+","+ myRelationId+","+
+							sessionname+","+ userId);
 					final CreateRelationTask cRT1 = new CreateRelationTask();
 					cRT1.execute("exist", ""+(searchRecordsArrayList.get(position).getUserid()), userId, myRelationId,
 							sessionname, userId);
@@ -204,18 +241,23 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 				}
 			});
 		}else if(!recommendNodeId.equals(userId)){
-			holder.searchInviteBtn.setText("Recommend");	
+			holder.searchInviteBtn.setText("Invite");
+			holder.searchInviteBtn.setTextColor(activity.getResources().getColor(R.color.pt_white));
+			holder.searchInviteBtn.setBackgroundResource((R.drawable.rounded_corners_blue));
+			holder.searchInviteBtn.setClickable(true);
 			holder.searchInviteBtn.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
-					Crouton.makeText(activity, "You click for recommend", Style.ALERT).show();
 					
 					String sessionname = sharedPreferences.getString("sessionname", "Not Available");
 					userName = (searchRecordsArrayList.get(position).getFirstname())+" "+(searchRecordsArrayList.get(position).getLastname());
 					
 					final CreateRelationTask cRT2 = new CreateRelationTask();
+					Log.d("0000000000000", ""+(searchRecordsArrayList.get(position).getUserid())+","+ recommendNodeId+","+myRelationId+","+
+							sessionname+","+ ((searchRecordsArrayList.get(position).getFirstname())+" "+(searchRecordsArrayList.get(position).getLastname()))+","+ userId);
+					
 					cRT2.execute("others", ""+(searchRecordsArrayList.get(position).getUserid()), recommendNodeId, myRelationId,
 							sessionname, ((searchRecordsArrayList.get(position).getFirstname())+" "+(searchRecordsArrayList.get(position).getLastname())), userId);
 					Handler handler = new Handler();
@@ -231,7 +273,6 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			});
 		}
 		
-
 		return convertView;
 	}
 
@@ -289,6 +330,10 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 				JSONObject loginResponseObject = new JSONObject(response);
 				int responseResult = loginResponseObject.getInt("AuthenticationStatus");
 				String result = loginResponseObject.getString("Status");
+				int Userstatus = 1;
+				if(loginResponseObject.has("Userstatus")){
+					Userstatus = loginResponseObject.getInt("Userstatus");
+				}
 				if ((result.equals("Success")) || (responseResult == 1)) {
 					// TODO store the login response and
 					sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
@@ -297,15 +342,21 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 					String nodeName = userName;
 					if(request_type == 1) {				
 								//AutoCompleteRelationArrayAdapter.this.userName;
-						Crouton.makeText(activity, "You have successfully invited " + nodeName + " to your family tree.", Style.INFO).show();
-					} else if (request_type == 2) {
-						String recommendedUserName = sharedPreferences.getString("node_first_name", " ") + " " + sharedPreferences.getString("node_last_name", " ");
-						Crouton.makeText(activity, "You have successfully recommended " + nodeName + " to " + recommendedUserName + " for " + relationship_type + " relation.", Style.INFO).show();
+						String croutonmsg = "You have successfully invited " + nodeName + " to your family tree.You will have a complete access to further connections once " + nodeName + " accepts your invitation";
+						CroutonMessage.showCroutonInfo(activity, croutonmsg, 10000);
+					}  else if ((request_type == 2)  && (Userstatus == 0)) {
+		
+						String croutonmsg = "You have successfully invited "+ nodeName +" to join your family. You will have a complete access to further connections once "+ nodeName +" accepts your invitation";
+						CroutonMessage.showCroutonInfo(activity, croutonmsg, 10000);
+		
+					}else if (request_type == 2) {
+						String recommendedUserName = sharedPreferences.getString("node_first_name", " ") + " " + sharedPreferences.getString("node_last_name", " ");	
+						String croutonmsg = recommendedUserName +" has been notified to invite "+ nodeName +" as "+relationship_type;
+						CroutonMessage.showCroutonInfo(activity, croutonmsg, 10000);
 					}
-					//Toast.makeText(mContext, "You have successfully invited ", Toast.LENGTH_SHORT).show();
 					((MainActivity) activity).changeFragment("HomeFragment");
 				} else if (responseResult == 2) {
-					Crouton.makeText(activity, "Email id is invalid. Please try again... ", Style.INFO).show();
+					Crouton.makeText(activity, "You already invited this person ", Style.INFO).show();
 					//Toast.makeText(mContext, "Email ID is wrong Please Try again", Toast.LENGTH_LONG).show();
 				} else if (responseResult == 5) {
 					Crouton.makeText(activity, "Email ID is already a parivartree account, use search user to invite", Style.INFO).show();
@@ -320,7 +371,8 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 			}
 		}
 		@Override

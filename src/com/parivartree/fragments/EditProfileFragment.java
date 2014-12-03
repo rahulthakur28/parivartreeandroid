@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -43,6 +44,7 @@ import com.parivartree.R;
 import com.parivartree.adapters.CustomDropDownAdapter;
 import com.parivartree.adapters.LocationHintAdapter;
 import com.parivartree.helpers.ConDetect;
+import com.parivartree.helpers.CroutonMessage;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.SpinnerItem;
 import com.parivartree.models.UserProfile;
@@ -74,7 +76,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 	Editor sharedPreferencesEditor;
 	String userId, nodeId;
 	UserProfile changedUserProfile;
-
+	boolean startLocationFlag = true;
 	ArrayList<SpinnerItem> religionList, communityList, gothraList;
 	ArrayList<String> RelationStatusList;
 	String mobileUid,mobileNumber, mobileCode, successHash,croutonmsg;
@@ -181,6 +183,14 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
 		// provide hinting for the location fields from Google Places API
+		editTextLocality.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				startLocationFlag = false;
+			}
+		});
 		locationHints = new ArrayList<String>();
 		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
 		editTextLocality.setAdapter(locationHintAdpter);
@@ -196,9 +206,16 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 						searchPlacesTask.cancel(true);
 					}
 					Log.d("Search user", "AsyncTask calling");
-					searchPlacesTask = new SearchPlacesTask();
-					searchPlacesTask.execute(editTextLocality.getText().toString().trim(),
-							getResources().getString(R.string.places_key));
+					if(startLocationFlag){
+						searchPlacesTask = new SearchPlacesTask();
+						searchPlacesTask.execute(editTextLocality.getText().toString().trim(),
+								getResources().getString(R.string.places_key));
+					}else{
+						searchPlacesTask.cancel(true);
+						startLocationFlag = true;
+					}
+					
+					
 					Handler handler = new Handler();
 					handler.postDelayed(new Runnable() {
 						@Override
@@ -211,8 +228,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				} else {
 					Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
+				
 			}
-
+			
 			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 				// TODO Auto-generated method stub
@@ -231,7 +249,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 	 public void onPause() {
 	  super.onPause();
 	  
-	  if ((pDialog != null) && pDialog.isShowing())
+	  if ((pDialog != null))
 	   pDialog.dismiss();
 	  pDialog = null;
 	     
@@ -241,7 +259,14 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 			// pDialog = new ProgressDialog(activity);
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
@@ -364,13 +389,13 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					
 					spinnerRelationStatus.setSelection(spinPosition);
 					for (int i = 0; i < religionList.size(); i++) {
-						if ((religionList.get(i).getValue()).equals(userProfile.getReligion())) {
+						if ((religionList.get(i).getValue()).equals(userProfile.getReligion()) || (religionList.get(i).getValue()).equals("NA")) {
 							Log.d("Religion ------", "userProfile.getReligion()" + "," + religionList.get(i).getValue());
 							spinnerReligion.setSelection(i);
 						}
 					}
 					for (int i = 0; i < communityList.size(); i++) {
-						if ((communityList.get(i).getValue()).equals(userProfile.getCommunity())) {
+						if ((communityList.get(i).getValue()).equals(userProfile.getCommunity()) || (communityList.get(i).getValue()).equals("NA")) {
 							spinnerCommunity.setSelection(i);
 						}
 					}
@@ -378,7 +403,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 					}
 					for (int i = 0; i < gothraList.size(); i++) {
-						if ((gothraList.get(i).getValue()).equals(userProfile.getGothra())) {
+						if ((gothraList.get(i).getValue()).equals(userProfile.getGothra()) || (gothraList.get(i).getValue()).equals("NA")) {
 							spinnerGothra.setSelection(i);
 						}
 					}
@@ -392,7 +417,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -403,7 +429,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -413,7 +439,14 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 			// pDialog = new ProgressDialog(activity);
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
@@ -449,20 +482,18 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					// TODO store the login response and
 					JSONArray data = loginResponseObject.getJSONArray("data");
 					JSONObject tempObject;
+					SpinnerItem tempItem = new SpinnerItem();
+					tempItem.setValue("Select a Religion");
+					religionList.add(tempItem);
 					for (int i = 0; i < data.length(); i++) {
-						SpinnerItem tempItem = new SpinnerItem();
+						tempItem = new SpinnerItem();
 						tempObject = data.getJSONObject(i);
 						tempItem.setId(tempObject.getInt("id"));
 						tempItem.setValue(tempObject.getString("name"));
-						// if(religion.length() > 0 &&
-						// religion.equals(tempObject.getString("name")) ){
-						//
-						// religionPos=i;
-						// }
 						religionList.add(tempItem);
 					}
 					CustomDropDownAdapter religionAdapter = new CustomDropDownAdapter(context, religionList);
-					Log.d(TAG, "communityAdapter Count religion : " + religionAdapter.getCount());
+					Log.d(TAG, "religionAdapter Count religion : " + religionAdapter.getCount());
 					spinnerReligion.setAdapter(religionAdapter);
 					spinnerReligion.setSelection(religionPos);
 				}
@@ -475,7 +506,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -486,7 +518,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -496,7 +528,14 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 			// pDialog = new ProgressDialog(activity);
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
@@ -514,7 +553,6 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 		@Override
 		protected void onPostExecute(String response) {
-			// TODO Auto-generated method stub
 			super.onPostExecute(response);
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
@@ -534,21 +572,18 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					JSONObject tempObject;
 					communityPos = 0;
 					communityList.clear();
+					SpinnerItem tempItem = new SpinnerItem();
+					tempItem.setValue("Select a Community");
+					communityList.add(tempItem);
 					for (int i = 0; i < data.length(); i++) {
-						SpinnerItem tempItem = new SpinnerItem();
+						tempItem = new SpinnerItem();
 						tempObject = data.getJSONObject(i);
 						tempItem.setId(tempObject.getInt("id"));
 						tempItem.setValue(tempObject.getString("name"));
-						// if(community.length() > 0 &&
-						// community.equals(tempObject.getString("name")) ){
-						// communityPos=i;
-						// }
-
 						communityList.add(tempItem);
 					}
 					if (data.length() == 0) {
-						SpinnerItem tempItem = new SpinnerItem();
-
+						 tempItem = new SpinnerItem();
 						tempItem.setId(0);
 						tempItem.setValue("Others");
 						communityList.add(tempItem);
@@ -570,7 +605,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -581,7 +617,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -591,7 +627,14 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 			// pDialog = new ProgressDialog(activity);
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Loading...");
 			pDialog.setIndeterminate(false);
@@ -622,8 +665,11 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 					// TODO store the login response and
 					JSONArray data = loginResponseObject.getJSONArray("data");
 					JSONObject tempObject;
+					SpinnerItem tempItem = new SpinnerItem();
+					tempItem.setValue("Select a Gothra");
+					gothraList.add(tempItem);
 					for (int i = 0; i < data.length(); i++) {
-						SpinnerItem tempItem = new SpinnerItem();
+						tempItem = new SpinnerItem();
 						tempObject = data.getJSONObject(i);
 						tempItem.setId(tempObject.getInt("id"));
 						tempItem.setValue(tempObject.getString("name"));
@@ -659,7 +705,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -670,10 +717,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
-
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -705,9 +751,21 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 				changedUserProfile.setMaritalStatus("NA");
 			}
 			changedUserProfile.setWeddingDate(editTextWeddingDate.getText().toString().trim());
-			changedUserProfile.setReligion(religionList.get(spinnerReligion.getSelectedItemPosition()).getValue());
-			changedUserProfile.setCommunity(communityList.get(spinnerCommunity.getSelectedItemPosition()).getValue());
-			changedUserProfile.setGothra(gothraList.get(spinnerGothra.getSelectedItemPosition()).getValue());
+			if((religionList.get(spinnerReligion.getSelectedItemPosition()).getValue()).equalsIgnoreCase("Select a Religion")){
+				changedUserProfile.setReligion("NA");
+			}else{
+				changedUserProfile.setReligion(religionList.get(spinnerReligion.getSelectedItemPosition()).getValue());
+			}
+			if((communityList.get(spinnerCommunity.getSelectedItemPosition()).getValue()).equalsIgnoreCase("Select a Community")){
+				changedUserProfile.setCommunity("NA");
+			}else{
+				changedUserProfile.setCommunity((communityList.get(spinnerCommunity.getSelectedItemPosition()).getValue()));
+			}
+			if((gothraList.get(spinnerGothra.getSelectedItemPosition()).getValue()).equalsIgnoreCase("Select a Gothra")){
+				changedUserProfile.setGothra("NA");
+			}else{
+				changedUserProfile.setGothra((gothraList.get(spinnerGothra.getSelectedItemPosition()).getValue()));
+			}
 			changedUserProfile.setProfession(editTextProfession.getText().toString());
 			if ((editTextAddCommunity.getText().toString().trim().length() > 0)
 					&& (linearAddCommunity.isShown() == true)) {
@@ -754,6 +812,11 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if(pDialog != null) {
+				pDialog.dismiss();
+				pDialog = null;
+			}
+			
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("submitting data...");
 			pDialog.setIndeterminate(false);
@@ -808,12 +871,13 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 						intentMobile.putExtra("mobileNumber", mobileNumber);
 						startActivity(intentMobile);
 					}else{	
-					savedSuccessfully();
+						savedSuccessfully();
 					}
 				} else if(authenticationStatus == 2){
 					Crouton.makeText(activity, "The mobile number you entered is already registered with us. PLease enter a different mobile number", Style.ALERT).show();
+				}else if(authenticationStatus == 4){
+					Crouton.makeText(activity, croutonmsg, Style.ALERT).show();
 				}
-
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					// Log.d("Exception thrown: Treeview Fetch", "" +
@@ -822,7 +886,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -833,7 +898,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			  if ((pDialog != null) && pDialog.isShowing())
 				   pDialog.dismiss();
 				  pDialog = null;
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 
 	}
@@ -843,7 +908,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 		@Override
 		protected void onPreExecute() {
-
+			if ((pDialog != null))
+				pDialog.dismiss();
 			// TODO Auto-generated method stub
 		}
 
@@ -857,6 +923,9 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 			super.onPostExecute(response);
 			// pDialog.dismiss();
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
 			Log.i("Ceate Event Response ", response);
 			try {
 				JSONObject createEventObject = new JSONObject(response);
@@ -881,7 +950,8 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -889,12 +959,16 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			//Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
+			if ((pDialog != null)) { 
+				pDialog.dismiss();
+			}
 		}
 	}
 
 	private void savedSuccessfully() {
 		Log.d(TAG, "Profile edited successfully!");
+		CroutonMessage.showCroutonInfo(activity, "You successfully edit your profile", 7000);
 		((MainActivity) this.getActivity()).changeFragment("ProfileFragment");
 	}
 
@@ -909,23 +983,34 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			} else {
 				linearGothra.setVisibility(View.GONE);
 			}
-			boolean bool = new ConDetect(getActivity()).isOnline();
-			if (bool) {
-				// Create object of AsycTask and execute
-				final CommunityTask communityTask = new CommunityTask();
-				communityTask.execute("" + religionList.get(spos).getId());
-				Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						if (communityTask.getStatus() == AsyncTask.Status.RUNNING){
-							communityTask.cancel(true);
+			if (!religionList.get(spos).getValue().equalsIgnoreCase("Select a Religion")) {
+				boolean bool = new ConDetect(getActivity()).isOnline();
+				if (bool) {
+					// Create object of AsycTask and execute
+					final CommunityTask communityTask = new CommunityTask();
+					communityTask.execute("" + religionList.get(spos).getId());
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (communityTask.getStatus() == AsyncTask.Status.RUNNING){
+								communityTask.cancel(true);
+							}
 						}
-					}
-				}, 10000);
-			} else {
-				Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+					}, 10000);
+				} else {
+					CroutonMessage.showCroutonAlert(activity, "!No Internet Connection,Try again", 7000);
+				}
+			}else{
+				SpinnerItem tempItem = new SpinnerItem();
+				tempItem.setValue("Select a Community");
+				communityList.add(tempItem);
+				CustomDropDownAdapter communityAdapter = new CustomDropDownAdapter(context, communityList);
+
+				spinnerCommunity.setAdapter(communityAdapter);
+				spinnerCommunity.setSelection(communityPos);
 			}
+			
 
 			break;
 		case R.id.spinnerCommunity:
@@ -958,30 +1043,6 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 	}
 
-	// public void dateDialog(final EditText txtview) {
-	// // TODO Auto-generated method stub
-	// int day, month, year;
-	//
-	// Log.d("profile", "date text click!!");
-	// Calendar cal = Calendar.getInstance();
-	// day = cal.get(Calendar.DAY_OF_MONTH);
-	// month = cal.get(Calendar.MONTH);
-	// year = cal.get(Calendar.YEAR);
-	// DatePickerDialog dpd = new DatePickerDialog(getActivity(), new
-	// DatePickerDialog.OnDateSetListener() {
-	//
-	// @Override
-	// public void onDateSet(DatePicker view, int year, int monthOfYear, int
-	// dayOfMonth) {
-	//
-	// String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
-	// txtview.setText(date);
-	//
-	// }
-	// }, year, month, day);
-	//
-	// dpd.show();
-	// }
 	public void dateDialog(final EditText txtview) {
 		// TODO Auto-generated method stub
 		int day, month, year;
@@ -991,20 +1052,16 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 		day = cal.get(Calendar.DAY_OF_MONTH);
 		month = cal.get(Calendar.MONTH);
 		year = cal.get(Calendar.YEAR);
-		final DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-
-			@Override
-			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-				if (set) {
-					String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
-					txtview.setText(date);
-				}
-			}
-		}, year, month, day);
+		
+		final DateSetListener _datePickerDialogCallback = new DateSetListener(txtview);
+		final DatePickerDialog dpd = new DatePickerDialog(getActivity(),_datePickerDialogCallback, year, month, day);
+		
 		dpd.setButton(DialogInterface.BUTTON_POSITIVE, "SET", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				if (which == DialogInterface.BUTTON_POSITIVE) {
 					set = true;
+					 DatePicker datePicker = dpd.getDatePicker();
+					 _datePickerDialogCallback.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
 				}
 			}
 		});
@@ -1018,5 +1075,20 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 			}
 		});
 		dpd.show();
+	}
+	private class DateSetListener implements DatePickerDialog.OnDateSetListener {
+		EditText txtview;
+		public DateSetListener(EditText txtview)
+		{
+			DateSetListener.this.txtview = txtview;
+		}
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+			if (set) {
+				String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
+				txtview.setText(date);
+				
+			}
+		}
 	}
 }

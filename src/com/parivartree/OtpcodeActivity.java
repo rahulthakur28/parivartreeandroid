@@ -2,16 +2,6 @@ package com.parivartree;
 
 import org.json.JSONObject;
 
-import com.mobsandgeeks.saripaar.Rule;
-import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.Validator.ValidationListener;
-import com.mobsandgeeks.saripaar.annotation.Required;
-import com.parivartree.SignUpDetailsActivity.SignUpDetailsTask;
-import com.parivartree.helpers.ConDetect;
-import com.parivartree.helpers.HttpConnectionUtils;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,6 +21,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.mobsandgeeks.saripaar.Rule;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.Validator.ValidationListener;
+import com.mobsandgeeks.saripaar.annotation.Required;
+import com.parivartree.helpers.ConDetect;
+import com.parivartree.helpers.HttpConnectionUtils;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public class OtpcodeActivity extends Activity implements OnClickListener , ValidationListener{
 	@Required(order = 1)
 EditText editotpcode;
@@ -45,6 +45,7 @@ ProgressDialog pDialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_otpcode);
 		sharedPreferences = this.getApplicationContext().getSharedPreferences(
 				this.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
@@ -226,7 +227,7 @@ ProgressDialog pDialog;
 			if ((pDialog != null) && pDialog.isShowing()) { 
 			    pDialog.dismiss();
 			   }
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 }

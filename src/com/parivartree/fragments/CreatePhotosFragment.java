@@ -71,6 +71,8 @@ public class CreatePhotosFragment extends Fragment implements OnClickListener,  
 
 		View rootView = inflater.inflate(R.layout.fragment_create_photos, container, false);
 		context = getActivity().getApplicationContext();
+		
+		activity=getActivity();
 		sharedPreferences = activity.getSharedPreferences(
 				activity.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
 		sharedPreferencesEditor = sharedPreferences.edit();
@@ -311,7 +313,8 @@ public class CreatePhotosFragment extends Fragment implements OnClickListener,  
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}

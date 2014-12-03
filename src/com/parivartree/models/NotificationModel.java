@@ -5,7 +5,19 @@ public class NotificationModel {
 	String entityname, event, post, relationname, addedby, date, ownerid, weddingdate, exactNotificationText, entityid,
 			notificationstatus;
 
-	// above change for unresponse from server
+	public NotificationModel(){
+		entityname = "";
+		event = ""; 
+		post = "";
+		relationname = ""; 
+		addedby = ""; 
+		date = "";
+		ownerid = "";
+		weddingdate = "";
+		exactNotificationText = ""; 
+		entityid = "";
+		notificationstatus = "";
+	}
 
 	public String getExactNotificationText() {
 		return exactNotificationText;

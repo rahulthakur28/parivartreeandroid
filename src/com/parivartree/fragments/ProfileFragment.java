@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
@@ -34,6 +35,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -49,21 +52,27 @@ import com.parivartree.adapters.ImmediateFamilyAdapter;
 import com.parivartree.crop.Crop;
 import com.parivartree.customviews.HorizontalListView;
 import com.parivartree.helpers.ConDetect;
+import com.parivartree.helpers.CroutonMessage;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.helpers.RectangularImageView;
+import com.parivartree.models.Albums;
+import com.parivartree.models.ProfilePrivacyDetails;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 //use optimization of dialog
 public class ProfileFragment extends Fragment implements OnClickListener {
-
+ 
+	private boolean set = false;
 	private int year;
 	private int month;
 	private int day;
 	int flag = 0;
-	String date,dobprivacy,localityprivacy,pincodeprivacy,hometownprivacy,mobileprivacy,maritalStatusprivacy,weddingDateprivacy,religionprivacy,communityprivacy,gothraprivacy,professionprivacy;
-
+	String date = "";
+	ProfilePrivacyDetails profilePrivacyDetails;
+	//dobprivacy,localityprivacy,pincodeprivacy,hometownprivacy,mobileprivacy,maritalStatusprivacy,weddingDateprivacy,religionprivacy,communityprivacy,gothraprivacy,professionprivacy;
+	
 	int relation = 0;
 	ImageView imageViewCamera, imageViewGallery;
 	RectangularImageView imageViewProfilePic;
@@ -75,7 +84,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			imageViewWeddate, imageViewReligion, imageViewCommunity, imageViewGothra, imageViewProfession;
 	Activity activity;
 	Context context;
-
+	
 	SharedPreferences sharedPreferences;
 	Editor sharedPreferencesEditor;
 	String nodeId;
@@ -88,10 +97,14 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			linearPincode1, linearCommunity1, linearGothra1;
 	ArrayList<String> listFamilyId;
 	static final int IMAGE_PICKER_SELECT = 100;
-	HorizontalListView horizontialListView;
+	HorizontalListView horizontialListView,horizontalalbum;
 	ImmediateFamilyAdapter ifa;
 	
+	HorizontalAlbumAdapter halbumadapter;
+	
 	ArrayList<HashMap<String, String>> immediateFamily;
+	ArrayList<Albums> albumarraylist;
+	
 	Bitmap userImage = null;
 	private String[] PRIVACY = { "Private", "Family", "Public" };
 	View rootView;
@@ -107,7 +120,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+		
 		rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 		
 		activity = getActivity();
@@ -115,6 +128,8 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		sharedPreferences = activity.getSharedPreferences(
 				activity.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
 		sharedPreferencesEditor = sharedPreferences.edit();
+		profilePrivacyDetails = new ProfilePrivacyDetails();
+		
 		Bundle bndle = getArguments();
 		if (bndle != null) {
 			relation = bndle.getInt("relation", 0);
@@ -132,7 +147,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		linearPincode1 = (LinearLayout) rootView.findViewById(R.id.linearpincode1);
 		linearCommunity1 = (LinearLayout) rootView.findViewById(R.id.linearcommunity1);
 		linearGothra1 = (LinearLayout) rootView.findViewById(R.id.lineargothra1);
-
+		
 		imageViewProfilePic = (RectangularImageView) rootView.findViewById(R.id.imageView1);
 		imageViewCamera = (ImageView) rootView.findViewById(R.id.camera);
 		imageViewGallery = (ImageView) rootView.findViewById(R.id.gallery);
@@ -199,14 +214,39 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 
 		userId = sharedPreferences.getString("user_id", "0");
 		nodeId = sharedPreferences.getString("node_id", userId);
-		sessionname = sharedPreferences.getString("sessionname", "Unknown");
 		
+		sessionname = sharedPreferences.getString("sessionname", "Unknown");
+		Log.d("user id and node id", ""+userId+" and "+nodeId+" and "+sessionname);
 		
 		horizontialListView = (HorizontalListView) rootView.findViewById(R.id.horizontalScrollViewFamilyMembers);
 		immediateFamily = new ArrayList<HashMap<String, String>>();
 		ifa = new ImmediateFamilyAdapter(context, immediateFamily);
 		horizontialListView.setAdapter(ifa);
 
+		horizontalalbum =(HorizontalListView) rootView.findViewById(R.id.horizontalScrollViewAlbums);
+		albumarraylist=new ArrayList<Albums>();
+		halbumadapter=new HorizontalAlbumAdapter(context, R.layout.item_horizontal_album, albumarraylist);
+		horizontalalbum.setAdapter(halbumadapter); 
+		
+		horizontalalbum.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				
+				Log.i("zacharia", "on album list click");
+				
+				Albums albumobj= albumarraylist.get(arg2);
+				Bundle bundle_photos=new Bundle();
+				bundle_photos.putString("albumhash", albumobj.getmAlbumHash());
+				bundle_photos.putString("loggeduid", userId);
+				
+				Log.i("zacharia", "on album list click"+albumobj.getmAlbumHash()+ userId);
+//				
+				((MainActivity) activity).changeFragment("ViewAlbumPhotoFragment",bundle_photos);
+			}
+		});
 		
 		btndeceased.setOnClickListener(new OnClickListener() {
 
@@ -242,42 +282,35 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					year = cal.get(Calendar.YEAR);
 
 					Log.d("profile", "deceased button1111!!" + day + "," + month + "," + year);
-					DatePickerDialog dpd = new DatePickerDialog(getActivity(),
-							new DatePickerDialog.OnDateSetListener() {
-								@Override
-								public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-									date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
-									boolean bool = new ConDetect(getActivity()).isOnline();
-									if (bool) {
-										// Create object of AsycTask and execute
-										Log.d("profile", "deceased button5555!!" + userId + "," + nodeId + "," + date
-												+ "," + sessionname);
-										if (flag == 0) {
-											flag = 1;
-											final DeceasedUserTask deceasedTask = new DeceasedUserTask();
-											deceasedTask.execute(userId, nodeId, date, sessionname);
-											Handler handler = new Handler();
-											handler.postDelayed(new Runnable() {
-												@Override
-												public void run() {
-													if (deceasedTask.getStatus() == AsyncTask.Status.RUNNING){
-														deceasedTask.cancel(true);
-													}
-												}
-											}, 10000);
-										}
-									} else {
-										Toast.makeText(getActivity(), "!No Internet Connection,Try again",
-												Toast.LENGTH_LONG).show();
-									}
-								}
-							}, year, month, day);
+				
+					final DateSetListener _datePickerDialogCallback = new DateSetListener();
+					final DatePickerDialog dpd = new DatePickerDialog(getActivity(),_datePickerDialogCallback, year, month, day);
+					
+					dpd.setButton(DialogInterface.BUTTON_POSITIVE, "SET", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == DialogInterface.BUTTON_POSITIVE) {
+								set = true;
+								 DatePicker datePicker = dpd.getDatePicker();
+								 _datePickerDialogCallback.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+							
+							}
+						}
+					});
+
+					dpd.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == DialogInterface.BUTTON_NEGATIVE) {
+								set = false;
+								dpd.hide();
+							}
+						}
+					});
 					dpd.show();
 				}
 
 			}
 		});
-		Log.i("Profile", "btndeceased click");
+		Log.i("Profile", "btndeleteuser click");
 		btndeleteuser.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -349,6 +382,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			}, 10000);
 			
 			final ProfileTask pT = new ProfileTask();
+			Log.d("user id and node id  2", ""+userId+" and "+nodeId+" and "+sessionname);
 			pT.execute(nodeId,userId);
 			Handler handler1 = new Handler();
 			handler1.postDelayed(new Runnable() {
@@ -365,12 +399,42 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		}
 		return rootView;
 	}
-	
+	private class DateSetListener implements DatePickerDialog.OnDateSetListener {
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+			if (set) {
+			date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
+			boolean bool = new ConDetect(getActivity()).isOnline();
+			if (bool) {
+				// Create object of AsycTask and execute
+				Log.d("profile", "deceased button5555!!" + userId + "," + nodeId + "," + date
+						+ "," + sessionname);
+				if (flag == 0) {
+					flag = 1;
+					final DeceasedUserTask deceasedTask = new DeceasedUserTask();
+					deceasedTask.execute(userId, nodeId, date, sessionname);
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (deceasedTask.getStatus() == AsyncTask.Status.RUNNING){
+								deceasedTask.cancel(true);
+							}
+						}
+					}, 10000);
+				}
+			} else {
+				Toast.makeText(getActivity(), "!No Internet Connection,Try again",
+						Toast.LENGTH_LONG).show();
+			}
+		}
+		}
+	}
 	@Override
 	public void onPause() {
 		super.onPause();
 		
-		if ((pDialog != null) && pDialog.isShowing())
+		if ((pDialog != null))
 			pDialog.dismiss();
 		pDialog = null;
 	    
@@ -389,11 +453,15 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null))
+				pDialog.dismiss();
+			
 			pDialog = new ProgressDialog(activity);
 			pDialog.setMessage("Fetching profile details...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		}
 
 		@Override
@@ -407,6 +475,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
@@ -420,67 +489,71 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				view = loginResponseObject.getString("view");
 				if (responseResult.equals("Success")) {
 					// TODO store the login response and
-					
-					JSONObject userProfilePrivacy = loginResponseObject.getJSONObject("access");
+					JSONObject userProfilePrivacy = new JSONObject();
+					//JSONObject userProfilePrivacy = loginResponseObject.getJSONObject("access");
+					Object dummyobject = loginResponseObject.get("access");
+					if(dummyobject instanceof JSONObject){
+						userProfilePrivacy = loginResponseObject.getJSONObject("access");
+					}
 					JSONArray data = loginResponseObject.getJSONArray("data");
 					JSONObject userProfileData = (JSONObject) data.get(0);
 
 					// String genderprivacy =
 					// userProfilePrivacy.getString("Gender");
 					if(userProfilePrivacy.has("dob")){
-						dobprivacy = userProfilePrivacy.getString("dob");
+						profilePrivacyDetails.setDobprivacy(userProfilePrivacy.getString("dob")); 
 					}else{
-						dobprivacy = "1";
+						profilePrivacyDetails.setDobprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("locality")){
-						localityprivacy = userProfilePrivacy.getString("locality");
+						profilePrivacyDetails.setLocalityprivacy(userProfilePrivacy.getString("locality"));
 					}else{
-						localityprivacy = "1";
+						profilePrivacyDetails.setLocalityprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("pin")){
-						pincodeprivacy = userProfilePrivacy.getString("pin");
+						profilePrivacyDetails.setPincodeprivacy(userProfilePrivacy.getString("pin")); 
 					}else{
-						pincodeprivacy = "1";
+						profilePrivacyDetails.setPincodeprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("hometown")){
-						hometownprivacy = userProfilePrivacy.getString("hometown");
+						profilePrivacyDetails.setHometownprivacy(userProfilePrivacy.getString("hometown")); 
 					}else{
-						hometownprivacy = "1";
+						profilePrivacyDetails.setHometownprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("mobile")){
-						mobileprivacy = userProfilePrivacy.getString("mobile");
+						profilePrivacyDetails.setMobileprivacy(userProfilePrivacy.getString("mobile")); 
 					}else{
-						mobileprivacy = "1";
+						profilePrivacyDetails.setMobileprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("marital_status")){
-						maritalStatusprivacy = userProfilePrivacy.getString("marital_status");
+						profilePrivacyDetails.setMaritalStatusprivacy(userProfilePrivacy.getString("marital_status")); 
 					}else{
-						maritalStatusprivacy = "1";
+						profilePrivacyDetails.setMaritalStatusprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("wedding_date")){
-						weddingDateprivacy = userProfilePrivacy.getString("wedding_date");
+						profilePrivacyDetails.setWeddingDateprivacy(userProfilePrivacy.getString("wedding_date"));
 					}else{
-						weddingDateprivacy = "1";
+						profilePrivacyDetails.setWeddingDateprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("religion")){
-						religionprivacy = userProfilePrivacy.getString("religion");
+						profilePrivacyDetails.setReligionprivacy(userProfilePrivacy.getString("religion")); 
 					}else{
-						religionprivacy = "1";
+						profilePrivacyDetails.setReligionprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("community")){
-						communityprivacy = userProfilePrivacy.getString("community");
+						profilePrivacyDetails.setCommunityprivacy(userProfilePrivacy.getString("community")); 
 					}else{
-						communityprivacy = "1";
+						profilePrivacyDetails.setCommunityprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("gothra")){
-						gothraprivacy = userProfilePrivacy.getString("gothra");
+						profilePrivacyDetails.setGothraprivacy(userProfilePrivacy.getString("gothra"));
 					}else{
-						gothraprivacy = "1";
+						profilePrivacyDetails.setGothraprivacy("1"); 
 					}
 					if(userProfilePrivacy.has("profession")){
-						professionprivacy = userProfilePrivacy.getString("profession");
+						profilePrivacyDetails.setProfessionprivacy(userProfilePrivacy.getString("profession"));
 					}else{
-						professionprivacy = "1";
+						profilePrivacyDetails.setProfessionprivacy("1"); 
 					}				
 					String dob = userProfileData.getString("Dob");
 					String email = userProfileData.getString("Email");
@@ -511,21 +584,22 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					RectangularImageView holder= new RectangularImageView(context);
 					holder= (RectangularImageView) rootView.findViewById(R.id.imageView1);
 					if (!deceased.equals("NA")) {
-						holder.setBorderColor(getResources().getColor(R.color.pt_gold));
+						holder.setBorderColor(activity.getResources().getColor(R.color.pt_gold));
 						UrlImageViewHelper.setUrlDrawable(holder,
 								"https://www.parivartree.com/profileimages/thumbs/" + nodeId + "PROFILE.jpeg",
-								getResources().getDrawable(R.drawable.male),0);
+								activity.getResources().getDrawable(R.drawable.male),0);
 						
 					}else if (gender.equals("Male")) {
-						holder.setBorderColor(getResources().getColor(R.color.pt_blue));
+						
+						holder.setBorderColor(activity.getResources().getColor(R.color.pt_blue));
 						UrlImageViewHelper.setUrlDrawable(holder,
 								"https://www.parivartree.com/profileimages/thumbs/" + nodeId + "PROFILE.jpeg",
-								getResources().getDrawable(R.drawable.male),0);
+								activity.getResources().getDrawable(R.drawable.male),0);
 					} else {
 						holder.setBorderColor(Color.MAGENTA);
 						UrlImageViewHelper.setUrlDrawable(holder,
 								"https://www.parivartree.com/profileimages/thumbs/" + nodeId + "PROFILE.jpeg",
-								getResources().getDrawable(R.drawable.female), 0);
+								activity.getResources().getDrawable(R.drawable.female), 0);
 					}
 										
 					textViewName1.setText(firstName + " " + lastName);
@@ -535,9 +609,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearDob1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewDob1.setText(dob);
-					} else if (listFamilyId.contains(userId) && (!dobprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getDobprivacy().equals("1"))) {
 						textViewDob1.setText(dob);
-					} else if(!(listFamilyId.contains(userId)) && dobprivacy.equals("3")){
+					} else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getDobprivacy().equals("3")){
 						textViewDob1.setText(dob);
 					}else if(view.equals("1")){
 						textViewDob1.setText(dob);
@@ -553,9 +627,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearRelation1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewMaritalStatus1.setText(maritalStatus);
-					} else if (listFamilyId.contains(userId) && (!maritalStatusprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getMaritalStatusprivacy().equals("1"))) {
 						textViewMaritalStatus1.setText(maritalStatus);
-					} else if(!(listFamilyId.contains(userId)) && maritalStatusprivacy.equals("3")){
+					} else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getMaritalStatusprivacy().equals("3")){
 						textViewMaritalStatus1.setText(maritalStatus);
 					} else if(view.equals("1")){
 						textViewMaritalStatus1.setText(maritalStatus);
@@ -566,9 +640,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearWedDate1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewWeddingDate1.setText(weddingDate);
-					} else if (listFamilyId.contains(userId) && (!weddingDateprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getWeddingDateprivacy().equals("1"))) {
 						textViewWeddingDate1.setText(weddingDate);
-					} else if(!(listFamilyId.contains(userId)) && weddingDateprivacy.equals("3")){
+					} else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getWeddingDateprivacy().equals("3")){
 						textViewWeddingDate1.setText(weddingDate);
 					}else if(view.equals("1")){
 						textViewWeddingDate1.setText(weddingDate);
@@ -579,9 +653,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearLocation1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewLocality1.setText(locality);
-					} else if (listFamilyId.contains(userId) && (!localityprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getLocalityprivacy().equals("1"))) {
 						textViewLocality1.setText(locality);
-					}  else if(!(listFamilyId.contains(userId)) && localityprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getLocalityprivacy().equals("3")){
 						textViewLocality1.setText(locality);
 					}else if(view.equals("1")){
 						textViewLocality1.setText(locality);
@@ -592,9 +666,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearPincode1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewPincode1.setText(pincode);
-					} else if (listFamilyId.contains(userId) && (!pincodeprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getPincodeprivacy().equals("1"))) {
 						textViewPincode1.setText(pincode);
-					} else if(!(listFamilyId.contains(userId)) && pincodeprivacy.equals("3")){
+					} else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getPincodeprivacy().equals("3")){
 						textViewPincode1.setText(pincode);
 					} else if(view.equals("1")){
 						textViewPincode1.setText(pincode);
@@ -605,9 +679,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearHomeTown1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewHometown1.setText(hometown);
-					} else if (listFamilyId.contains(userId) && (!hometownprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getHometownprivacy().equals("1"))) {
 						textViewHometown1.setText(hometown);
-					}  else if(!(listFamilyId.contains(userId)) && hometownprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getHometownprivacy().equals("3")){
 						textViewHometown1.setText(hometown);
 					} else if(view.equals("1")){
 						textViewHometown1.setText(hometown);
@@ -618,9 +692,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearMobile1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewMobile1.setText(mobile);
-					} else if (listFamilyId.contains(userId) && (!mobileprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getMobileprivacy().equals("1"))) {
 						textViewMobile1.setText(mobile);
-					}  else if(!(listFamilyId.contains(userId)) && mobileprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getMobileprivacy().equals("3")){
 						textViewMobile1.setText(mobile);
 					}else if(view.equals("1")){
 						textViewMobile1.setText(mobile);
@@ -631,9 +705,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearReligion1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewReligion1.setText(religion);
-					} else if (listFamilyId.contains(userId) && (!religionprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getReligionprivacy().equals("1"))) {
 						textViewReligion1.setText(religion);
-					}  else if(!(listFamilyId.contains(userId)) && religionprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getReligionprivacy().equals("3")){
 						textViewReligion1.setText(religion);
 					} else if(view.equals("1")){
 						textViewReligion1.setText(religion);
@@ -644,9 +718,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearCommunity1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewCommunity1.setText(community);
-					} else if (listFamilyId.contains(userId) && (!communityprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getCommunityprivacy().equals("1"))) {
 						textViewCommunity1.setText(community);
-					}  else if(!(listFamilyId.contains(userId)) && communityprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getCommunityprivacy().equals("3")){
 						textViewCommunity1.setText(community);
 					} else if(view.equals("1")){
 						textViewCommunity1.setText(community);
@@ -657,9 +731,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearGothra1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewGothra1.setText(gothra);
-					} else if (listFamilyId.contains(userId) && (!gothraprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getGothraprivacy().equals("1"))) {
 						textViewGothra1.setText(gothra);
-					}  else if(!(listFamilyId.contains(userId)) && gothraprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getGothraprivacy().equals("3")){
 						textViewGothra1.setText(gothra);
 					} else if(view.equals("1")){
 						textViewGothra1.setText(gothra);
@@ -670,9 +744,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						linearProfession1.setVisibility(View.GONE);
 					} else if (userId.equals(nodeId)) {
 						textViewProfession1.setText(profession);
-					} else if (listFamilyId.contains(userId) && (!professionprivacy.equals("1"))) {
+					} else if (listFamilyId.contains(userId) && (!profilePrivacyDetails.getProfessionprivacy().equals("1"))) {
 						textViewProfession1.setText(profession);
-					}  else if(!(listFamilyId.contains(userId)) && professionprivacy.equals("3")){
+					}  else if(!(listFamilyId.contains(userId)) && profilePrivacyDetails.getProfessionprivacy().equals("3")){
 						textViewProfession1.setText(profession);
 					}else if(view.equals("1")){
 						textViewProfession1.setText(profession);
@@ -711,17 +785,9 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						imageViewProfession.setVisibility(View.VISIBLE);
 					}
 					
-					if (deceased.equals("NA") && (showdeceased.equals("1"))) {
-						btndeceased.setVisibility(View.VISIBLE);
-						btndeleteuser.setVisibility(View.VISIBLE);
-						textViewDeceasedDate.setVisibility(View.GONE);
-						textViewUpdatedBy.setVisibility(View.GONE);
-						btndeceased.setText("Deceased?");
-
-					} else if (deceased.equals("NA") && (showdeceased.equals("0"))) {
-
-						btndeleteuser.setVisibility(View.GONE);
+					 if ((deceased.equals("NA")) && (userId.equals(nodeId))) {
 						btndeceased.setVisibility(View.GONE);
+						btndeleteuser.setVisibility(View.GONE);
 						textViewDeceasedDate.setVisibility(View.GONE);
 						textViewUpdatedBy.setVisibility(View.GONE);
 
@@ -732,7 +798,21 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						textViewUpdatedBy.setVisibility(View.VISIBLE);
 						btndeceased.setText("Make Me Alive");
 
-					}else if ((!deceased.equals("NA")) && (!userId.equals(nodeId)) && (showdeceased.equals("1")) && (view.equals("1"))) {
+					} else if (deceased.equals("NA") && (showdeceased.equals("1"))) {
+						btndeceased.setVisibility(View.VISIBLE);
+						btndeleteuser.setVisibility(View.VISIBLE);
+						textViewDeceasedDate.setVisibility(View.GONE);
+						textViewUpdatedBy.setVisibility(View.GONE);
+						btndeceased.setText("Deceased?");
+
+					} else if (deceased.equals("NA") && (showdeceased.equals("0"))) {
+
+						btndeleteuser.setVisibility(View.VISIBLE);
+						btndeceased.setVisibility(View.GONE);
+						textViewDeceasedDate.setVisibility(View.GONE);
+						textViewUpdatedBy.setVisibility(View.GONE);
+
+					} else if ((!deceased.equals("NA")) && (!userId.equals(nodeId)) && (showdeceased.equals("1")) && (view.equals("1"))) {
 						btndeceased.setVisibility(View.VISIBLE);
 						btndeleteuser.setVisibility(View.VISIBLE);
 						textViewDeceasedDate.setVisibility(View.VISIBLE);
@@ -769,7 +849,8 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber() + " " + tempStack.getMethodName());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Log.d("ProfileFragment", " - " + e.getMessage());
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
@@ -777,10 +858,11 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -834,16 +916,16 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					textViewUpdatedBy.setText("Updated by " + sessionname);
 				}
 				if (status == 2) {
-					Toast.makeText(context, "Server Response Failure", Toast.LENGTH_LONG).show();
+					CroutonMessage.showCroutonAlert(activity, "Deceased date cannot be greator than today!!", 7000); 
 				}
 				if (status == 3) {
-					Toast.makeText(context, "Server Response Failure", Toast.LENGTH_LONG).show();
+					CroutonMessage.showCroutonAlert(activity, "Server Response Failure", 7000); 
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
@@ -854,7 +936,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -889,10 +971,14 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			}
 			Log.i("delete user Fetch Response ", response);
 			try {
-
+				String responseMessage="";
 				JSONObject loginResponseObject = new JSONObject(response);
+				int status = loginResponseObject.getInt("AuthenticationStatus");
 				String responseResult = loginResponseObject.getString("Status");
-				if (responseResult.equals("Success")) {
+				if(loginResponseObject.has("msg")){
+					responseMessage = loginResponseObject.getString("msg");
+				}
+				if ((responseResult.equals("Success")) && (status == 1)) {
 					Log.i("delete user Fetch Response ", "user deleted");
 
 					sharedPreferencesEditor.putString("node_id", userId);
@@ -900,16 +986,18 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					Log.d("profile", "delete nodeid " + sharedPreferences.getString("node_id", "0") + " userid "
 							+ userId);
 					String nodeName = textViewName1.getText().toString();
-				     Crouton.makeText(activity, "You have successfully delete " + nodeName + " from your family tree", Style.INFO).show();
+				     Crouton.makeText(activity, "You have successfully deleted " + nodeName + " from your family tree", Style.INFO).show();
 					((MainActivity) activity).changeFragment("HomeFragment");
 
+				}else{
+					CroutonMessage.showCroutonAlert(activity, responseMessage, 7000);
 				}
 
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
@@ -920,7 +1008,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -974,7 +1062,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
@@ -985,7 +1073,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -1012,27 +1100,27 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			}
 		}
 		if (v.getId() == R.id.imageviewdob) {
-			showPrivacyDialog("dob",dobprivacy);
+			showPrivacyDialog("dob",profilePrivacyDetails.getDobprivacy());
 		} else if (v.getId() == R.id.imageviewlocation) {
-			showPrivacyDialog("locality",localityprivacy);
+			showPrivacyDialog("locality",profilePrivacyDetails.getLocalityprivacy());
 		} else if (v.getId() == R.id.imageviewpincode) {
-			showPrivacyDialog("pin",pincodeprivacy);
+			showPrivacyDialog("pin",profilePrivacyDetails.getPincodeprivacy());
 		} else if (v.getId() == R.id.imageviewhometown) {
-			showPrivacyDialog("hometown",hometownprivacy);
+			showPrivacyDialog("hometown",profilePrivacyDetails.getHometownprivacy());
 		} else if (v.getId() == R.id.imageviewmobile) {
-			showPrivacyDialog("mobile",mobileprivacy);
+			showPrivacyDialog("mobile",profilePrivacyDetails.getMobileprivacy());
 		} else if (v.getId() == R.id.imageviewrelation) {
-			showPrivacyDialog("maritalstatus",maritalStatusprivacy);
+			showPrivacyDialog("marital_status",profilePrivacyDetails.getMaritalStatusprivacy());
 		} else if (v.getId() == R.id.imageviewweddate) {
-			showPrivacyDialog("wedding_date",weddingDateprivacy);
+			showPrivacyDialog("wedding_date",profilePrivacyDetails.getWeddingDateprivacy());
 		} else if (v.getId() == R.id.imageviewreligion) {
-			showPrivacyDialog("religion",religionprivacy);
+			showPrivacyDialog("religion",profilePrivacyDetails.getReligionprivacy());
 		} else if (v.getId() == R.id.imageviewcommunity) {
-			showPrivacyDialog("community",communityprivacy);
+			showPrivacyDialog("community",profilePrivacyDetails.getCommunityprivacy());
 		} else if (v.getId() == R.id.imageviewgothra) {
-			showPrivacyDialog("gothra",gothraprivacy);
+			showPrivacyDialog("gothra",profilePrivacyDetails.getGothraprivacy());
 		} else if (v.getId() == R.id.imageviewprofession) {
-			showPrivacyDialog("profession",professionprivacy);
+			showPrivacyDialog("profession",profilePrivacyDetails.getProfessionprivacy());
 		}
 	}
 
@@ -1169,7 +1257,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
@@ -1180,7 +1268,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -1192,11 +1280,16 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null))
+				pDialog.dismiss();
+			
 			pDialog = new ProgressDialog(activity);
-			pDialog.setMessage("Fetching Profile details...");
+			pDialog.setMessage("Fetching immediate family details...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
-			pDialog.show();
+			//pDialog.show();
+			Log.d("Immediate Family", "Progress dialog called");
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		}
 
 		@Override
@@ -1214,10 +1307,11 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 		protected void onPostExecute(String response) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(response);
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Log.i("Immediate Family Response ", response);
+			
 			try {
 
 				JSONObject loginResponseObject = new JSONObject(response);
@@ -1251,7 +1345,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 
 					Log.d("ImmediateFamilyTask", "Adapter item count: " + ifa.getCount());
 					// horizontialListView.setAdapter(ifa);
-
+					
 					// ifa.notifyDataSetInvalidated();
 					
 					ifa.notifyDataSetChanged();
@@ -1263,9 +1357,6 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 						horizontialListView.setVisibility(View.VISIBLE);
 					}
 					Log.d("ImmediateFamilyTask", "immediateFamily size -" + immediateFamily.size());
-
-					//
-
 					// horizontialListView.setAdapter(ifa);
 				}
 			} catch (Exception e) {
@@ -1273,17 +1364,19 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
 				Log.d("profile", "Invalid Server content from Profile!!");
-				Toast.makeText(context, "Invalid Server content - " + e.getMessage(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "Invalid Server content - ", Toast.LENGTH_SHORT).show();
 			}
 		}
+		
 		@Override
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			if ((pDialog != null) && pDialog.isShowing()) { 
+			//activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+			if ((pDialog != null)) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -1333,7 +1426,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
 				Log.d("Field Privacy", "Invalid Server content from Profile!!");
-				Toast.makeText(context, "Invalid Server content - " + e.getMessage(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "Invalid Server content - ", Toast.LENGTH_SHORT).show();
 			}
 		}
 		@Override
@@ -1343,7 +1436,7 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -1355,9 +1448,10 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onClick(DialogInterface dialog, int item) {
 				// TODO Auto-generated method stub
-				Log.d("Field Privacy", "" + fieldname + "--------" + (item + 1) + "---------" + userId);
+				String privacystr = String.valueOf((item + 1));
+				Log.d("-----check-------", privacystr);
 				final FieldPrivacyTask fieldPrivacyTask = new FieldPrivacyTask();
-				fieldPrivacyTask.execute(nodeId, fieldname, "" + (item + 1));
+				fieldPrivacyTask.execute(nodeId, fieldname, privacystr);
 				Handler handler = new Handler();
 				handler.postDelayed(new Runnable() {
 					@Override
@@ -1370,18 +1464,167 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 				dialog.cancel();
 			}
 		});
-		// builder.setPositiveButton("DONE", new
-		// android.content.DialogInterface.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// });
 		AlertDialog alert = builder.create();
-		// And if the line above didn't bring ur dialog up use this bellow also:
 		alert.show();
 
+	}
+	private class HorizontalAlbumAdapter extends ArrayAdapter<Albums>{
+		LayoutInflater inflater;
+		Context mActivity;
+		public HorizontalAlbumAdapter(Context context, int resource,
+				List<Albums> objects) {
+			super(context, resource, objects);
+			// TODO Auto-generated constructor stub
+			inflater=LayoutInflater.from(context);
+			mActivity=context;
+		}
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			ImageView imalbum;
+			TextView txt_name;
+			String imgurl;
+			AlbumClassHolder classholder;
+			Albums mAlbums=getItem(position);
+			if(convertView==null){
+				convertView=inflater.inflate(R.layout.item_horizontal_album, null);
+				imalbum=(ImageView) convertView.findViewById(R.id.image_album);
+				txt_name=(TextView) convertView.findViewById(R.id.t_album_name);
+				classholder=new AlbumClassHolder(imalbum, txt_name);
+				convertView.setTag(classholder);
+			}else{
+				classholder=(AlbumClassHolder) convertView.getTag();
+				imalbum=classholder.getImalbum();
+				txt_name=classholder.getTxt_name();
+			}
+			imgurl=mActivity.getResources().getString(R.string.galleryhostname)+
+					mAlbums.getmAlbumHash()+"/thumbs/"+mAlbums.getmPhotoHash()+".jpeg";
+			UrlImageViewHelper.setUrlDrawable(imalbum, imgurl, R.drawable.parivartree_logo_127, 5*60*1000);
+			txt_name.setText(mAlbums.getmAlbumName());
+			return convertView;
+		}
+		
+	}
+	private class AlbumClassHolder{
+		ImageView imalbum;
+		TextView txt_name;
+		public ImageView getImalbum() {
+			return imalbum;
+		}
+		public TextView getTxt_name() {
+			return txt_name;
+		}
+		public AlbumClassHolder(ImageView imalbum, TextView txt_name) {
+			super();
+			this.imalbum = imalbum;
+			this.txt_name = txt_name;
+		}
+		
+	}
+
+public class GetAlbumDetailsTask extends AsyncTask<String, Void, String> {
+//	private UserAlbum mUserAlbum;
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			pDialog = new ProgressDialog(getActivity());
+			pDialog.setMessage("Loding Album...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
+//			mUserAlbum=new UserAlbum();
+		}
+		
+		@Override
+		protected String doInBackground(String... params) {
+			Log.e("zacharia", "Album of : userId-->" + params[0] + "nodeId -->" +params[1] );
+			// ---------change method name
+						
+			return HttpConnectionUtils.getAlbumListResponse(
+					params[0],
+					params[1],
+					getActivity().getResources().getString(R.string.hostname)
+							+ getActivity().getResources().getString(R.string.url_gallary));
+		}
+		
+		protected void onPostExecute(String response) {
+			super.onPostExecute(response);
+			
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
+			
+			Log.i("Gallery list Response ", response);
+			 
+			try {
+				JSONObject galleryResponseObject = new JSONObject(response);
+				String responseResult = galleryResponseObject.getString("Status");
+				Log.d("zacharia", "onpostexecute" + responseResult);
+				
+				
+				
+				if (responseResult.equals("Success")) {
+					
+//					mUserAlbum.setmUserId(galleryResponseObject.getString("userid"));
+//					mUserAlbum.setmPhotoCount(galleryResponseObject.getString("photocount"));
+//					mUserAlbum.setmUserName(galleryResponseObject.getString("username"));
+//					mUserAlbum.setmImageExists(galleryResponseObject.getString("imageexists"));
+//					mUserAlbum.setmThumFlag(String.valueOf(galleryResponseObject.getBoolean("thumbFlag")));
+//					mUserAlbum.setmView(galleryResponseObject.getString("view"));
+					
+					
+					JSONArray dataArray = galleryResponseObject.getJSONArray("albums");
+//					
+//					if(null!=mUserAlbum.getmAlbums() && mUserAlbum.getmAlbums().size()>0){
+//					   mUserAlbum.getmAlbums().clear();
+//					}
+					// Toast.makeText(getActivity(),
+					// "Size : "+eventArrayList.size(),
+					// Toast.LENGTH_LONG).show();
+									
+					
+					albumarraylist=new ArrayList<Albums>();
+					for (int i = 0; i < dataArray.length(); i++) {
+						JSONObject c = (JSONObject)dataArray.getJSONObject(i);
+						Albums mAlbum= new Albums();
+
+						mAlbum.setmAlbumName(c.getString("albumname"));
+						mAlbum.setmAlbumHash(c.getString("albumhash"));
+						mAlbum.setmPhotoHash(c.getString("photohash"));
+						mAlbum.setmFolderFlag(String.valueOf(c.getBoolean("folderFlag")));
+						albumarraylist.add(mAlbum);
+					
+					}
+//					mUserAlbum.setmAlbums(mAlList);
+					halbumadapter=new HorizontalAlbumAdapter(activity, R.layout.item_horizontal_album, albumarraylist);
+					horizontalalbum.setAdapter(halbumadapter);
+					halbumadapter.notifyDataSetChanged();
+					
+				//	adapter.notifyDataSetChanged();
+					// Toast.makeText(getActivity(), "Listing Notification ",
+					// Toast.LENGTH_SHORT).show();
+				}
+
+			}catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					Log.d("Exception thrown: ",
+							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+									+ tempStack.getMethodName());
+				}
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+//				Log.d(TAG, "Invalid Server content from Notification!!");
+			}
+
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			if ((pDialog != null) && pDialog.isShowing()) { 
+				pDialog.dismiss();
+			}
+			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+		}
 	}
 }

@@ -1,8 +1,13 @@
 package com.parivartree.fragments;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -26,6 +31,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,12 +39,15 @@ import android.widget.Toast;
 
 import com.parivartree.MainActivity;
 import com.parivartree.R;
+import com.parivartree.fragments.NotificationFragment.GetNotificationTask;
 import com.parivartree.helpers.CompleteTree;
 import com.parivartree.helpers.ConDetect;
+import com.parivartree.helpers.CroutonMessage;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.helpers.TreeView;
 import com.parivartree.models.Node;
 import com.parivartree.models.NodeUser;
+import com.parivartree.models.NotificationModel;
 import com.parivartree.zoom.DynamicZoomControl;
 import com.parivartree.zoom.LayoutZoomView;
 import com.parivartree.zoom.PinchZoomListener;
@@ -46,12 +55,12 @@ import com.parivartree.zoom.PinchZoomListener;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-
 public class HomeFragment extends Fragment implements OnClickListener {
-
+	
 	public HomeFragment() {
+		
 	}
-
+	
 	Activity activity;
 	Context context;
 	SharedPreferences sharedPreferences;
@@ -67,7 +76,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 
 	LinearLayout userTreeMessage;
 	TextView textViewUserMessage;
-
+	TextView textNotificationCount;
 	public RelativeLayout optionsLayout, helpLayout;
 	CompleteTree nodeView;
 	Node mainUser;
@@ -84,6 +93,8 @@ public class HomeFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+		//this.setRetainInstance(true);
+		
 		activity = getActivity();
 		context = getActivity().getApplicationContext();
 		sharedPreferences = activity.getSharedPreferences(
@@ -93,7 +104,10 @@ public class HomeFragment extends Fragment implements OnClickListener {
 				activity.getPackageName() + getResources().getString(R.string.USER_PREFERENCE), Context.MODE_PRIVATE);
 		sharedPreferencesEditor1 = sharedPreferences1.edit();
 		helpDraw = sharedPreferences1.getBoolean("helpdraw", false);
-
+		
+		ActionBar actionBar = activity.getActionBar();
+		textNotificationCount = (TextView) actionBar.getCustomView().findViewById(R.id.textnoofnotification);
+		
 		View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 		// contentHolder = (LinearLayout)
 		// rootView.findViewById(R.id.contentHolder);
@@ -130,7 +144,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		textViewWall = (RelativeLayout) rootView.findViewById(R.id.viewWall);
 		textViewTree = (RelativeLayout) rootView.findViewById(R.id.viewTree);
 		textViewHide = (RelativeLayout) rootView.findViewById(R.id.viewHide);
-
+		
 		textViewAddRelation.setOnClickListener(this);
 		textViewProfile.setOnClickListener(this);
 		textViewImageGallery.setOnClickListener(this);
@@ -159,7 +173,28 @@ public class HomeFragment extends Fragment implements OnClickListener {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
 		if (!helpDraw) {
-			helpLayout.setVisibility(View.VISIBLE);
+			
+				// TODO add info layout for slide menu
+				helpLayout.setBackgroundResource(R.color.pt_dark_overlay);
+				
+				ImageView homeClickImage = new ImageView(this.activity);
+				homeClickImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_click_menus));
+				
+				RelativeLayout.LayoutParams homeClickImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				homeClickImageLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+				homeClickImage.setLayoutParams(homeClickImageLayoutParams);
+				
+				ImageView slideMenuImage = new ImageView(this.activity);
+				slideMenuImage.setImageDrawable(this.getResources().getDrawable(R.drawable.info_image));
+				
+				RelativeLayout.LayoutParams slideMenuImageLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				slideMenuImageLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+				slideMenuImage.setLayoutParams(slideMenuImageLayoutParams);
+				
+				helpLayout.addView(homeClickImage);
+				helpLayout.addView(slideMenuImage);
+				helpLayout.setVisibility(View.VISIBLE);
+			
 			sharedPreferencesEditor1.putBoolean("helpdraw", true);
 			sharedPreferencesEditor1.commit();
 		} else {
@@ -176,6 +211,31 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		});
 
 		return rootView;
+	}
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		boolean bool = new ConDetect(getActivity()).isOnline();
+		if (bool) {
+			// Create object of AsycTask and execute
+			final GetNewNotificationCountTask getNewNotificationCountTask = new GetNewNotificationCountTask();
+			getNewNotificationCountTask.execute(sharedPreferences.getString("user_id", "NA"));
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (getNewNotificationCountTask.getStatus() == AsyncTask.Status.RUNNING){
+						getNewNotificationCountTask.cancel(true);
+					}
+				}
+			}, 10000);
+			
+		} else {
+			CroutonMessage.showCroutonAlert(activity, "!No Internet Connection,Try again", 6000);
+		}
+		
 	}
 	/**
      * Reset zoom state and notify observers
@@ -201,7 +261,75 @@ public class HomeFragment extends Fragment implements OnClickListener {
 	//
 	// return node;
 	// }
+	public class GetNewNotificationCountTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+//			pDialog = new ProgressDialog(getActivity());
+//			pDialog.setMessage("Getting Notification...");
+//			pDialog.setIndeterminate(false);
+//			pDialog.setCancelable(true);
+//			pDialog.show();
+		}
+		
+		@Override
+		protected String doInBackground(String... params) {
+			Log.d(TAG, "doInBackground : " + params[0]);
+			// ---------change method name
 
+		
+				return HttpConnectionUtils.getNotificationListResponse(
+						params[0],
+						getActivity().getResources().getString(R.string.hostname)
+								+ getActivity().getResources().getString(R.string.url_unread_count_notification));
+		
+			
+		}
+		
+		protected void onPostExecute(String response) {
+			super.onPostExecute(response);
+			
+//			if ((pDialog != null) && pDialog.isShowing()) { 
+//				pDialog.dismiss();
+//			}
+			
+			Log.i("Notification count Response ", response);
+			
+			try {
+				JSONObject eventListResponseObject = new JSONObject(response);
+				int status = eventListResponseObject.getInt("AuthenticationStatus");
+				String responseResult = eventListResponseObject.getString("Status");
+				String notificationCount = eventListResponseObject.getString("count");
+				if ((responseResult.equals("Success")) && (status == 1)) {
+					if(!notificationCount.equals("0")){
+						textNotificationCount.setText(notificationCount);
+						textNotificationCount.setVisibility(View.VISIBLE);
+					}else{
+						textNotificationCount.setVisibility(View.GONE);
+					}
+				}
+
+			}catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					Log.d("Exception thrown: ",
+							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+									+ tempStack.getMethodName());
+				}
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+//			if ((pDialog != null) && pDialog.isShowing()) { 
+//				pDialog.dismiss();
+//			}
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
+		}
+	}
 	private class TreeViewTask extends AsyncTask<String, String, String> {
 
 		private ProgressDialog pDialog;
@@ -350,7 +478,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		optionsLayout.setVisibility(View.VISIBLE);
 		selectedNode = nodeId;
 		selectedGender = gender;
-		
+		Log.d(TAG + " find nodeid 1----", ""+selectedNode);
 		if (nodeId.equals(sharedPreferences.getString("user_id", "0"))) {
 			textViewHide.setVisibility(View.GONE);
 		} else {
@@ -361,6 +489,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 	public void hideOptionsLayout() {
 		optionsLayout.setVisibility(View.INVISIBLE);
 		selectedNode = sharedPreferences.getString("user_id", "0");
+		Log.d(TAG + " find nodeid 1----", ""+selectedNode);
 		//selectedName = sharedPreferences.getString("sessionname", "NA");
 		//selectedGender = sharedPreferences.getString("gender", "1");
 	}
@@ -448,14 +577,13 @@ public class HomeFragment extends Fragment implements OnClickListener {
 
 		@Override
 		protected String doInBackground(Node... params) {
-
+			
 			// TODO generate node
 			String userId = sharedPreferences.getString("user_id", "0");
 			String nodeId = sharedPreferences.getString("node_id", userId);
 			// nodeId = (nodeId.equals("0")) ? userId : nodeId;
-			return HttpConnectionUtils.getMyTreeResponse(
-					userId,
-					nodeId,
+			return HttpConnectionUtils.getMyTreeResponse(	
+					userId,nodeId,
 					getActivity().getResources().getString(R.string.hostname)
 							+ getResources().getString(R.string.url_mytree));
 
@@ -540,7 +668,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 	
@@ -587,7 +715,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ", "" + tempStack.getLineNumber());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d("profile", "Invalid Server content from Profile!!");
 			}
 		}
@@ -596,7 +724,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
 			pDialog.dismiss();
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 

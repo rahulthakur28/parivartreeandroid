@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -54,7 +55,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 	private ImageView imageViewDelete;
 	private TextView txtEevntName, txtLocation, txtDateTime, txtYourName, txtEevntDescription;
 	private Button btnDeleteEvent, btnEditEvent;
-	private String eventIdbd, eventNamebd, eventDatebd, eventDescritionbd, locationbd, time,
+	private String eventIdbd, eventNamebd, eventDatebd, eventDescritionbd, locationbd, time,time24="",
 			yourNamebd;
 	int eventNamePos, eventReachPos;
 	private String userId = null;
@@ -112,9 +113,10 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		locationbd = bndle.getString("location");
 		eventDatebd = bndle.getString("eventdate");
 		time = bndle.getString("time");
+		time24  = bndle.getString("24time");
 		eventReachPos = bndle.getInt("eventreach", 0);
 		eventDescritionbd = bndle.getString("eventdescription");
-
+		
 		UrlImageViewHelper.setUrlDrawable(imageViewDelete, "https://www.parivartree.com/profileimages/thumbs/" + userId
 				+ "PROFILE.jpeg", getResources().getDrawable(R.drawable.dummyphoto1), 60000);
 		txtEevntName.setText(eventNamebd);
@@ -161,9 +163,19 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		Geocoder gc = new Geocoder(activity);
 		try {
 			List<Address> li = gc.getFromLocationName(locationbd, 5);
-			Address ad = li.get(0);
-			Double lat = ad.getLatitude();
-			Double lon = ad.getLongitude();
+			Double lat;
+			Double lon;
+			if(li.size() > 0) {
+				//Address ad = li.get(0);
+				lat = 0.0;//ad.getLatitude();
+				lon = 0.0;//ad.getLongitude();
+			}
+			else {
+				Address ad = li.get(0);
+				lat = ad.getLatitude();
+				lon = ad.getLongitude();
+			}
+			
 			LatLng gizmeon = new LatLng(lat, lon);
 			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gizmeon, 15));
 			googleMap.addMarker(new MarkerOptions().title(locationbd).snippet(locationbd).position(gizmeon));
@@ -212,6 +224,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			bundle2.putString("eventdate", eventDatebd);
 			bundle2.putString("eventdescription", eventDescritionbd);
 			bundle2.putInt("eventreach", eventReachPos);
+			bundle2.putString("time24", time24);
 			// fragment=new EditEventFragment();
 			// fragment.setArguments(bundle2);
 			((MainActivity) activity).changeFragment("EditEventFragment", bundle2);
@@ -287,7 +300,8 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content in Delete Event!!");
 			}
 
@@ -299,7 +313,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -365,7 +379,8 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content joinees!!");
 			}
 
@@ -378,7 +393,7 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -475,16 +490,10 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 			pDialog = null;
 			
 		Log.d(TAG, "onPause of fragment called");
-	}
-
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		Log.d(TAG, "onDestroyView called");
 		if (googleMap != null) {
 
-			getActivity().getSupportFragmentManager().beginTransaction()
-					.remove(getActivity().getSupportFragmentManager().findFragmentById(R.id.map1)).commit();
+			((FragmentActivity) activity).getSupportFragmentManager().beginTransaction()
+					.remove(((FragmentActivity) activity).getSupportFragmentManager().findFragmentById(R.id.map1)).commit();
 			googleMap = null;
 			Log.d(TAG, "googleMap removed");
 		} else {
@@ -492,6 +501,38 @@ public class DeleteEventFragment extends Fragment implements OnClickListener {
 		}
 		//
 		Log.d(TAG, "onPause called");
+	}
+@Override
+public void onStop() {
+	// TODO Auto-generated method stub
+	super.onStop();
+	if (googleMap != null) {
+
+		((FragmentActivity) activity).getSupportFragmentManager().beginTransaction()
+				.remove(((FragmentActivity) activity).getSupportFragmentManager().findFragmentById(R.id.map1)).commit();
+		googleMap = null;
+		Log.d(TAG, "googleMap removed");
+	} else {
+		Log.d(TAG, "googleMap was null");
+	}
+	//
+	Log.d(TAG, "onStop called");
+}
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		Log.d(TAG, "onDestroyView called");
+		if (googleMap != null) {
+
+			((FragmentActivity) activity).getSupportFragmentManager().beginTransaction()
+					.remove(((FragmentActivity) activity).getSupportFragmentManager().findFragmentById(R.id.map1)).commit();
+			googleMap = null;
+			Log.d(TAG, "googleMap removed");
+		} else {
+			Log.d(TAG, "googleMap was null");
+		}
+		//
+		Log.d(TAG, "onDestroyView called");
 	}
 
 	private GoogleMap getGoogleMap() {

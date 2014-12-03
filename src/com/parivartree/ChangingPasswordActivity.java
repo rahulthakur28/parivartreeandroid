@@ -42,6 +42,7 @@ public class ChangingPasswordActivity extends Activity implements OnClickListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_changing_password);
 		activity = this;
 		validator = new Validator(this);
@@ -147,7 +148,7 @@ public class ChangingPasswordActivity extends Activity implements OnClickListene
 			pDialog.dismiss();	if ((pDialog != null) && pDialog.isShowing()) { 
 			    pDialog.dismiss();
 			   }
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 
 	}

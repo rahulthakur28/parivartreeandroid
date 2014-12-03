@@ -794,7 +794,7 @@ public class CompleteTree implements OnClickListener{
 
 		Paint paint = new Paint();
 		paint.setColor(Color.BLACK);
-		paint.setStrokeWidth(5);
+		paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 		
 		connectorCanvas.drawLine(0, height / 5, width, height / 5, paint);
 		connectorCanvas.drawLine(width / 2, height, width / 2, height / 5, paint);
@@ -816,7 +816,7 @@ public class CompleteTree implements OnClickListener{
 
 		Paint paint = new Paint();
 		paint.setColor(Color.BLACK);
-		paint.setStrokeWidth(5);
+		paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 		
 		connectorCanvas.drawLine(0, height / 5, connector.getWidth(),
 				height / 5, paint);
@@ -857,7 +857,7 @@ public class CompleteTree implements OnClickListener{
 		
 		Paint paint = new Paint();
 		paint.setColor(Color.BLACK);
-		paint.setStrokeWidth(5);
+		paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 		
 		connectorCanvas.drawLine(position, height/2, position, height, paint);
 		
@@ -876,7 +876,7 @@ public class CompleteTree implements OnClickListener{
 			Log.d(TAG, "userParentConnectorWidth - " + userParentConnectorWidth);
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
-			paint.setStrokeWidth(5);
+			paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 
 			int lastUserRowPosition = userRow.size() - 1;
 			int startOffset = userToParentsConnectors.get(0);	//userView.getMeasuredWidth() / 2;
@@ -904,7 +904,7 @@ public class CompleteTree implements OnClickListener{
 			Log.d(TAG, "userOffset:" + userOffset);
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
-			paint.setStrokeWidth(5);
+			paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 
 			int lastUserRowPosition = userRow.size() - 1;
 			int startOffset = userToParentsConnectors.get(0);	//userView.getMeasuredWidth() / 2;
@@ -933,7 +933,7 @@ public class CompleteTree implements OnClickListener{
 			Log.d(TAG, "userParentConnectorWidth - " + userParentConnectorWidth);
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
-			paint.setStrokeWidth(5);
+			paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 
 			int lastUserRowPosition = userRow.size() - 1;
 			int startOffset = userToParentsConnectors.get(0);
@@ -969,7 +969,7 @@ public class CompleteTree implements OnClickListener{
 			Log.d(TAG, "userOffSpringConnector - " + userOffSpringConnector);
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
-			paint.setStrokeWidth(5);
+			paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 
 			int lastOffSpringPosition = offSpringRow.size() - 1;
 			int startOffset = userView.getMeasuredWidth() / 2;
@@ -996,7 +996,7 @@ public class CompleteTree implements OnClickListener{
 			Log.d(TAG, "userOffSpringConnector - " + userOffSpringConnector);
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
-			paint.setStrokeWidth(5);
+			paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 			
 			int lastOffSpringPosition = offSpringRow.size() - 1;
 			int startOffset = userView.getMeasuredWidth() / 2;
@@ -1023,7 +1023,7 @@ public class CompleteTree implements OnClickListener{
 			Log.d(TAG, "userOffSpringConnector - " + userOffSpringConnector);
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
-			paint.setStrokeWidth(5);
+			paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 			
 			int lastOffSpringPosition = offSpringRow.size() - 1;
 			int startOffset = userView.getMeasuredWidth() / 2;
@@ -2044,7 +2044,7 @@ public class CompleteTree implements OnClickListener{
 			//Log.d(TAG, "userOffSpringConnector - " + userOffSpringConnector);
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
-			paint.setStrokeWidth(5);
+			paint.setStrokeWidth((int)(context.getResources().getDisplayMetrics().density * 2.5));
 			
 			int lastOffSpringPosition = siblingOffspringsRow.size() - 1;
 			int startOffset = userView.getMeasuredWidth() / 2;

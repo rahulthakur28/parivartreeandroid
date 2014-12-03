@@ -11,10 +11,13 @@
     <string name="title_activity_main">parivartree</string>
     <string name="title_activity_login_details">parivartree</string>
     <string name="title_activity_sign_up">parivartree</string>
-    <string name="facebook_app_id">344736635684076</string>
+    <!-- <string name="facebook_app_id">344736635684076</string> -->
+    <string name="facebook_app_id">210462185806713</string>
     <string name="title_activity_sign_up_details">SignUpDetailsActivity</string>
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
     <string name="title_activity_terms">TermsActivity</string>
+    <string name="title_activity_changing_password">ChangingPasswordActivity</string>
+    <string name="title_activity_otpcode">OtpcodeActivity</string>
     <!-- actionbar menu items -->
 
     <string name="action_notification">Notification</string>
@@ -107,7 +110,7 @@
     <string name="sample">Sample</string>
 
     <!-- Parivar Tree API -->
-    <string name="host">http://115.124.125.53/app_dev.php/</string>
+    <!-- <string name="host">http://115.124.125.53/app_dev.php/</string> -->
     <string name="hostname">https://www.parivartree.com/app.php/</string>
     <string name="url_login1">mobilelogin1</string>
     <!-- <string name="url_signup">addnewuser</string> -->
@@ -129,11 +132,12 @@
     <string name="url_edit_profile1_url">mobileupdateprofile1</string>
     <string name="url_religion">religion</string>
     <string name="url_community">mobilecommunity</string>
+    <string name="url_all_community">mobilegetcommunities</string>
     <string name="url_gothra">mobilegothra</string>
     <string name="url_mytree">mobilemytree</string>
     <string name="url_change_password">mobilechangepassword</string>
     <string name="url_set_password">mobilesetpassword</string>
-    <string name="url_notification">mobilenotification</string>
+    <string name="url_all_notification">mobilenotification</string>
     <string name="url_search_users">mobilesearchusers</string>
     <string name="url_add_relation">mobileaddrelation</string>
     <string name="url_create_user">mobilecreateuser</string>
@@ -154,6 +158,27 @@
     <string name="url_immediate_family">mobileimediaterelations</string>
     <string name="url_field_privacy">mobilesetfieldprivacy</string>
     <string name="url_view_profile2">mobileprofileview</string>
+    <string name="url_refine_search"> mobile/refinedsearch</string>
+    <string name="url_unread_notification">mobilegetNotifications</string>
+    <string name="url_unread_count_notification">mobilenotificationcount</string>
+    <string name="url_setreadstatus_notification">mobilesetreadstatus</string>
+   
+      <!-- Gallery url to see album -->
+    <string name="url_gallary">mobilegalleryindex</string>
+    <string name="url_gallary_album">mobilegalleryalbum</string>
+    
+      <!-- Gallery url to update and delete -->
+    <string name="url_gallary_album_delete">mobilegalleryconfirmalbumdelete</string>
+    <string name="url_gallary_edit_name">mobileeditgalleryname</string>
+    
+      <!-- Gallery url to create new album -->
+     <string name="url_gallary_create">mobileuploadAlbumImage</string>
+     
+    <!-- Gallery hostname-->
+    <string name="galleryhostname">https://www.parivartree.com/imagegallery/</string>
+    <string name="photos">/photos/</string>
+    <string name="thumbs">/thumbs/</string>
+   
     <string name="login_url">http://115.124.125.53/app_dev.php/mobilelogin</string>
     <string name="signup_url">http://115.124.125.53/app_dev.php/addnewuser</string>
     <string name="view_profile_url">http://115.124.125.53/app_dev.php/mobileprofile</string>
@@ -191,8 +216,23 @@
     <string name="make_alive_url">http://115.124.125.53/app_dev.php/mobilemakemealive</string>
     <string name="immediate_family_url">http://115.124.125.53/app_dev.php/mobileimediaterelations</string>
     <string name="field_privacy_url">http://115.124.125.53/app_dev.php/mobilesetfieldprivacy</string>
-    <string name="title_activity_changing_password">ChangingPasswordActivity</string>
-    <string name="title_activity_otpcode">OtpcodeActivity</string>
+  
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    
+    <string name="editalbum">Edit Album</string>
+    <string name="deletealbum">Delete Album</string> 
+    
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="enterthevalues">Enter the values..</string>
+    <string name="name">Name</string>   
+    <string name="description">Description</string>
+    <string name="albumsubmit">Submit</string>
+    <string name="title_activity_createnewalbum">New Album</string>
+    
+    <array name="privacyaccessarray">
+        <item>private</item>
+        <item>family</item>
+        <item>public</item>
+    </array>
 </resources>

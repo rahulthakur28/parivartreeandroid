@@ -205,7 +205,7 @@ public class SettingsFragment extends Fragment implements OnClickListener, Valid
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d("settings", "Invalid Server content from settings!!");
 			}
 
@@ -215,7 +215,7 @@ public class SettingsFragment extends Fragment implements OnClickListener, Valid
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
 			pDialog.dismiss();
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 
 	}

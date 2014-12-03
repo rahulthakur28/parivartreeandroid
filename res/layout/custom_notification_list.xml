@@ -16,6 +16,7 @@
             android:id="@+id/imageViewnotifi"
             android:layout_width="0dp"
             android:layout_height="80dp"
+            android:layout_marginBottom="20dp"
             android:layout_centerInParent="true"
             android:layout_weight=".2"
             android:src="@drawable/parivar_mobile_profile_image_vsmall" />
@@ -36,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="notification Text "
+                    android:text=" "
                      android:textSize="14dp" />
             </LinearLayout>
 

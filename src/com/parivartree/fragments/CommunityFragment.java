@@ -156,6 +156,7 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 			bundle.putString("eventdate", eventArrayList.get(spos).getDate());
 			bundle.putString("eventdescription", eventArrayList.get(spos).getEventDescription());
 			bundle.putInt("eventreach", eventArrayList.get(spos).getReach());
+			bundle.putString("24time", eventArrayList.get(spos).getTime24());
 			// fragment=new DeleteEventFragment();
 			// fragment.setArguments(bundle);
 			((MainActivity) this.getActivity()).changeFragment("DeleteEventFragment", bundle);
@@ -174,6 +175,7 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 			bundle.putString("eventdescription", eventArrayList.get(spos).getEventDescription());
 			bundle.putInt("eventreach", eventArrayList.get(spos).getReach());
 			bundle.putString("inviteestatus", eventArrayList.get(spos).getInviteestatus());
+			bundle.putString("24time", eventArrayList.get(spos).getTime24());
 
 			((MainActivity) this.getActivity()).changeFragment("AllEventsFragment", bundle);
 			// fragment=new AllEventsFragment();
@@ -349,7 +351,8 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 							eventobj.setName(name);
 							eventobj.setTime(time);
 							eventobj.setReach(reach);
-
+							eventobj.setTime24(_24HourTime);
+							
 							eventArrayList.add(eventobj);
 						} else if (whichEvent.equals("upcomingevents")) {
 							String inviteeStatus = c.getString("inviteestatus");
@@ -381,6 +384,8 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 								eventobj.setName(name);
 								eventobj.setTime(time);
 								eventobj.setReach(reach);
+								eventobj.setTime24(_24HourTime);
+								
 								eventobj.setInviteestatus(inviteeStatus);
 								Log.d(TAG, "upcomming" + eventName);
 								eventArrayList.add(eventobj);
@@ -416,6 +421,7 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 								eventobj.setName(name);
 								eventobj.setTime(time);
 								eventobj.setReach(reach);
+								eventobj.setTime24(_24HourTime);
 								eventobj.setInviteestatus(inviteeStatus);
 								Log.d(TAG, "recent" + eventName);
 								eventArrayList.add(eventobj);
@@ -436,7 +442,8 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 
@@ -449,7 +456,7 @@ public class CommunityFragment extends Fragment implements OnClickListener, OnIt
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 }

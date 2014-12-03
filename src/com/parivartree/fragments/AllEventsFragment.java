@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+import com.parivartree.MainActivity;
 import com.parivartree.R;
 import com.parivartree.helpers.ConDetect;
 import com.parivartree.helpers.HttpConnectionUtils;
@@ -102,7 +104,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		btnJoinEvent.setOnClickListener(this);
 		btnMayEvent.setOnClickListener(this);
 		btnDeclineEvent.setOnClickListener(this);
-
+		activity = getActivity();
 		// get data send from community fragment
 		Bundle bndle = getArguments();
 		eventIdbd = bndle.getString("eventid");
@@ -125,23 +127,39 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		txtDateTime.setText(eventDatebd + "  " + time);
 		txtYourName.setText(yourNamebd);
 		txtEevntDescription.setText(eventDescritionbd);
-
+Log.d("inviteeStatusbd============", inviteeStatusbd);
 		if (inviteeStatusbd.trim().equals("1")) {
+			btnJoinEvent.setClickable(false);
+			btnMayEvent.setClickable(true);
+			btnDeclineEvent.setClickable(true);
+			
 			btnJoinEvent.setBackgroundResource(R.drawable.round_corners_while);
 			btnJoinEvent.setTextColor(R.color.ll_black);
 			btnMayEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
 			btnDeclineEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
 		} else if (inviteeStatusbd.trim().equals("2")) {
+			btnJoinEvent.setClickable(true);
+			btnMayEvent.setClickable(false);
+			btnDeclineEvent.setClickable(true);
+			
 			btnJoinEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
 			btnMayEvent.setBackgroundResource(R.drawable.round_corners_while);
 			btnMayEvent.setTextColor(R.color.ll_black);
 			btnDeclineEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
 		} else if (inviteeStatusbd.trim().equals("3")) {
+			btnJoinEvent.setClickable(true);
+			btnMayEvent.setClickable(true);
+			btnDeclineEvent.setClickable(false);
+			
 			btnJoinEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
 			btnMayEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
 			btnDeclineEvent.setBackgroundResource(R.drawable.round_corners_while);
 			btnDeclineEvent.setTextColor(R.color.ll_black);
 		} else {
+			btnJoinEvent.setClickable(true);
+			btnMayEvent.setClickable(true);
+			btnDeclineEvent.setClickable(true);
+			
 			btnJoinEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
 			btnMayEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
 			btnDeclineEvent.setBackgroundResource(R.drawable.rounded_corners_blue);
@@ -315,12 +333,13 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 				if (responseResult.equals("Success")) {
 
 					Log.d(TAG, "process success");
-					Fragment fragment = new CommunityFragment();
-					if (fragment != null) {
-						FragmentManager fragmentManager = getFragmentManager();
-						fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null)
-								.commit();
-					}
+					((MainActivity)activity).changeFragment("CommunityFragment");
+//					Fragment fragment = new CommunityFragment();
+//					if (fragment != null) {
+//						FragmentManager fragmentManager = getFragmentManager();
+//						fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null)
+//								.commit();
+//					}
 				}
 
 			} catch (Exception e) {
@@ -329,7 +348,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content!!");
 			}
 
@@ -406,7 +425,7 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content joinees!!");
 			}
 		}
@@ -540,16 +559,10 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		pDialog = null;
 		
 		Log.d(TAG, "onPause of fragment called");
-	}
-
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		Log.d(TAG, "onDestroyView called");
 		if (googleMap != null) {
 
-			getActivity().getSupportFragmentManager().beginTransaction()
-					.remove(getActivity().getSupportFragmentManager().findFragmentById(R.id.map2)).commit();
+			((FragmentActivity) activity).getSupportFragmentManager().beginTransaction()
+					.remove(((FragmentActivity) activity).getSupportFragmentManager().findFragmentById(R.id.map2)).commit();
 			googleMap = null;
 			Log.d(TAG, "googleMap removed");
 		} else {
@@ -558,6 +571,38 @@ public class AllEventsFragment extends Fragment implements OnClickListener {
 		//
 		Log.d(TAG, "onPause called");
 	}
+@Override
+public void onStop() {
+	// TODO Auto-generated method stub
+	super.onStop();
+	if (googleMap != null) {
+
+		((FragmentActivity) activity).getSupportFragmentManager().beginTransaction()
+				.remove(((FragmentActivity) activity).getSupportFragmentManager().findFragmentById(R.id.map2)).commit();
+		googleMap = null;
+		Log.d(TAG, "googleMap removed");
+	} else {
+		Log.d(TAG, "googleMap was null");
+	}
+	//
+	Log.d(TAG, "onStop called");
+}
+//	@Override
+//	public void onDestroyView() {
+//		super.onDestroyView();
+//		Log.d(TAG, "onDestroyView called");
+//		if (googleMap != null) {
+//
+//			getActivity().getSupportFragmentManager().beginTransaction()
+//					.remove(getActivity().getSupportFragmentManager().findFragmentById(R.id.map2)).commit();
+//			googleMap = null;
+//			Log.d(TAG, "googleMap removed");
+//		} else {
+//			Log.d(TAG, "googleMap was null");
+//		}
+//		//
+//		Log.d(TAG, "onDestroyView called");
+//	}
 
 	private GoogleMap getGoogleMap() {
 		if (googleMap == null && getActivity() != null && getActivity().getSupportFragmentManager() != null) {

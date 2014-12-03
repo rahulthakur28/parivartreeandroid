@@ -1,31 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/parivar_mobile_bg_3_0"
+    android:windowSoftInputMode="adjustPan"
     android:gravity="center"
+    android:baselineAligned="false"
     android:orientation="horizontal"
     android:weightSum="1.0" >
-    
-    <LinearLayout
+
+    <!--  
+    <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_weight=".8"
-        android:background="@drawable/select_menu_background"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:weightSum="1.0" >
-
-         <TextView
-            android:id="@+id/relationtitle2"
+        android:fillViewport="true"
+        android:scrollbars="none" >
+	-->
+        <LinearLayout
+            
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Adding"
-             android:padding="10dp"
-            android:background="@color/pt_blue"
-            android:textColor="@color/pt_white"
-            android:textSize="17sp" />
-        <!--
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/select_menu_background"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:weightSum="1.0" >
+			
+            <TextView
+                android:id="@+id/relationtitle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/pt_blue"
+                android:padding="10dp"
+                android:text="Adding"
+                android:textColor="@color/pt_white"
+                android:textSize="17sp" />
+            <!--
         <EditText
 	        android:id="@+id/editText1"
 	        android:layout_width="0dp"
@@ -38,114 +54,117 @@
 	        android:hint="First Name"
 	        android:background="@drawable/edit_text_background"
 	        android:padding="8dp" />
-        -->
+            -->
 
-    <com.parivartree.customviews.CustomAutoCompleteTextView
-        android:id="@+id/autoCompleteUser"
-       	android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"          
-            android:inputType="textCapWords"
-            android:background="@drawable/edit_text_background"
-            android:ems="10"
-            android:hint="Search Names"
-            android:padding="10dp"
-            android:textColorHint="@color/pt_lightblue"
-            android:textStyle="italic"
-        android:completionThreshold="1" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/pt_blue" />
-
-        <EditText
-            android:id="@+id/firstName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/edit_text_background"
-            android:ems="10"
-            android:hint="First Name"
-            android:padding="10dp"
-            android:inputType="textCapWords"
-            android:textColorHint="@color/pt_lightblue"
-            android:textStyle="italic" />
-
-        <EditText
-            android:id="@+id/lastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/edit_text_background"
-            android:ems="10"
-            android:hint="Last Name"
-            android:inputType="textCapWords"
-            android:padding="10dp"
-            android:textColorHint="@color/pt_lightblue"
-            android:textStyle="italic" />
-
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/edit_text_background"
-            android:ems="10"
-            android:hint="Email"
-            android:inputType="textPersonName"
-            android:padding="10dp"
-            android:textColorHint="@color/pt_lightblue"
-            android:textStyle="italic" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/textview12"
-                android:layout_width="wrap_content"
+            <com.parivartree.customviews.CustomAutoCompleteTextView
+                android:id="@+id/autoCompleteUser"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edit_text_background"
+                android:completionThreshold="1"
+                android:ems="10"
+                android:hint="Search Names"
+                android:inputType="textCapWords"
                 android:padding="10dp"
-                android:textSize="11sp"
-                android:text="No Email ? "
-                android:textStyle="bold" />
+                android:textColorHint="@color/pt_lightblue"
+                android:textStyle="italic" />
 
-            <CheckBox
-                android:id="@+id/checkboxemail"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/pt_blue" />
+
+            <EditText
+                android:id="@+id/firstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edit_text_background"
+                android:ems="10"
+                android:hint="First Name"
+                android:inputType="textCapWords"
+                android:padding="10dp"
+                android:textColorHint="@color/pt_lightblue"
+                android:textStyle="italic" />
+
+            <EditText
+                android:id="@+id/lastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edit_text_background"
+                android:ems="10"
+                android:hint="Last Name"
+                android:inputType="textCapWords"
+                android:padding="10dp"
+                android:textColorHint="@color/pt_lightblue"
+                android:textStyle="italic" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edit_text_background"
+                android:ems="10"
+                android:hint="Email"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                android:textColorHint="@color/pt_lightblue"
+                android:textStyle="italic" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false" />
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/textview12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="No Email ? "
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/checkboxemail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false" />
+            </LinearLayout>
+
+            <AutoCompleteTextView
+                android:id="@+id/autocompleterelationlocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edit_text_background"
+                android:ems="10"
+                android:hint="Locality"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                android:textColorHint="@color/pt_lightblue"
+                android:textStyle="italic" />
+
+            <Button
+                android:id="@+id/create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_corners_blue"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Submit"
+                android:textColor="@color/pt_white" />
         </LinearLayout>
-       <AutoCompleteTextView
-            android:id="@+id/autocompleterelationlocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/edit_text_background"
-            android:ems="10"
-            android:hint="Locality"
-            android:inputType="textPersonName"
-            android:padding="10dp"
-            android:textColorHint="@color/pt_lightblue"
-            android:textStyle="italic" />
+    <!-- </ScrollView> -->
 
-        <Button
-            android:id="@+id/create"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:background="@drawable/rounded_corners_blue"
-            android:text="Submit" 
-            android:textColor="@color/pt_white"/>
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

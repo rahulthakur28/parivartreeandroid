@@ -3,7 +3,6 @@ package com.parivartree;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -48,9 +47,9 @@ import com.google.android.gms.plus.model.people.Person;
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
-import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.helpers.ConDetect;
+import com.parivartree.helpers.CroutonMessage;
 import com.parivartree.helpers.HttpConnectionUtils;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -65,22 +64,21 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	private Button loginButton;
 	String email, emailtext;
 	LoginTask lT;
-	
-	private ProgressDialog pDialog;
+	boolean facebookOverlay = true;
 	/**
 	 * Facebook
 	 */
 	private LoginButton facebookButton;
 
 	// Your Facebook APP ID
-	private static String FACEBOOK_APP_ID = "344736635684076"; // Replace your
-																// App ID here
+	//private static String FACEBOOK_APP_ID = "344736635684076"; // Replace your App ID here
+	
 	private UiLifecycleHelper uiHelper;
 
-	private static final List<String> PERMISSIONS = Arrays.asList("publish_stream");
+	private static final List<String> PERMISSIONS = Arrays.asList("public_profile");
 	// private static final List<String> PERMISSIONS =
 	// Arrays.asList("publish_actions","email");
-
+	
 	// List<String> PERMISSIONS;
 
 	// Instance of Facebook Class
@@ -116,7 +114,10 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	private EditText editTextPassword;
 	ImageView login;
 	Validator validator;
-
+	
+	LinearLayout mainLinearLayout,blankLinearLayout;
+	private ProgressDialog pDialog;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -163,6 +164,9 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		editTextPassword = (EditText) findViewById(R.id.editText2);
 
 		forgotpassord = (LinearLayout) findViewById(R.id.linearLayout5);
+		mainLinearLayout =(LinearLayout) findViewById(R.id.mainlinearlayout);
+		blankLinearLayout =(LinearLayout) findViewById(R.id.blanklinearlayout);
+		
 		// loginButton.setOnClickListener(this);
 		login.setOnClickListener(this);
 		forgotpassord.setOnClickListener(this);// set listener to forgot
@@ -175,7 +179,6 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				.addOnConnectionFailedListener(this).addApi(Plus.API, new Plus.PlusOptions.Builder().build())
 				.addScope(Plus.SCOPE_PLUS_LOGIN).build();
 	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -232,6 +235,8 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 	@Override
 	protected void onStop() {
 		super.onStop();
+		//show background blank layout for facebook login
+		blankLinearLayout.setVisibility(View.INVISIBLE);
 		if (mGoogleApiClient.isConnected()) {
 			mGoogleApiClient.disconnect();
 			Log.d(TAG, "Google API Client was connected");
@@ -275,6 +280,10 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		} else if (v.getId() == R.id.facebookLogin) {
 			// facebookButton.setSessionStatusCallback(fbStatusCallback);
 			Log.d(TAG, "Facebook button clciked");
+			
+			//show background blank layout for facebook login
+			blankLinearLayout.setVisibility(View.VISIBLE);
+			
 			facebookButton.setUserInfoChangedCallback(new UserInfoChangedCallback() {
 				@Override
 				public void onUserInfoFetched(GraphUser user) {
@@ -441,7 +450,8 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				sharedPreferencesEditor.commit();
 
 				String[] fullName = personName.split(" ");
-				String gender = (currentPerson.getGender() == 0) ? "male" : "female";
+				Log.i(TAG, "gender   " + currentPerson.getGender());
+				String gender = (currentPerson.getGender() == 0) ? "1" : "2";
 				Log.i(TAG, "ID" + personId + "Name: " + personName + ", plusProfile: " + personGooglePlusProfile
 						+ ", email: " + email + ", Image: " + personPhotoUrl + " gender" + currentPerson.getGender());
 
@@ -485,7 +495,9 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 				Log.d("FacebookSampleActivity", "Facebook session opened");
 			} else if (state.isClosed()) {
 				// buttonsEnabled(false);
+				facebookOverlay = false;
 				Log.d("FacebookSampleActivity", "Facebook session closed");
+				blankLinearLayout.setVisibility(View.INVISIBLE);
 			}
 		}
 	};
@@ -640,9 +652,14 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			//pDialog.dismiss();
 			Log.i("Login Response ", response);
 			try {
-
+				String responseResult,message="Please check your inputs";
 				JSONObject loginResponseObject = new JSONObject(response);
-				String responseResult = loginResponseObject.getString("result");
+				if(loginResponseObject.has("result")){
+					responseResult = loginResponseObject.getString("result");
+				}
+				if(loginResponseObject.has("msg")){
+					message = loginResponseObject.getString("msg");
+				}
 				int status = loginResponseObject.getInt("AuthenticationStatus");
 				if (status == 1) {
 					// TODO store the login response and
@@ -670,7 +687,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 					 */
 					Crouton.makeText(
 							activity,
-							"Your account has been blocked!.Please click on forgot password to re-generate your password",
+							message,
 							Style.ALERT).show();
 				} else if (status == 3) {
 					// TODO account disable
@@ -736,7 +753,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			if ((pDialog != null) && pDialog.isShowing()) {
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -769,6 +786,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			if ((pDialog != null) && pDialog.isShowing()) {
 				pDialog.dismiss();
 			}
+			Log.i("Facebook Login Response ", "-----login---");
 			Log.i("Facebook Login Response ", response);
 			try {
 
@@ -795,11 +813,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 							| Intent.FLAG_ACTIVITY_CLEAR_TASK));
 				} else {
 					Log.d("Facebook Login AuthenticationStatus : ", "" + status);
-					Toast.makeText(context, "Facebook Login Not Successful", Toast.LENGTH_LONG).show();
-					if (status == 1) {
-						// TODO successful authentication
-
-					}
+					CroutonMessage.showCroutonAlert(activity, "Facebook Login Not Successful", 7000);
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
@@ -821,7 +835,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			if ((pDialog != null) && pDialog.isShowing()) {
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -837,7 +851,7 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 			// Create object of AsycTask and execute
 			emailtext = editTextUsername.getText().toString();
 			lT = new LoginTask();
-			lT.execute(editTextUsername.getText().toString(), editTextPassword.getText().toString());
+			lT.execute(editTextUsername.getText().toString().trim(), editTextPassword.getText().toString().trim());
 			Handler handler = new Handler();
 			handler.postDelayed(new Runnable() {
 				@Override
@@ -865,4 +879,5 @@ public class LoginDetailsActivity extends Activity implements OnClickListener, C
 		}
 	}
 
+	
 }

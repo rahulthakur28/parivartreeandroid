@@ -30,7 +30,7 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 		inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		Log.d("ImmediateFamilyAdapter", "initialized");
 	}
-
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
@@ -55,54 +55,6 @@ public class ImmediateFamilyAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-
-		/*
-		 * LayoutInflater inflater = (LayoutInflater)
-		 * context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		 * //RelativeLayout rl;
-		 * 
-		 * //View vi = convertView;
-		 * 
-		 * //if(convertView == null) { View rl = (RelativeLayout)
-		 * inflater.inflate(R.layout.item_immediate_family, parent, false);
-		 * 
-		 * 
-		 * //if(position%2 ==
-		 * 0){vi.setBackgroundColor(context.getResources().getColor
-		 * (R.color.pt_grey_transparent));}
-		 * //else{vi.setBackgroundColor(context.
-		 * getResources().getColor(R.color.pt_overlay));}
-		 * 
-		 * 
-		 * CircularImageView civ = (CircularImageView)
-		 * rl.findViewById(R.id.imageView1); TextView txtFirstName = (TextView)
-		 * rl.findViewById(R.id.textViewFirstName); TextView txtLastName =
-		 * (TextView) rl.findViewById(R.id.textViewLastName); //TextView txtdate
-		 * = (TextView) ll.findViewById(R.id.textViewdate);
-		 * 
-		 * int id =
-		 * Integer.parseInt(familyMembers.get(position).get("relnodeid")); int
-		 * gender = Integer.parseInt(familyMembers.get(position).get("gender"));
-		 * 
-		 * if(civ == null) {Log.d("ImmediateFamilyAdapter", "civ null");}
-		 * if(txtFirstName == null) {Log.d("ImmediateFamilyAdapter",
-		 * "txtFirstName null");} if(txtLastName == null)
-		 * {Log.d("ImmediateFamilyAdapter", "txtLastName null");}
-		 * 
-		 * if(gender == 1) { UrlImageViewHelper.setUrlDrawable(civ,
-		 * "http://www.parivartree.com/profileimages/thumbs/" + id +
-		 * "PROFILE.jpeg", context.getResources().getDrawable(R.drawable.male),
-		 * 60000); } else { UrlImageViewHelper.setUrlDrawable(civ,
-		 * "http://www.parivartree.com/profileimages/thumbs/" + id +
-		 * "PROFILE.jpeg",
-		 * context.getResources().getDrawable(R.drawable.female), 60000); }
-		 * txtFirstName.setText(familyMembers.get(position).get("firstName"));
-		 * txtLastName.setText(familyMembers.get(position).get("lastName"));
-		 * 
-		 * Log.d("ImmediateFamilyAdapter", "" + txtFirstName.getText()); //}
-		 * 
-		 * return rl;
-		 */
 		Log.d("ImmediateFamilyAdapter", "getView() called");
 		Holder holder;
 	try {

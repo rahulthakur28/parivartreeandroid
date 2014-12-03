@@ -1,9 +1,17 @@
 package com.parivartree.models;
 
 public class Event {
-	String eventName, location, date, time, name, eventDescription, authorId, eventId, inviteestatus;
+	String eventName="", location="", date="", time="", name="", eventDescription="", authorId="", eventId="", inviteestatus="",time24 ="" ;
+
 	int event, reach;
 
+	public String getTime24() {
+		return time24;
+	}
+
+	public void setTime24(String time24) {
+		this.time24 = time24;
+	}
 	public String getInviteestatus() {
 		return inviteestatus;
 	}

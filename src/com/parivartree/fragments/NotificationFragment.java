@@ -4,9 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,32 +20,36 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parivartree.R;
 import com.parivartree.adapters.CustomNotificationAdapter;
+import com.parivartree.fragments.HomeFragment.GetNewNotificationCountTask;
 import com.parivartree.helpers.ConDetect;
+import com.parivartree.helpers.CroutonMessage;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NotificationModel;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends Fragment implements OnClickListener{
 	private String TAG = "NotificationFragment";
 	private String userId;
 	ListView notificationList;
-	// TextView viewAll;
-	// String allNotification;
+	 TextView viewAll;
+	 String allNotification ="unread";
 	ArrayList<NotificationModel> notificationModelList;
 	CustomNotificationAdapter notificationCustomAdapter;
 	private SharedPreferences sharedPreferences;
 	NotificationModel notifiObject;
 	Activity activity;
 	private ProgressDialog pDialog;
-	//BroadcastReceiver mBroadcastReceiver;
+	TextView textNotificationCount;
 
 	public NotificationFragment() {
 	}
@@ -60,16 +66,18 @@ public class NotificationFragment extends Fragment {
 						getActivity().getPackageName() + getResources().getString(R.string.USER_PREFERENCES),
 						Context.MODE_PRIVATE);
 		userId = sharedPreferences.getString("user_id", null);
-
+		ActionBar actionBar = activity.getActionBar();
+		textNotificationCount = (TextView) actionBar.getCustomView().findViewById(R.id.textnoofnotification);
+		
 		notificationList = (ListView) rootView.findViewById(R.id.notifiationlist);
-		// viewAll = (TextView) rootView.findViewById(R.id.textviewall);
+		 viewAll = (TextView) rootView.findViewById(R.id.textviewall);
 		Log.d("list before", "" + notificationModelList);
 		notificationModelList = new ArrayList<NotificationModel>();
 		Log.d("list after", "" + notificationModelList);
 		notificationCustomAdapter = new CustomNotificationAdapter(activity, this, notificationModelList, userId);
 		notificationList.setAdapter(notificationCustomAdapter);
 		// allNotification = "unread";
-		// viewAll.setOnClickListener(this);
+		 viewAll.setOnClickListener(this);
 		return rootView;
 	}
 	@Override
@@ -84,6 +92,7 @@ public class NotificationFragment extends Fragment {
 		boolean bool = new ConDetect(getActivity()).isOnline();
 		if (bool) {
 			// Create object of AsycTask and execute
+			allNotification ="unread";
 			final GetNotificationTask getnotificationTask = new GetNotificationTask();
 			getnotificationTask.execute(userId);
 			Handler handler = new Handler();
@@ -99,6 +108,24 @@ public class NotificationFragment extends Fragment {
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 		}
+		boolean bools = new ConDetect(getActivity()).isOnline();
+		if (bools) {
+			// Create object of AsycTask and execute
+			final GetNewNotificationCountTask getNewNotificationCountTask = new GetNewNotificationCountTask();
+			getNewNotificationCountTask.execute(sharedPreferences.getString("user_id", "NA"));
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (getNewNotificationCountTask.getStatus() == AsyncTask.Status.RUNNING){
+						getNewNotificationCountTask.cancel(true);
+					}
+				}
+			}, 10000);
+			
+		} else {
+			CroutonMessage.showCroutonAlert(activity, "!No Internet Connection,Try again", 6000);
+		}
 	}
 	
 	@Override
@@ -108,15 +135,111 @@ public class NotificationFragment extends Fragment {
 		if ((pDialog != null) && pDialog.isShowing())
 			pDialog.dismiss();
 		pDialog = null;
-	    
+		boolean bool = new ConDetect(getActivity()).isOnline();
+		if (bool) {
+			// Create object of AsycTask and execute
+			allNotification ="setread";
+			final GetNotificationSetReadStatusTask getNotificationSetReadStatusTask = new GetNotificationSetReadStatusTask();
+			getNotificationSetReadStatusTask.execute(userId);
+			
+		} else {
+			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+		}
+//		boolean bools = new ConDetect(getActivity()).isOnline();
+//		if (bools) {
+//			// Create object of AsycTask and execute
+//			final GetNewNotificationCountTask getNewNotificationCountTask = new GetNewNotificationCountTask();
+//			getNewNotificationCountTask.execute(sharedPreferences.getString("user_id", "NA"));
+//			Handler handler = new Handler();
+//			handler.postDelayed(new Runnable() {
+//				@Override
+//				public void run() {
+//					if (getNewNotificationCountTask.getStatus() == AsyncTask.Status.RUNNING){
+//						getNewNotificationCountTask.cancel(true);
+//					}
+//				}
+//			}, 10000);
+//			
+//		} else {
+//			CroutonMessage.showCroutonAlert(activity, "!No Internet Connection,Try again", 6000);
+//		}
 	}
-	
+	public class GetNewNotificationCountTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+//			pDialog = new ProgressDialog(getActivity());
+//			pDialog.setMessage("Getting Notification...");
+//			pDialog.setIndeterminate(false);
+//			pDialog.setCancelable(true);
+//			pDialog.show();
+		}
+		
+		@Override
+		protected String doInBackground(String... params) {
+			Log.d(TAG, "doInBackground : " + params[0]);
+			// ---------change method name
+
+		
+				return HttpConnectionUtils.getNotificationListResponse(
+						params[0],
+						"https://www.parivartree.com/app.php/mobilenotificationcount");
+		
+			
+		}
+		
+		protected void onPostExecute(String response) {
+			super.onPostExecute(response);
+			
+//			if ((pDialog != null) && pDialog.isShowing()) { 
+//				pDialog.dismiss();
+//			}
+			
+			Log.i("Notification count Response ", response);
+			
+			try {
+				JSONObject eventListResponseObject = new JSONObject(response);
+				int status = eventListResponseObject.getInt("AuthenticationStatus");
+				String responseResult = eventListResponseObject.getString("Status");
+				String notificationCount = eventListResponseObject.getString("count");
+				if ((responseResult.equals("Success")) && (status == 1)) {
+					if(!notificationCount.equals("0")){
+						textNotificationCount.setText(notificationCount);
+						textNotificationCount.setVisibility(View.VISIBLE);
+					}else{
+						textNotificationCount.setVisibility(View.GONE);
+					}
+				}
+
+			}catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					Log.d("Exception thrown: ",
+							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+									+ tempStack.getMethodName());
+				}
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+			}
+		}
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+//			if ((pDialog != null) && pDialog.isShowing()) { 
+//				pDialog.dismiss();
+//			}
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
+		}
+	}
 	public class GetNotificationTask extends AsyncTask<String, Void, String> {
 		
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			if ((pDialog != null))
+				pDialog.dismiss();
 			pDialog = new ProgressDialog(getActivity());
 			pDialog.setMessage("Getting Notification...");
 			pDialog.setIndeterminate(false);
@@ -128,11 +251,19 @@ public class NotificationFragment extends Fragment {
 		protected String doInBackground(String... params) {
 			Log.d(TAG, "doInBackground : " + params[0]);
 			// ---------change method name
-			
-			return HttpConnectionUtils.getNotificationListResponse(
-					params[0],
-					getActivity().getResources().getString(R.string.hostname)
-							+ getActivity().getResources().getString(R.string.url_notification));
+			String response = "";
+			if(allNotification.equalsIgnoreCase("read")){
+				response = HttpConnectionUtils.getNotificationListResponse(
+						params[0],
+						getActivity().getResources().getString(R.string.hostname)
+								+ getActivity().getResources().getString(R.string.url_all_notification));
+			}else if(allNotification.equalsIgnoreCase("unread")){
+				response =HttpConnectionUtils.getNotificationListResponse(
+						params[0],
+						getActivity().getResources().getString(R.string.hostname)
+								+ getActivity().getResources().getString(R.string.url_unread_notification));
+			}
+			return response;
 			
 		}
 		
@@ -215,7 +346,7 @@ public class NotificationFragment extends Fragment {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
 				Log.d(TAG, "Invalid Server content from Notification!!");
 			}
 
@@ -227,10 +358,20 @@ public class NotificationFragment extends Fragment {
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
-
+	public class GetNotificationSetReadStatusTask extends AsyncTask<String, Void, Void> {
+		@Override
+		protected Void doInBackground(String... params) {
+			Log.d(TAG, "doInBackground : " + params[0]);
+			// ---------change method name
+		HttpConnectionUtils.getNotificationListResponse(
+						params[0],
+						"https://www.parivartree.com/app.php/mobilesetreadstatus");
+		return null;		
+		}		
+	}
 	// @Override
 	// public void onClick(View v) {
 	// // TODO Auto-generated method stub
@@ -273,7 +414,7 @@ public class NotificationFragment extends Fragment {
 
 			break;
 		case 10:
-
+			notification = entityname + " has recommended you to add " + addedby + " as your " + relationname;
 			break;
 		case 11:
 			notification = entityname + " has recommended you to invite " + addedby + " as your " + relationname;
@@ -293,8 +434,14 @@ public class NotificationFragment extends Fragment {
 		case 16:
 			notification = entityname + " has modified '" + eventname + "' event";
 			break;
+		case 19:
+			notification = entityname +" has invited "+addedby+" as "+relationname;
+			break;
+		case 20:
+			notification = entityname + " has invited you as "+relationname+" of "+addedby;
+			break;
 		default:
-
+			 
 			break;
 		}
 		if (notification.trim().length() > 5) {
@@ -324,8 +471,7 @@ public class NotificationFragment extends Fragment {
 
 		} else {
 			Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
-		}
-
+		}	
 		// notificationModelList.remove(itemPosition);
 		// notificationCustomAdapter.notifyDataSetChanged();
 		// Fragment fragment = new NotificationFragment();
@@ -336,5 +482,49 @@ public class NotificationFragment extends Fragment {
 		// fragment).commit();
 		// }
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if(v.getId() == R.id.textviewall){
+			boolean bool = new ConDetect(getActivity()).isOnline();
+			if (bool) {
+				// Create object of AsycTask and execute
+				allNotification ="read";
+				final GetNotificationTask getnotificationTask = new GetNotificationTask();
+				getnotificationTask.execute(userId);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (getnotificationTask.getStatus() == AsyncTask.Status.RUNNING){
+							getnotificationTask.cancel(true);
+						}
+					}
+				}, 10000);
+				
+			} else {
+				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+			}
+			boolean bools = new ConDetect(getActivity()).isOnline();
+			if (bools) {
+				// Create object of AsycTask and execute
+				final GetNewNotificationCountTask getNewNotificationCountTask = new GetNewNotificationCountTask();
+				getNewNotificationCountTask.execute(sharedPreferences.getString("user_id", "NA"));
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (getNewNotificationCountTask.getStatus() == AsyncTask.Status.RUNNING){
+							getNewNotificationCountTask.cancel(true);
+						}
+					}
+				}, 10000);
+				
+			} else {
+				CroutonMessage.showCroutonAlert(activity, "!No Internet Connection,Try again", 6000);
+			}
+		}
 	}
 }

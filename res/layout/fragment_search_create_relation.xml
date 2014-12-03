@@ -28,7 +28,8 @@
                 android:minHeight="30dp"
                 android:padding="5dp"
                 android:text="Refine Your Search"
-                android:textColor="@color/pt_white" />
+                android:textColor="@color/pt_white" 
+                android:textSize="17sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -48,7 +49,8 @@
                 android:minHeight="30dp"
                 android:padding="5dp"
                 android:text="Create New Relation"
-                android:textColor="@color/pt_white" />
+                android:textColor="@color/pt_white"
+                android:textSize="17sp" />
         </LinearLayout>
     </LinearLayout>
 

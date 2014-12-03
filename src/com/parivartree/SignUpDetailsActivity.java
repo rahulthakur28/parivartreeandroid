@@ -16,7 +16,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -24,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -37,8 +38,6 @@ import android.widget.Toast;
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
-import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
-import com.mobsandgeeks.saripaar.annotation.Password;
 import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.adapters.LocationHintAdapter;
 import com.parivartree.helpers.ConDetect;
@@ -63,7 +62,6 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	@Required(order = 4)
 	AutoCompleteTextView editTextLocation;
 	EditText otpCode;
-
 	private LocationHintAdapter locationHintAdpter;
 	private ArrayList<String> locationHints;
 	SearchPlacesTask searchPlacesTask;
@@ -71,7 +69,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 	int mobileUid, mobileAttempt;
 
 	TextView enterCode;
-
+	boolean startLocationFlag = true;
 	View alertDialogView,alertDialogViewpassword;
 
 	// EditText editTextPhone;
@@ -100,7 +98,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		sharedPreferences = this.getApplicationContext().getSharedPreferences(
 				this.getPackageName() + getResources().getString(R.string.USER_PREFERENCES), Context.MODE_PRIVATE);
 		sharedPreferencesEditor = sharedPreferences.edit();
-		sharedPreferencesEditor.commit();
+		sharedPreferencesEditor.commit();	
 		activity = this;
 		validator = new Validator(this);
 		validator.setValidationListener(this);
@@ -139,6 +137,14 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 		});
 
 		// provide hinting for the location fields from Google Places API
+		editTextLocation.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				startLocationFlag = false;
+			}
+		});
 		locationHints = new ArrayList<String>();
 		locationHintAdpter = new LocationHintAdapter(activity, R.layout.item_location, locationHints);
 		editTextLocation.setAdapter(locationHintAdpter);
@@ -154,11 +160,19 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 						searchPlacesTask.cancel(true);
 					}
 					Log.d("Search user", "AsyncTask calling");
-					searchPlacesTask = new SearchPlacesTask();
-					searchPlacesTask.execute(s.toString().trim(), getResources().getString(R.string.places_key));
+					if(startLocationFlag){
+						searchPlacesTask = new SearchPlacesTask();
+						searchPlacesTask.execute(s.toString().trim(), getResources().getString(R.string.places_key));
+						
+					}else{
+						searchPlacesTask.cancel(true);
+						startLocationFlag = true;
+					}
+					
 				} else {
 					Toast.makeText(activity, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
+				
 			}
 
 			@Override
@@ -174,7 +188,6 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			}
 		});
 	}
-	@Override
 	public void onPause() {
 		super.onPause();
 		
@@ -316,7 +329,9 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 				}
 				if (status == 1) {
 					if (successFlag.equals("mobile")) {
-						Crouton.makeText(activity, message, Style.INFO).show();
+						Crouton crouton;
+						crouton = Crouton.makeText(activity, message, Style.INFO);
+						crouton.setOnClickListener(SignUpDetailsActivity.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(7000).build()).show();
 					} else if (successFlag.equals("email")) {
 						croutonmsg =  "Please check your Mail and Click the Link";
 						Intent intentsuccess = new Intent(SignUpDetailsActivity.this, LoginMainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -329,15 +344,23 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 				} else if (status == 2) {
 					// TODO redirect to home page
 					Crouton.makeText(activity, message, Style.ALERT).show();
+				}else if (status == 4) {
+					// TODO redirect to home page
+					Crouton crouton;
+					crouton = Crouton.makeText(activity, message, Style.ALERT);
+					crouton.setOnClickListener(SignUpDetailsActivity.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(7000).build()).show();			
 				} else if (status == 5) {
 					// TODO redirect to home page
 					croutonmsg = 
 							"This "
 									+ emailMobileTest
-									+ " is registered with us. Please login to access the Parivartree, or click below link, if you have forgotten your password.";
-					Intent intentfail = new Intent(SignUpDetailsActivity.this, LoginMainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-					intentfail.putExtra("croutonmsg", croutonmsg);
-					startActivity(intentfail);
+									+ " is registered with us. Please login to access the Parivartree, or click forgot password link, if you have forgotten your password.";
+					Crouton crouton;
+					crouton = Crouton.makeText(activity, croutonmsg, Style.ALERT);
+					crouton.setOnClickListener(SignUpDetailsActivity.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(8000).build()).show();
+					//Intent intentfail = new Intent(SignUpDetailsActivity.this, LoginMainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+					//intentfail.putExtra("croutonmsg", croutonmsg);
+					//startActivity(intentfail);
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
@@ -357,7 +380,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			if ((pDialog != null) && pDialog.isShowing()) { 
 			    pDialog.dismiss();
 			   }
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -418,8 +441,10 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 					startActivity(intentsuccess);
 				} else if (status == 2) {
 					// TODO redirect to home page
-					Crouton.makeText(activity, message, Style.ALERT).show();
-				} 
+					Crouton crouton;
+					crouton = Crouton.makeText(activity, message, Style.ALERT);
+					crouton.setOnClickListener(SignUpDetailsActivity.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(7000).build()).show();			
+				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
 					Log.d("Exception thrown: ",
@@ -438,7 +463,7 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
 
@@ -501,7 +526,6 @@ public class SignUpDetailsActivity extends Activity implements OnClickListener, 
 
 		@Override
 		protected void onPreExecute() {
-
 			// TODO Auto-generated method stub
 		}
 

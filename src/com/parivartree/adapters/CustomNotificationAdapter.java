@@ -28,6 +28,7 @@ import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parivartree.R;
 import com.parivartree.fragments.NotificationFragment;
 import com.parivartree.helpers.ConDetect;
+import com.parivartree.helpers.CroutonMessage;
 import com.parivartree.helpers.HttpConnectionUtils;
 import com.parivartree.models.NotificationModel;
 
@@ -42,7 +43,9 @@ public class CustomNotificationAdapter extends BaseAdapter {
 	String userId;
 	int itemPosition;
 	Fragment fragment;
-
+	String typeinvitation="",entityNameStr = "",addedbyStr ="";
+	boolean inactive2nd= false;
+	
 	public CustomNotificationAdapter(Activity context, Fragment fragment, ArrayList<NotificationModel> notificationobj,
 			String userId) {
 		this.context = context;
@@ -94,7 +97,14 @@ public class CustomNotificationAdapter extends BaseAdapter {
 
 		final String entityIdstr = String.valueOf(notificationobj.get(position).getEntityid());
 		final String notifiIdstr = String.valueOf(notificationobj.get(position).getNotifid());
-
+		if(notificationobj.get(position).getAddedby() != null){
+			addedbyStr = notificationobj.get(position).getAddedby();
+		}
+		if(notificationobj.get(position).getEntityname() != null){
+			entityNameStr = notificationobj.get(position).getEntityname();
+		}
+		
+				
 		if (notifiText.trim().equals("You do not have any New notifications")) {
 			image.setVisibility(View.GONE);
 			txtNotificationDate.setVisibility(View.INVISIBLE);
@@ -103,9 +113,11 @@ public class CustomNotificationAdapter extends BaseAdapter {
 			final int notifiType = notificationobj.get(position).getNotificationtype();
 			String notifiStatus = notificationobj.get(position).getNotificationstatus();
 			Log.d("layout", " notifi type : " + notifiType);
-			if ((notifiType == 4 || notifiType == 11) && notifiStatus.trim().equals("0")) {
+			if ((notifiType == 4 || notifiType == 11 ||notifiType == 19 || notifiType == 20) && (notifiStatus.trim().equals("0"))) {
 				Log.d("layout", " visible : " + notifiType + " , " + notifiType + " , " + notifiStatus);
-
+if(notifiType == 4){
+	inactive2nd = false;
+}
 				childll.setVisibility(View.VISIBLE);
 				// Button invite=(Button)
 				// childll.findViewById(R.id.btnacceptinvitation);
@@ -125,6 +137,9 @@ public class CustomNotificationAdapter extends BaseAdapter {
 						boolean bool = new ConDetect(context).isOnline();
 						if (bool) {
 							if (notifiType == 11) {
+								inactive2nd = false;
+								addedbyStr = notificationobj.get(position).getAddedby();
+								typeinvitation = "recomondation";
 								Log.d(TAG, "invitationAcceptTask!!" + entityIdstr + "," + notifiIdstr + "," + userId);
 								final InvitationAcceptTask invitationAcceptTask = new InvitationAcceptTask();
 								invitationAcceptTask.execute(String.valueOf(position), entityIdstr, notifiIdstr,
@@ -139,6 +154,14 @@ public class CustomNotificationAdapter extends BaseAdapter {
 									}
 								}, 10000);
 							} else {
+								if(notifiType == 20){
+									addedbyStr = notificationobj.get(position).getAddedby();
+									inactive2nd = true;
+								}else{
+									inactive2nd = false;
+								}
+								entityNameStr = notificationobj.get(position).getEntityname();
+								typeinvitation = "invitation";
 								Log.d(TAG, "invitationAcceptTask!!" + entityIdstr + "," + notifiIdstr + "," + userId);
 								final InvitationAcceptTask invitationAcceptTask = new InvitationAcceptTask();
 								invitationAcceptTask.execute(String.valueOf(position), entityIdstr, notifiIdstr,
@@ -154,7 +177,7 @@ public class CustomNotificationAdapter extends BaseAdapter {
 								}, 10000);
 							}
 						} else {
-							Toast.makeText(context, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+							Crouton.makeText(context, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 						}
 					}
 				});
@@ -192,12 +215,12 @@ public class CustomNotificationAdapter extends BaseAdapter {
 								}, 10000);
 							}
 						} else {
-							Toast.makeText(context, "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+							Crouton.makeText(context, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
 						}
 					}
 				});
 
-			} else {
+			} else if(notifiType == 10 ) {
 				Log.d("layout", " invisible");
 				childll.setVisibility(View.GONE);
 			}
@@ -254,15 +277,31 @@ public class CustomNotificationAdapter extends BaseAdapter {
 				if (responseResult.equals("Success")) {
 
 					Log.d(TAG, "Success Accept invitation");
-
+					if(typeinvitation.equals("recomondation")){
+						
+						CroutonMessage.showCroutonInfo(context, "You have successfully invited "+addedbyStr+" to your family tree.You will have a complete access to further connections once " + addedbyStr + " accepts your invitation", 7000);
+					
+					}else if((inactive2nd = true) && (typeinvitation.equals("invitation"))){
+						
+						CroutonMessage.showCroutonInfo(context, addedbyStr+" has been added to your Family", 7000);
+						
+					}else if(typeinvitation.equals("invitation")){
+						
+						CroutonMessage.showCroutonInfo(context, entityNameStr+" has been added to your Family", 7000);
+						
+					}
+					inactive2nd = false;
 					((NotificationFragment) fragment).refreshNotification();
 
 				} else if (status == 2) {
-					Toast.makeText(context, "You are not authorised to access this page!", Toast.LENGTH_LONG).show();
+					CroutonMessage.showCroutonAlert(context, "You have already invited to your family", 7000);
+					((NotificationFragment) fragment).refreshNotification();
 				} else if (status == 3) {
-					Crouton.makeText(context, "You are already connected", Style.INFO).show();
+					CroutonMessage.showCroutonAlert(context, "You are already connected", 7000);
+					((NotificationFragment) fragment).refreshNotification();
 				} else if (status == 4) {
-					Toast.makeText(context, "You are not authorised to access this page!", Toast.LENGTH_LONG).show();
+					CroutonMessage.showCroutonAlert(context, "You are not authorised to access this page!", 7000);
+					((NotificationFragment) fragment).refreshNotification();
 				}
 			} catch (Exception e) {
 				for (StackTraceElement tempStack : e.getStackTrace()) {
@@ -270,7 +309,8 @@ public class CustomNotificationAdapter extends BaseAdapter {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content accept!!");
 			}
 
@@ -337,7 +377,8 @@ public class CustomNotificationAdapter extends BaseAdapter {
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(context, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content decline!!");
 			}
 

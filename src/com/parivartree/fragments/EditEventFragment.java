@@ -24,6 +24,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -39,6 +41,7 @@ import com.mobsandgeeks.saripaar.annotation.Required;
 import com.parivartree.R;
 import com.parivartree.adapters.LocationHintAdapter;
 import com.parivartree.helpers.ConDetect;
+import com.parivartree.helpers.CroutonMessage;
 import com.parivartree.helpers.HttpConnectionUtils;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -65,7 +68,7 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 	private ArrayList<String> spinnerevntNameList, spinnerReachList, spinnerevntHourList, spinnerEventMinList;
 	// Shared preferences
 	private SharedPreferences sharedPreferences;
-	private String eventIdbd, eventNamebd, eventDatebd, eventDescritionbd, locationbd, time, timeHourbd, timeMinbd,
+	private String eventIdbd, eventNamebd, eventDatebd, eventDescritionbd, locationbd, time,time24="",time24hour, timeHourbd, timeMinbd,
 			yourNamebd, reachListbd, eventListbd;
 	int eventNamePos, eventReachPos;
 	private String userId = null, sessionname;
@@ -73,7 +76,7 @@ public class EditEventFragment extends Fragment implements OnClickListener, Vali
 	Validator validator;
 Activity activity;
 	private ProgressDialog pDialog;
-
+	boolean startLocationFlag = true;
 	public EditEventFragment() {
 
 	}
@@ -105,6 +108,7 @@ Activity activity;
 		spinnerEventEditMin = (Spinner) rootView.findViewById(R.id.spinnereditmin);
 		btnEditEvent = (Button) rootView.findViewById(R.id.btneditok);
 		spinnerevntNameList = new ArrayList<String>();
+		spinnerevntNameList.add("Choose a Event Type");
 		spinnerevntNameList.add("Birthday");
 		spinnerevntNameList.add("Wedding");
 		spinnerevntNameList.add("Family Meet");
@@ -114,14 +118,16 @@ Activity activity;
 				android.R.layout.simple_spinner_item, spinnerevntNameList);
 		spinnerEvntName.setAdapter(spinnerEvntAdapter);
 		spinnerReachList = new ArrayList<String>();
-		spinnerReachList.add("Public");
-		spinnerReachList.add("Family");
+		spinnerReachList.add("Select Privacy");
 		spinnerReachList.add("Private");
+		spinnerReachList.add("Family");
+		spinnerReachList.add("Public");
 		ArrayAdapter<String> spinnerReachAdapter = new ArrayAdapter<String>(getActivity(),
 				android.R.layout.simple_spinner_item, spinnerReachList);
 		spinnerReach.setAdapter(spinnerReachAdapter);
 
 		spinnerevntHourList = new ArrayList<String>();
+		spinnerevntHourList.add("Hour");
 		spinnerevntHourList.add("01");
 		spinnerevntHourList.add("02");
 		spinnerevntHourList.add("03");
@@ -149,6 +155,7 @@ Activity activity;
 		spinnerEventEditHour.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
 				spinnerevntHourList));
 		spinnerEventMinList = new ArrayList<String>();
+		spinnerEventMinList.add("Minutes");
 		spinnerEventMinList.add("00");
 		spinnerEventMinList.add("15");
 		spinnerEventMinList.add("30");
@@ -159,6 +166,14 @@ Activity activity;
 		btnEditEvent.setOnClickListener(this);
 		editEventDate.setOnClickListener(this);
 		// provide hinting for the location fields from Google Places API
+		editLocation.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				startLocationFlag = false;
+			}
+		});
 		locationHints = new ArrayList<String>();
 		locationHintAdpter = new LocationHintAdapter(getActivity(), R.layout.item_location, locationHints);
 		editLocation.setAdapter(locationHintAdpter);
@@ -174,22 +189,29 @@ Activity activity;
 						searchPlacesTask.cancel(true);
 					}
 					Log.d("Search user", "AsyncTask calling");
-					searchPlacesTask = new SearchPlacesTask();
-					searchPlacesTask.execute(editLocation.getText().toString().trim(),
-							getResources().getString(R.string.places_key));
-
-					Handler handler = new Handler();
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							if (searchPlacesTask.getStatus() == AsyncTask.Status.RUNNING){
-								searchPlacesTask.cancel(true);
+					if(startLocationFlag){
+						searchPlacesTask = new SearchPlacesTask();
+						searchPlacesTask.execute(editLocation.getText().toString().trim(),
+								getResources().getString(R.string.places_key));	
+						Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (searchPlacesTask.getStatus() == AsyncTask.Status.RUNNING){
+									searchPlacesTask.cancel(true);
+								}
 							}
-						}
-					}, 10000);
+						}, 10000);
+					}else{
+						searchPlacesTask.cancel(true);
+						startLocationFlag = true;
+					}
+					
+					
 				} else {
 					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
 				}
+				
 			}
 
 			@Override
@@ -236,22 +258,36 @@ Activity activity;
 		locationbd = bndle.getString("location");
 		eventDatebd = bndle.getString("eventdate");
 		time = bndle.getString("time");
+		time24 = bndle.getString("time24");
+		time24hour = time24.substring(0, 2);
 		timeHourbd = time.substring(0, 2);
-		timeMinbd = time.substring(3);
+		timeMinbd = time.substring(3,5);
+		Log.d("timeHourbd----", timeHourbd);
+		Log.d("timeMinbd-----", timeMinbd);
 		// year = Integer.parseInt(eventDatebd.trim().substring(6));
 		// month = Integer.parseInt(eventDatebd.substring(3, 5));
 		// day = Integer.parseInt(eventDatebd.trim().substring(0, 2));
 		// datePicker.init(year, (month - 1), day, null);
-
+for(int i=0;i<spinnerevntHourList.size();i++){
+	if(spinnerevntHourList.get(i).equalsIgnoreCase(time24hour.trim())){
+		spinnerEventEditHour.setSelection(i);
+	}
+}
+for(int i=0;i<spinnerEventMinList.size();i++){
+	if(spinnerEventMinList.get(i).equalsIgnoreCase(timeMinbd.trim())){
+		spinnerEventEditMin.setSelection(i);
+	}
+}
 		editEventDate.setText(eventDatebd);
-		spinnerEvntName.setSelection((eventNamePos - 1));
-		spinnerReach.setSelection((eventReachPos - 1));
+		spinnerEvntName.setSelection((eventNamePos));
+		spinnerReach.setSelection((eventReachPos));
 		editEventName.setText(eventNamebd);
 		editLocation.setText(locationbd);
 		// editEventDate.setText(eventDatebd);
 		editEventDescrition.setText(eventDescritionbd);
 		// editTimeHour.setText(timeHourbd);
 		// editTimeMin.setText(timeMinbd);
+		Log.d("testing------", eventReachPos+","+eventNamePos);
 	}
 
 	@Override
@@ -356,7 +392,8 @@ Activity activity;
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 
@@ -368,17 +405,17 @@ Activity activity;
 			if ((pDialog != null) && pDialog.isShowing()) { 
 				pDialog.dismiss();
 			}
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
 	}
-
+	int searchPlacesProcessCalledCount = 0;
 	public class SearchPlacesTask extends AsyncTask<String, Void, String> {
 		// private ProgressDialog pDialog;
 
 		@Override
 		protected void onPreExecute() {
-
 			// TODO Auto-generated method stub
+			searchPlacesProcessCalledCount++;
 		}
 
 		@Override
@@ -392,6 +429,7 @@ Activity activity;
 			super.onPostExecute(response);
 			// pDialog.dismiss();
 			Log.i("Ceate Event Response ", response);
+			searchPlacesProcessCalledCount--;
 			try {
 				JSONObject createEventObject = new JSONObject(response);
 				JSONArray predictionsArray = createEventObject.getJSONArray("predictions");
@@ -416,8 +454,10 @@ Activity activity;
 					Log.d("Exception thrown: ",
 							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
 									+ tempStack.getMethodName());
+					
 				}
-				Toast.makeText(getActivity(), "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "Invalid Server Content - ", Toast.LENGTH_LONG).show();
+				// + e.getMessage()
 				Log.d(TAG, "Invalid Server content!!");
 			}
 		}
@@ -425,7 +465,10 @@ Activity activity;
 		protected void onCancelled(String result) {
 			// TODO Auto-generated method stub
 			super.onCancelled(result);
-			Crouton.makeText(activity, "Your Network Connection is Very Slow, Try again", Style.ALERT).show();
+			searchPlacesProcessCalledCount--;
+			if(searchPlacesProcessCalledCount == 0) {
+				//Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
+			}
 		}
 	}
 
@@ -438,20 +481,17 @@ Activity activity;
 		day = cal.get(Calendar.DAY_OF_MONTH);
 		month = cal.get(Calendar.MONTH);
 		year = cal.get(Calendar.YEAR);
-		final DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-
-			@Override
-			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-				if (set) {
-					String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
-					txtview.setText(date);
-				}
-			}
-		}, year, month, day);
+		
+		final DateSetListener _datePickerDialogCallback = new DateSetListener();
+		final DatePickerDialog dpd = new DatePickerDialog(getActivity(),_datePickerDialogCallback, year, month, day);
+		
 		dpd.setButton(DialogInterface.BUTTON_POSITIVE, "SET", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				if (which == DialogInterface.BUTTON_POSITIVE) {
-					set = true;
+					set = true;	
+					
+					DatePicker datePicker = dpd.getDatePicker();
+					 _datePickerDialogCallback.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());	
 				}
 			}
 		});
@@ -466,7 +506,16 @@ Activity activity;
 		});
 		dpd.show();
 	}
-
+	private class DateSetListener implements DatePickerDialog.OnDateSetListener {
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+			if (set) {
+				String date = dayOfMonth + "-" + (1 + monthOfYear) + "-" + year;
+				editEventDate.setText(date);
+				
+			}
+		}
+	}
 	@Override
 	public void onValidationSucceeded() {
 		// TODO Auto-generated method stub
@@ -478,7 +527,9 @@ Activity activity;
 		if (editEventName.getText().toString().trim().length() > 0 && editEventDescrition.getText().toString
 
 		().trim().length() > 0 && editLocation.getText().toString().trim().length() > 0) {
-			if (spinnerEvntName.getSelectedItem().toString().trim().equals("Birthday")) {
+			if (spinnerEvntName.getSelectedItem().toString().trim().equals("Choose a Event Type")) {
+				eventnumber = "0";
+			}else if (spinnerEvntName.getSelectedItem().toString().trim().equals("Birthday")) {
 				eventnumber = "1";
 			} else if (spinnerEvntName.getSelectedItem().toString().trim().equals("Wedding")) {
 				eventnumber = "2";
@@ -490,39 +541,46 @@ Activity activity;
 				eventnumber = "5";
 			}
 
-			String reachnumber = "3";
+			String reachnumber = "0";
 			if (spinnerReach.getSelectedItem().toString().trim().equals("Public")) {
-				reachnumber = "1";
+				reachnumber = "3";
 			} else if (spinnerReach.getSelectedItem().toString().trim().equals("Family")) {
 				reachnumber = "2";
+			} else if (spinnerReach.getSelectedItem().toString().trim().equals("Private")) {
+				reachnumber = "1";
+			} else if (spinnerReach.getSelectedItem().toString().trim().equalsIgnoreCase("Select Privacy")) {
+				reachnumber = "0";
 			}
 			if (reachnumber.endsWith("0")) {
 				Log.d(TAG, "You Set Reach as Private");
 			}
-
-			boolean bool = new ConDetect(getActivity()).isOnline();
-			if (bool) {
-				// Create object of AsycTask and execute
-				final EditEventTask editEventTask = new EditEventTask();
-				editEventTask.execute(eventIdbd, eventnumber, editEventName.getText().toString(), editEventDate
-						.getText().toString(), editEventDescrition.getText().toString(), editLocation.getText()
-						.toString(), reachnumber, spinnerEventEditHour.getSelectedItem().toString(),
-						spinnerEventEditMin.getSelectedItem().toString(), sessionname, userId);
-				Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						if (editEventTask.getStatus() == AsyncTask.Status.RUNNING){
-							editEventTask.cancel(true);
+			if((eventnumber.equals("0")) || ((spinnerEventEditHour.getSelectedItem().toString().trim()).equalsIgnoreCase("Hour")) || ((spinnerEventEditMin.getSelectedItem().toString().trim()).equalsIgnoreCase("Minutes")) || (reachnumber.equals("0"))){
+				CroutonMessage.showCroutonAlert(activity, "Please Fill all Fields", 5000);
+			}else{
+				
+				boolean bool = new ConDetect(getActivity()).isOnline();
+				if (bool) {
+					// Create object of AsycTask and execute
+					final EditEventTask editEventTask = new EditEventTask();
+					editEventTask.execute(eventIdbd, eventnumber, editEventName.getText().toString(), editEventDate
+							.getText().toString(), editEventDescrition.getText().toString(), editLocation.getText()
+							.toString(), reachnumber, spinnerEventEditHour.getSelectedItem().toString(),
+							spinnerEventEditMin.getSelectedItem().toString(), sessionname, userId);
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							if (editEventTask.getStatus() == AsyncTask.Status.RUNNING){
+								editEventTask.cancel(true);
+							}
 						}
-					}
-				}, 10000);
-			} else {
-				Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+					}, 10000);
+				} else {
+					Toast.makeText(getActivity(), "!No Internet Connection,Try again", Toast.LENGTH_LONG).show();
+				}	
 			}
-
 		} else {
-			Toast.makeText(getActivity(), "Fill all fields", Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), "Please Fill all Fields", Toast.LENGTH_LONG).show();
 		}
 	}
 
