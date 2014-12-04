@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -293,6 +294,22 @@ public class ProfileFragment extends Fragment implements OnClickListener {
 								 DatePicker datePicker = dpd.getDatePicker();
 								 _datePickerDialogCallback.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
 							
+							}
+						}
+					});
+
+					dpd.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == DialogInterface.BUTTON_NEGATIVE) {
+								set = false;
+								dpd.hide();
+							}
+						}
+					});
+					dpd.setButton(DialogInterface.BUTTON_POSITIVE, "SET", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == DialogInterface.BUTTON_POSITIVE) {
+								set = true;
 							}
 						}
 					});

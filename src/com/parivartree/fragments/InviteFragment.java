@@ -131,6 +131,7 @@ EditText searchNameEdit;
 					}
 					
 				}
+				}
 			}
 			
 			@Override

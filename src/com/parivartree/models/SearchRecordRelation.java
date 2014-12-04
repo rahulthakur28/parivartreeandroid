@@ -1,12 +1,8 @@
 package com.parivartree.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class SearchRecordRelation implements Parcelable {
+public class SearchRecordRelation {
 String relationname = "",name = "";
 int id,imageexists;
-
 public String getRelationname() {
 	return relationname;
 }
@@ -30,18 +26,5 @@ public int getImageexists() {
 }
 public void setImageexists(int imageexists) {
 	this.imageexists = imageexists;
-}
-@Override
-public int describeContents() {
-	// TODO Auto-generated method stub
-	return 0;
-}
-@Override
-public void writeToParcel(Parcel parcel, int flags) {
-	// TODO Auto-generated method stub
-	parcel.writeString(relationname);
-	parcel.writeString(name);
-	parcel.writeInt(id);
-	parcel.writeInt(imageexists);
 }
 }

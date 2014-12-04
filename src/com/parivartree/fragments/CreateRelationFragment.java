@@ -547,10 +547,26 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 				
 									relationRecordsList.add(searchRecordRelation);
 								}
+//								StringBuilder relationString = new StringBuilder();
+//								for(HashMap<String, String> hash : relationRecordsList){
+//									relation1 = hash.get("name")+" ("+hash.get("relationname")+") ";
+//									relationString.append(relation1);
+//								}
+//								Log.d("  #####  ","relation List"+relationString);
+								Log.d("ooooooListoooo ", " "+relationRecordsList);
+								//searchRecordObject.setRelationRecords(relationRecordsList);
+								//Log.d("ooooooList hashoooo ", " "+searchRecordObject.getRelationRecords());
 							}
 							searchRecordObject.setRelationRecords(relationRecordsList);
+							Log.d("ooooooList hashoooo ", " "+searchRecordObject.getRelationRecords());
 							searchRecordsList.add(searchRecordObject);
 						}	
+						for(int z=0;z<searchRecordsList.size();z++){
+							
+							//searchRecordsList.get(z).getRelationRecords();
+							Log.d("oooooooooo", ""+searchRecordsList.get(z).getFirstname());
+							Log.d("oooooooooo", ""+searchRecordsList.get(z).getRelationRecords());
+						}
 						Bundle bundle = new Bundle();
 						bundle.putParcelableArrayList("searchrelationList", searchRecordsList);
 						bundle.putString("firstname", ((firstNameEditText.getText().toString().trim())));		

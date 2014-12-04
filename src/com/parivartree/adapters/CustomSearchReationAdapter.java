@@ -205,6 +205,7 @@ public class CustomSearchReationAdapter extends BaseAdapter{
 			holder.searchInviteBtn.setTypeface(null, Typeface.NORMAL);
 			holder.searchInviteBtn.setBackgroundColor(activity.getResources().getColor(R.color.pt_grey));
 			holder.searchInviteBtn.setClickable(false);			
+			
 		}else if(invite == 1){
 			holder.searchInviteBtn.setText("Already Invited");
 			holder.searchInviteBtn.setTextColor(activity.getResources().getColor(R.color.ll_black));

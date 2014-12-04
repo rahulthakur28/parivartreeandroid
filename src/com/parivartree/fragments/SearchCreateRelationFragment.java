@@ -320,7 +320,7 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 					} else if(Userstatus == 0){
 						
 						Crouton.makeText(activity,""+msg,Style.INFO).show();
-					}else{
+					} else {
 						String croutonmsg = 
 								"You have successfully recommended " + recommendedUserName + " to "
 										+ (firstName + " " + lastName) + " for " + relationship_type + " relation.";
@@ -411,6 +411,158 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 						tempItem.setId(0);
 						tempItem.setValue("Others");
 						communityList.add(tempItem);
+					}
+					Log.d("debuging", "after");
+
+//					CustomDropDownAdapter communityAdapter = new CustomDropDownAdapter(activity, communityList);
+//					spinnerCommunity.setAdapter(communityAdapter);
+//					communityAdapter.notifyDataSetChanged();
+				}
+
+			} catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					// Log.d("Exception thrown: Treeview Fetch", "" +
+					// tempStack.getLineNumber());
+					Log.d("Exception thrown: ",
+							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+									+ tempStack.getMethodName());
+				}
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
+			}
+		}
+
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
+			if ((pDialog != null) && pDialog.isShowing())
+				pDialog.dismiss();
+			pDialog = null;
+			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
+		}
+	}
+
+	public class RefineSearchTask extends AsyncTask<String, String, String> {
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			// pDialog = new ProgressDialog(activity);
+			pDialog = new ProgressDialog(activity);
+			pDialog.setMessage("Loading...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			return HttpConnectionUtils.getRefineSearchResponse(params[0], params[1], params[2], params[3], params[4],
+					params[5], params[6], params[7], getResources().getString(R.string.hostname)
+							+ getResources().getString(R.string.url_refine_search));
+			// return null;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(response);
+			if ((pDialog != null) && pDialog.isShowing())
+				pDialog.dismiss();
+			pDialog = null;
+
+			Log.i("refinesearch Fetch Response ", "" + response);
+			try {
+				int authenticationStatus = 0;
+				String responseResult ="";
+				JSONObject loginResponseObject = new JSONObject(response);
+
+				if (loginResponseObject.has("Authenticationstatus")) {
+					authenticationStatus = loginResponseObject.getInt("Authenticationstatus");
+				} else if (loginResponseObject.has("AuthenticationStatus")) {
+					authenticationStatus = loginResponseObject.getInt("AuthenticationStatus");
+				}
+				if (loginResponseObject.has("status")) {
+					responseResult = loginResponseObject.getString("status");
+				} else if (loginResponseObject.has("Status")) {
+					responseResult = loginResponseObject.getString("Status");
+				}
+				if ((responseResult.equals("success")) && (authenticationStatus == 1)) {
+					// TODO store the login response and
+					if (loginResponseObject.has("records")) {
+						relationRecordsArrayList = new ArrayList<SearchRecordRelation>();
+						searchRecordsArrayList.clear();
+						JSONArray records = loginResponseObject.getJSONArray("records");
+						for (int i = 0; i < records.length(); i++) {
+							JSONObject item = records.getJSONObject(i);
+							SearchRecords searchRecordObject = new SearchRecords();
+							searchRecordObject.setUserid(item.getInt("userid"));
+							searchRecordObject.setGender(item.getInt("gender"));
+							searchRecordObject.setStatus(item.getInt("status"));
+							searchRecordObject.setDeceased(item.getInt("deceased"));
+							searchRecordObject.setConnected(item.getInt("connected"));
+							searchRecordObject.setImageexists(item.getInt("imageexists"));
+							searchRecordObject.setInvite(item.getInt("invite"));
+							searchRecordObject.setCity(item.getString("city"));
+							searchRecordObject.setState(item.getString("state"));
+							searchRecordObject.setFirstname(item.getString("firstname"));
+							searchRecordObject.setLastname(item.getString("lastname"));
+							if (item.has("relation")) {
+								relationRecordsArrayList.clear();
+								JSONArray relation = item.getJSONArray("relation");
+								for (int j = 0; j < relation.length(); j++) {
+									JSONObject itemrelation = relation.getJSONObject(j);
+									SearchRecordRelation searchRecordRelation = new SearchRecordRelation();
+									searchRecordRelation.setRelationname(itemrelation.getString("relationname"));
+									searchRecordRelation.setName(itemrelation.getString("name"));
+									searchRecordRelation.setId(itemrelation.getInt("id"));
+									searchRecordRelation.setImageexists(itemrelation.getInt("imageexists"));
+				
+									relationRecordsArrayList.add(searchRecordRelation);
+									
+//									HashMap<String, String> relationhash = new HashMap<String, String>();
+//									relationhash.put("relationname", "" + itemrelation.getString("relationname"));
+//									relationhash.put("name", "" + itemrelation.getString("name"));
+//									relationhash.put("id", "" + itemrelation.getInt("id"));
+//									relationhash.put("imageexists", "" + itemrelation.getInt("imageexists"));
+//									relationRecordsArrayList.add(relationhash);
+								}
+								searchRecordObject.setRelationRecords(relationRecordsArrayList);
+							}
+
+							searchRecordsArrayList.add(searchRecordObject);
+						}
+					}
+					if (loginResponseObject.has("counter")) {
+						counter = loginResponseObject.getInt("counter");
+						textResultTitle.setText("Parivartree has found " + counter + " Results for "
+								+ (firstName + " " + lastName));
+					}
+					if (loginResponseObject.has("nodeid")) {
+						recommendNodeId = loginResponseObject.getString("nodeid");
+					}
+					if (loginResponseObject.has("relationid")) {
+						myRelationId = loginResponseObject.getString("relationid");
+					}
+					SearchReationAdapter.notifyDataSetChanged();
+
+				} else if ((responseResult.equals("Failure")) && (authenticationStatus == 2)) {
+					if(refinedSearchFailureflag == 1){
+						Crouton.makeText(activity, "Please select atleast one field to get results.", Style.ALERT).show();
+					}else{
+						Crouton.makeText(activity, "Please enter a valid mobile number.", Style.ALERT).show();
+					}
+					refinedSearchFailureflag = 0;
+				}
+			} catch (Exception e) {
+				for (StackTraceElement tempStack : e.getStackTrace()) {
+					Log.d("Exception thrown: ",
+							"" + tempStack.getLineNumber() + " methodName: " + tempStack.getClassName() + "-"
+									+ tempStack.getMethodName());
+				}
+				Toast.makeText(activity, "Invalid Server Content - " + e.getMessage(), Toast.LENGTH_LONG).show();
 					}
 					Log.d("debuging", "after");
 

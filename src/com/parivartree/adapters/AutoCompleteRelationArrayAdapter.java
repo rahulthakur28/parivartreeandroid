@@ -120,6 +120,23 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> imp
 						mContext.getResources().getDrawable(R.drawable.female), 10000);
 
 			}
+				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg",
+						mContext.getResources().getDrawable(R.drawable.female), 10000);
+
+			} else if (objectItem.gender == 1) {
+				invitesearchimageview.setBorderColor(mContext.getResources().getColor(R.color.pt_blue));
+				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg",
+						mContext.getResources().getDrawable(R.drawable.male), 10000);
+
+			} else if (objectItem.gender == 2) {
+				invitesearchimageview.setBorderColor(Color.MAGENTA);
+				UrlImageViewHelper.setUrlDrawable(invitesearchimageview,
+						"https://www.parivartree.com/profileimages/thumbs/" + objectItem.objectId + "PROFILE.jpeg",
+						mContext.getResources().getDrawable(R.drawable.female), 10000);
+
+			}
 			// get the TextView and then set the text (item name) and tag (item
 			// ID) values
 			final TextView textViewItem = (TextView) convertView.findViewById(R.id.textViewItem);
@@ -287,6 +304,10 @@ public class AutoCompleteRelationArrayAdapter extends ArrayAdapter<MyObject> imp
 						String croutonmsg = recommendedUserName +" has been notified to invite "+ nodeName +" as "+relationship_type;
 						CroutonMessage.showCroutonInfo(activity, croutonmsg, 10000);
 		
+						Crouton crouton;
+						crouton = Crouton.makeText(activity, croutonmsg, Style.INFO);
+						crouton.setOnClickListener(AutoCompleteRelationArrayAdapter.this).setConfiguration(new de.keyboardsurfer.android.widget.crouton.Configuration.Builder().setDuration(10000).build()).show();			
+					
 					}
 					// Toast.makeText(mContext,
 					// "You have successfully invited ",
