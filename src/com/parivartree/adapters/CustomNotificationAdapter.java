@@ -52,6 +52,7 @@ public class CustomNotificationAdapter extends BaseAdapter {
 		this.notificationobj = notificationobj;
 		this.userId = userId;
 		this.fragment = fragment;
+		this.inactive2nd= false;
 	}
 
 	@Override
@@ -275,13 +276,13 @@ if(notifiType == 4){
 				String responseResult = deleteEventResponseObject.getString("Status");
 				Log.d(TAG, "onpostexecute" + responseResult);
 				if (responseResult.equals("Success")) {
-
+					Log.d("__+++++++++++_====", ""+inactive2nd);
 					Log.d(TAG, "Success Accept invitation");
 					if(typeinvitation.equals("recomondation")){
 						
 						CroutonMessage.showCroutonInfo(context, "You have successfully invited "+addedbyStr+" to your family tree.You will have a complete access to further connections once " + addedbyStr + " accepts your invitation", 7000);
 					
-					}else if((inactive2nd = true) && (typeinvitation.equals("invitation"))){
+					}else if((inactive2nd == true) && (typeinvitation.equals("invitation"))){
 						
 						CroutonMessage.showCroutonInfo(context, addedbyStr+" has been added to your Family", 7000);
 						

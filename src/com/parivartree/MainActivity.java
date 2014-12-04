@@ -326,7 +326,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			sharedPreferencesEditor.putString("node_id",
 					sharedPreferences.getString("user_id", "0"));
 			sharedPreferencesEditor.commit();
+			
 			fragment = new HomeFragment();
+			
 			break;
 		case 1:
 			sharedPreferencesEditor = sharedPreferences.edit();

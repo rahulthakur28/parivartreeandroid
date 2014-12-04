@@ -968,7 +968,7 @@ public class EditProfileFragment extends Fragment implements OnClickListener, On
 
 	private void savedSuccessfully() {
 		Log.d(TAG, "Profile edited successfully!");
-		CroutonMessage.showCroutonInfo(activity, "You successfully edit your profile", 7000);
+		CroutonMessage.showCroutonInfo(activity, "You have successfully updated the profile information!", 7000);
 		((MainActivity) this.getActivity()).changeFragment("ProfileFragment");
 	}
 

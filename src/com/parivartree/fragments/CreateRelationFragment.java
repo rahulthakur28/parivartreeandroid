@@ -22,9 +22,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -34,9 +37,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 //import com.gorillalogic.monkeytalk.server.JsonServer;
+
+
+
+
 
 
 
@@ -97,6 +105,7 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 	
 	private ProgressDialog pDialog;
 	boolean startLocationFlag = true;
+	ScrollView parentscrollview;
 	// Ids of views in listview_layout
 	int[] to = { R.id.txtname };
 
@@ -173,6 +182,10 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 
 		// Instantiating an adapter to store each items
 		// R.layout.listview_layout defines the layout of each item
+		
+		//parent for keybord issues
+		parentscrollview = (ScrollView) rootView.findViewById(R.id.parentscrollview);
+		
 		textViewTitle = (TextView) rootView.findViewById(R.id.relationtitle2);
 		searchUserAutoComplete = (CustomAutoCompleteTextView) rootView.findViewById(R.id.autoCompleteUser);
 		searchUserAutoComplete.clearFocus();
@@ -193,6 +206,18 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 		// R.layout.list_view_row, ObjectItemData);
 		// myAdapter.setNotifyOnChange(true);
 		// searchUserAutoComplete.setAdapter(myAdapter);
+		
+		parentscrollview.setOnTouchListener(new OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				//hideKeyboard(v);
+				return false;
+			}
+		});
+		
+		
 		searchUserAutoComplete.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -1092,5 +1117,10 @@ public class CreateRelationFragment extends Fragment implements OnClickListener,
 			super.onCancelled(result);
 			Crouton.makeText(activity, "Network connection is slow, Try again", Style.ALERT).show();
 		}
+	}
+	protected void hideKeyboard(View view)
+	{
+	    InputMethodManager in = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+	    in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 }

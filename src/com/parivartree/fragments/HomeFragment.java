@@ -109,6 +109,9 @@ public class HomeFragment extends Fragment implements OnClickListener {
 		textNotificationCount = (TextView) actionBar.getCustomView().findViewById(R.id.textnoofnotification);
 		
 		View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+		
+		
+		//rootView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		// contentHolder = (LinearLayout)
 		// rootView.findViewById(R.id.contentHolder);
 		//parentView = (ScrollView) rootView.findViewById(R.id.topScrollView);

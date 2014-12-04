@@ -299,6 +299,14 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 				JSONObject loginResponseObject = new JSONObject(response);
 				int status = loginResponseObject.getInt("AuthenticationStatus");
 				String responseResult = loginResponseObject.getString("Status");
+				int Userstatus = 1;
+				if(loginResponseObject.has("Userstatus")){
+					Userstatus = loginResponseObject.getInt("Userstatus");
+				}
+				String msg = "";
+				if(loginResponseObject.has("msg")){
+					msg = loginResponseObject.getString("msg");
+				}
 				if (responseResult.equals("Success") && (status == 1)) {
 					Log.i("Get new user Response ", "user added");
 					sharedPreferencesEditor.putString("node_id", sharedPreferences.getString("user_id", "0"));
@@ -309,7 +317,10 @@ public class SearchCreateRelationFragment extends Fragment implements OnClickLis
 								activity,
 								"You have successfully added " + (firstName + " " + lastName) + " to your family tree.",
 								Style.INFO).show();
-					} else {
+					} else if(Userstatus == 0){
+						
+						Crouton.makeText(activity,""+msg,Style.INFO).show();
+					}else{
 						String croutonmsg = 
 								"You have successfully recommended " + recommendedUserName + " to "
 										+ (firstName + " " + lastName) + " for " + relationship_type + " relation.";
